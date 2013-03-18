@@ -313,16 +313,16 @@ var results = (function () {
             self.params.axes.yaxis.label = value;
         };
 
-        self.set_data = function (value) {
-            self.data = value;
+        self.push_data = function (value) {
+            self.data.push(value);
         };
 
         self.set_div = function (value) {
             self.div = value;
         };
 
-        self.set_per_serie_options = function (value) {
-            self.params.series = value;
+        self.push_options = function (value) {
+            self.params.series.push(value);
         };
 
         self.show_hide_legend = function (value) {
@@ -378,7 +378,7 @@ var results = (function () {
         return dictionary;
     }
 
-    function mkplot(info, dataset, result, data, options) {
+    function mkplot(info, dataset, result, plotter) {
         var address, data_by_ip, i, label, marker, recipe;
 
         recipe = dataset.recipe;
@@ -399,8 +399,11 @@ var results = (function () {
         }
 
         jQuery.each(data_by_ip, function (address, vector) {
-            data.push(build_vector(vector, recipe));
-            options.push(build_per_serie_options(label, address, marker));
+            if (vector.length > 0) {
+                plotter.push_data(build_vector(vector, recipe));
+                plotter.push_options(build_per_serie_options(label,
+                                     address, marker));
+            }
         });
     }
 
@@ -438,7 +441,7 @@ var results = (function () {
     }
 
     function formatter_plot(info, result, since, until) {
-        var data, i, j, options, plotter;
+        var i, j, plotter;
 
         for (i = 0; i < info.plots.length; i += 1) {
             plotter = jqplot_plotter();
@@ -448,13 +451,10 @@ var results = (function () {
             plotter.set_ylabel(info.plots[i].ylabel);
             plotter.set_xmin(compute_xmin(result, since));
             plotter.set_xfmt(compute_xfmt(since));
-            data = [];
             options = [];
             for (j = 0; j < info.plots[i].datasets.length; j += 1) {
-                mkplot(info, info.plots[i].datasets[j], result, data, options);
+                mkplot(info, info.plots[i].datasets[j], result, plotter);
             }
-            plotter.set_data(data);
-            plotter.set_per_serie_options(options);
             plotter.show_hide_legend(!info.www_no_legend);
             plotter.plot("#charts");
         }
