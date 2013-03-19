@@ -27,5 +27,11 @@
 #
 
 DEBUG=
+
+if [ `id -u` -ne 0 ]; then
+    echo "$0: FATAL: need root privileges" 1>&2
+    exit 1
+fi
+
 $DEBUG /usr/bin/python /home/mlab_neubot/neubot/neubot/main/__init__.py \
     server -A :: -D server.datadir=/var/spool/mlab_neubot

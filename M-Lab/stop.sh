@@ -27,6 +27,12 @@
 #
 
 DEBUG=
+
+if [ `id -u` -ne 0 ]; then
+    echo "$0: FATAL: need root privileges" 1>&2
+    exit 1
+fi
+
 if [ -f /var/run/neubot.pid ]; then
     $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid)
 fi
