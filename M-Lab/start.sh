@@ -26,4 +26,4 @@
 
 DEBUG=
 $DEBUG /usr/bin/python /home/mlab_neubot/neubot/neubot/main/__init__.py \
-    server -A ::
+    server -A :: -D server.datadir=/var/spool/mlab_neubot
