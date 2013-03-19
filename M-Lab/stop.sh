@@ -25,4 +25,6 @@
 #
 
 DEBUG=
-$DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid)
+if [ -f /var/run/neubot.pid ]; then
+    $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid)
+fi
