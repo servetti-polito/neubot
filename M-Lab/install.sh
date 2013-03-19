@@ -32,8 +32,3 @@ $DEBUG cd $(dirname $0)
 $DEBUG grep -q ^_neubot /etc/group || $DEBUG /usr/sbin/groupadd -r _neubot
 $DEBUG grep -q ^_neubot /etc/passwd || \
        $DEBUG /usr/sbin/useradd -r -d/ -g_neubot -s/sbin/nologin _neubot
-
-# TODO explain
-if grep -q neubot /etc/rc.d/rc.local; then
-    $DEBUG $INSTALL rc.local /etc/rc.d/rc.local
-fi
