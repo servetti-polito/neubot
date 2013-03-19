@@ -34,6 +34,6 @@ if [ `id -u` -ne 0 ]; then
 fi
 
 if [ -f /var/run/neubot.pid ]; then
-    echo "killing old neubot process"
+    echo "kill old neubot process"
     $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid) || true
 fi
