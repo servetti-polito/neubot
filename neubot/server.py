@@ -217,7 +217,9 @@ def main(args):
             name, value = value.split('=', 1)
             if name not in VALID_MACROS:
                 sys.exit(USAGE)
-            SETTINGS[name] = int(value)
+            if name != 'server.datadir':  # XXX
+                value = int(value)
+            SETTINGS[name] = value
         elif name == '-d':
             SETTINGS['server.daemonize'] = 0
         elif name == '-v':
