@@ -29,6 +29,9 @@
 DEBUG=
 INSTALL="install -o 0 -g 0"
 
+$DEBUG cd /home/mlab_neubot
+$DEBUG python -m compileall -q neubot/neubot/
+
 $DEBUG grep -q ^_neubot /etc/group || $DEBUG /usr/sbin/groupadd -r _neubot
 $DEBUG grep -q ^_neubot /etc/passwd || \
        $DEBUG /usr/sbin/useradd -r -d/ -g_neubot -s/sbin/nologin _neubot
