@@ -25,4 +25,5 @@
 #
 
 DEBUG=
-$DEBUG /usr/bin/python /home/mlab_neubot/neubot/neubot/main/__init__.py server
+$DEBUG /usr/bin/python /home/mlab_neubot/neubot/neubot/main/__init__.py \
+    server -A ::
