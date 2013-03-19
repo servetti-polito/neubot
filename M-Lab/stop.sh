@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
 #
-# Copyright (c) 2011 Simone Basso <bassosimone@gmail.com>,
-#  NEXA Center for Internet & Society at Politecnico di Torino
+# Copyright (c) 2011, 2013
+#     Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
+#     and Simone Basso <bassosimone@gmail.com>
 #
 # This file is part of Neubot <http://www.neubot.org/>.
 #
@@ -21,7 +22,8 @@
 #
 
 #
-# Script to stop Neubot on M-Lab slivers
+# Script to stop Neubot on M-Lab slivers - Invoked on the sliver
+# by init/stop.sh.
 #
 
 DEBUG=
