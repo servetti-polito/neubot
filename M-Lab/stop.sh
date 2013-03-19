@@ -34,5 +34,5 @@ if [ `id -u` -ne 0 ]; then
 fi
 
 if [ -f /var/run/neubot.pid ]; then
-    $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid)
+    $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid) || true
 fi
