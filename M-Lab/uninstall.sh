@@ -25,9 +25,9 @@
 # Uninstall Neubot from M-Lab sliver - Invoked on the sliver
 # by init/initialize.sh.
 #
-# I want this script to run before installing a new Neubot to
-# make sure that the previous deployment is removed: old files
-# still around may cause unpredictable behavior.
+# I want this script to run before installing a new Neubot to make sure that
+# the previous version sources are removed: keeping around old source files
+# removed from current version may cause random bugs.
 #
 # I don't remove the user and the group, though, because I
 # never uninstall Neubot from M-Lab without immediately installing
@@ -35,6 +35,5 @@
 #
 
 DEBUG=
-$DEBUG echo "remove old neubot: init/ neubot/ version"
-$DEBUG rm -rf /home/mlab_neubot/init /home/mlab_neubot/neubot \
-              /home/mlab_neubot/version
+$DEBUG echo "remove old neubot sources"
+$DEBUG rm -rf /home/mlab_neubot/neubot
