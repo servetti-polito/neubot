@@ -161,7 +161,7 @@ class ServerSideAPI(ServerHTTP):
 SETTINGS = {
     "server.bittorrent": True,
     "server.daemonize": True,
-    "server.datadir": None,
+    "server.datadir": '',
     'server.debug': False,
     "server.negotiate": True,
     "server.raw": True,
