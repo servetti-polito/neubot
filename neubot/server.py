@@ -198,7 +198,7 @@ def main(args):
         sys.exit('FATAL: you must be root')
 
     try:
-        options, arguments = getopt.getopt(args[1:], 'Ab:D:dv')
+        options, arguments = getopt.getopt(args[1:], 'A:b:D:dv')
     except getopt.error:
         sys.exit(USAGE)
     if arguments:
