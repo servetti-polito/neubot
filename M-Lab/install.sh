@@ -27,7 +27,6 @@
 #
 
 DEBUG=
-INSTALL="install -o 0 -g 0"
 
 $DEBUG cd /home/mlab_neubot
 $DEBUG python -m compileall -q neubot/neubot/
