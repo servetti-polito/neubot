@@ -33,6 +33,7 @@ if [ `id -u` -ne 0 ]; then
     exit 1
 fi
 
+# Note: the daemon should remove the pidfile before exiting
 if [ -f /var/run/neubot.pid ]; then
     echo "kill old neubot process"
     $DEBUG kill -TERM $($DEBUG cat /var/run/neubot.pid) || true
