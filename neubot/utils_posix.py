@@ -139,6 +139,15 @@ def detach(**kwargs):
         signal.signal(signal.SIGTERM, kwargs['sighandler'])
         signal.signal(signal.SIGHUP, kwargs['sighandler'])
 
+def remove_pidfile(pidfile):
+    ''' Removes the pidfile '''
+    try:
+        os.unlink(pidfile)
+    except (KeyboardInterrupt, SystemExit):
+        raise
+    except:
+        pass
+
 def chuser(passwd):
 
     '''
