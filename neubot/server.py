@@ -329,9 +329,11 @@ def main(args):
     sigterm_handler = lambda signo, frame: POLLER.break_loop()
     signal.signal(signal.SIGTERM, sigterm_handler)
 
+    logging.info('Neubot server -- starting up')
     system.drop_privileges()
     POLLER.loop()
 
+    logging.info('Neubot server -- shutting down')
     utils_posix.remove_pidfile('/var/run/neubot.pid')
 
 if __name__ == "__main__":
