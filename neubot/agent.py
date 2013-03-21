@@ -49,6 +49,7 @@ from neubot import privacy
 from neubot import system
 from neubot import utils_hier
 from neubot import utils_version
+from neubot import utils_posix
 
 def main(args):
     """ Main function """
@@ -104,6 +105,13 @@ def main(args):
     # in an inconsistent state.
     #
     DATABASE.close()
+
+    #
+    # Note: agent.py was written for all platforms, but now serves just
+    # POSIX platforms; so it makes sense to add a piece of code to remove
+    # the pidfile. (Anyway, nothing happens if the file is not there.)
+    #
+    utils_posix.remove_pidfile('/var/run/neubot.pid')
 
 if __name__ == "__main__":
     main(sys.argv)
