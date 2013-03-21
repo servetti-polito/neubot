@@ -28,6 +28,11 @@
 
 DEBUG=
 
+if [ `id -u` -ne 0 ]; then
+    echo "$0: FATAL: need root privileges" 1>&2
+    exit 1
+fi
+
 $DEBUG cd /home/mlab_neubot
 $DEBUG python -m compileall -q neubot/neubot/
 
