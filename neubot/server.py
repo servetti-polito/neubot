@@ -30,6 +30,7 @@ import gc
 import getopt
 import sys
 import logging
+import signal
 
 if __name__ == "__main__":
     sys.path.insert(0, ".")
@@ -326,6 +327,9 @@ def main(args):
     if conf["server.daemonize"]:
         LOG.redirect()
         system.go_background()
+
+    sigterm_handler = lambda signo, frame: POLLER.break_loop()
+    signal.signal(signal.SIGTERM, sigterm_handler)
 
     system.drop_privileges()
     POLLER.loop()
