@@ -81,8 +81,7 @@ def main(args):
     if noisy:
         log.set_verbose()
     if runner:
-        result = runner_clnt.runner_client(CONFIG['agent.api.address'],
-          CONFIG['agent.api.port'], CONFIG['verbose'], 'raw')
+        result = runner_clnt.runner_client(CONFIG['verbose'], 'raw')
         if result:
             sys.exit(0)
 

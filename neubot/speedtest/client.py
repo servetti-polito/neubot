@@ -503,10 +503,7 @@ def main(args):
     # run the test locally.
     #
     if (utils.intify(conf['runner.enabled']) and
-        runner_clnt.runner_client(conf["agent.api.address"],
-                                  conf["agent.api.port"],
-                                  CONFIG['verbose'],
-                                  "speedtest")):
+        runner_clnt.runner_client(CONFIG['verbose'], "speedtest")):
         sys.exit(0)
 
     logging.info('Will run the test in the local context...')

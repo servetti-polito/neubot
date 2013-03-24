@@ -61,8 +61,6 @@ def main(args):
 
     privacy.complain_if_needed()
 
-    # FIXME We're ignoring agent.api.{address,port} that are now
-    # deprecated and should be removed soon.
     background_api.start_api()
 
     if conf["agent.daemonize"]:
