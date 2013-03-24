@@ -3,7 +3,7 @@
 #
 # Copyright (c) 2012-2013
 #     Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
-#     Simone Basso <bassosimone@gmail.com>
+#     and Simone Basso <bassosimone@gmail.com>
 #
 # Copyright (c) 2011
 #     Marco Scopesi <marco.scopesi@gmail.com>
@@ -26,62 +26,71 @@
 
 """ Core notification mechanism """
 
-#
-# This is the most annoying notification strategy ever, as pointed out
-# by Gianni Bosio (my reference usability guru) some time ago.  However,
-# this is also the simplest and works.  To have a good Win32 and MacOS
-# notification mechanism is not a priority yet, so feel free to contribute
-# something if you are annoyed by browser notifications.  I am looking to
-# Python-based solutions that rely on PyObjC on MacOS and on PyWin32 on
-# Windows.
-#
-
+import errno
 import getopt
 import logging
+import socket
 import sys
 import time
 
 if __name__ == "__main__":
     sys.path.insert(0, ".")
 
-from neubot.config import CONFIG
+from neubot.compat import json
+from neubot.six.moves import http_client
 
-from neubot import browser
-from neubot import utils
-from neubot import utils_net
+from neubot import background_conf
+from neubot import privacy
 
 class NotifierCore(object):
     """ Core notification mechanism """
 
-    def __init__(self):
+    def __init__(self, interval):
         """ Initialize browser notifications """
-        self.last_show = {}
+        self.interval = interval
 
     def loop(self):
         """ Main loop """
         while True:
-            address, port = background_api.get_address_port()
+            address, port = background_conf.get_address_port()
             if " " in address:
                 for address in address.split():
                     if self.contact_neubot(address, port):
                         break
             else:
                 self.contact_neubot(address, port)
+            logging.debug("notifier_core: sleep for %d s...", self.interval)
+            time.sleep(self.interval)
+            logging.debug("notifier_core: sleep for %d s... done",
+                          self.interval)
 
-    def contact_neubot(self):
+    def contact_neubot(self, address, port):
         """ Contact Neubot, retrive information and perform actions """
         try:
-            return self._contact_neubot()
+            return self._contact_neubot(address, port)
         except (KeyboardInterrupt, SystemExit):
             raise
+        except socket.error:
+            error = sys.exc_info()[1]
+            if error.args[0] == errno.ECONNREFUSED:
+                logging.warning("notifier_core: connection refused")
+            else:
+                logging.warning("notifier_core: unhandled exception",
+                                exc_info=1)
+            return False
         except:
             logging.warning("notifier_core: unhandled exception", exc_info=1)
             return False
 
-    def _contact_neubot(self):
+    def _contact_neubot(self, address, port):
         """ Contact Neubot, retrive information and perform actions """
-        connection = lib_http.HTTPConnection(address, port)
 
+        logging.debug("notifier_core: connect to %s:%s...", address, port)
+        connection = http_client.HTTPConnection(address, port)
+        connection.connect()
+        logging.debug("notifier_core: connect to %s:%s... done", address, port)
+
+        logging.debug("notifier_core: GET /api/config...")
         connection.request("GET", "/api/config")
         response = connection.getresponse()
         if response.status != 200:
@@ -89,7 +98,9 @@ class NotifierCore(object):
         body = response.read()
         connection.close()
         config = json.loads(body)
+        logging.debug("notifier_core: GET /api/config... %s", config)
 
+        logging.debug("notifier_core: GET /api/state...")
         connection.request("GET", "/api/state")
         response = connection.getresponse()
         if response.status != 200:
@@ -97,104 +108,51 @@ class NotifierCore(object):
         body = response.read()
         connection.close()
         state = json.loads(body)
+        logging.debug("notifier_core: GET /api/state... %s", state)
 
+        logging.debug("notifier_core: process config and state...")
         if privacy.count_valid(config, "privacy.") != 3:
             self.notify_bad_privacy(config)
-
         if "update" in state:
             self.notify_update_avail(state)
+        logging.debug("notifier_core: process config and state... done")
 
         return True
 
     def notify_bad_privacy(self, dct):
         """ Notify that privacy settings are invalid """
-        logging.warning("notifier_core: invalid privacy settings: %s", dct)
 
     def notify_update_avail(self, dct):
         """ Notify that an update is available """
+
+class NotifierLogger(NotifierCore):
+    """ Notifies events using the logger """
+
+    def notify_bad_privacy(self, dct):
+        logging.warning("notifier_core: invalid privacy settings: %s", dct)
+
+    def notify_update_avail(self, dct):
         logging.warning("notifier_core: update available: %s", dct)
 
-
-    def notify_page(self, html_page):
-        """ Open a webpage to notify the user """
-
-        #
-        # If Neubot is disabled and the user does not want to
-        # receive notifications when it is disabled, then make
-        # sure we don"t annoy her.
-        # Do not prompt the user too frequently, because it may
-        # become TOO ANNOYING if the browser opens every fifteen
-        # minutes or so.  Reported some time ago by a user who
-        # complained with me at the phone.
-        #
-
-        logging.debug("notifier_browser: maybe notify: %s", html_page)
-
-        honor_enabled = CONFIG["notifier_browser.honor_enabled"]
-        enabled = CONFIG["enabled"]
-        if not enabled and honor_enabled:
-            logging.debug("notifier_browser: honoring enabled")
-            return
-
-        now = utils.timestamp()
-        last_show = self.last_show.get(html_page, 0)
-        min_interval = CONFIG["notifier_browser.min_interval"]
-        if now - last_show < min_interval:
-            logging.debug("notifier_browser: avoid spamming the user")
-            return
-
-        self.last_show[html_page] = now
-
-        address, port = background_api.get_address_port()
-        uri = "http://%s/%s" % (
-                                   utils_net.format_epnt((address, port)),
-                                   html_page
-                                )
-
-        return browser.open_browser(uri)
-
-    def notify_bad_privacy(self):
-        """ Tell the user that privacy settings are bad """
-        self.notify_page("privacy.html")
-
-    def notify_update_avail(self):
-        """ Tell the user that a new version is available """
-        self.notify_page("update.html")
-
-NOTIFIER_BROWSER = NotifierBrowser()
-
-def main(args):
-    """ Main function """
-
-    try:
-        options, arguments = getopt.getopt(args[1:], "D:t:v")
-    except getopt.error:
-        sys.exit("usage: notifier_browser [-v] [-D setting] [-t time] page...")
-    if not arguments:
-        sys.exit("usage: notifier_browser [-v] [-D setting] [-t time] page...")
-
-    sleeptime = 0
-    for name, value in options:
-        if name == "-D":
-            CONFIG.register_property(value)
-        elif name == "-t":
-            sleeptime = int(value)
-        elif name == "-v":
-            CONFIG["verbose"] = 1
-
-    CONFIG.merge_properties()
-
-    for argument in arguments:
-        if argument == "privacy":
-            NOTIFIER_BROWSER.notify_bad_privacy()
-        elif argument == "update":
-            NOTIFIER_BROWSER.notify_update_avail()
-        else:
-            sys.exit("Invalid page.  Valid pages are: privacy, update")
-
-        if sleeptime:
-            logging.debug("notifier_browser: sleep for %d seconds", sleeptime)
-            time.sleep(sleeptime)
-
 if __name__ == "__main__":
+
+    def main(args):
+        """ Main function """
+
+        try:
+            options, arguments = getopt.getopt(args[1:], "vt:")
+        except getopt.error:
+            sys.exit("usage: notifier_core [-v] [-t interval]")
+        if arguments:
+            sys.exit("usage: notifier_core [-v] [-t interval]")
+
+        interval = 30
+        for name, value in options:
+            if name == "-t":
+                interval = int(value)
+            elif name == "-v":
+                logging.getLogger().setLevel(logging.DEBUG)
+
+        NotifierLogger(interval).loop()
+
     main(sys.argv)
