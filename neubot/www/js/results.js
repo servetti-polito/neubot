@@ -39,6 +39,8 @@ var results = (function () {
 
     function eval_recipe(code, result) {
 
+        var symbols = {};
+
         function must_be_array(target) {
             if (jQuery.type(target) !== "array") {
                 throw "must_be_array: not an array";
@@ -65,6 +67,11 @@ var results = (function () {
                 throw "must_not_be_undefined: passed undefined value";
             }
             return target;
+        }
+
+        function apply_define(left, right) {
+            symbols[left] = right;
+            return null;
         }
 
         function apply_divide(left, right) {
@@ -143,13 +150,28 @@ var results = (function () {
         function do_eval(curcode) {
 
             function eval_target(target) {
+                var retval;
+
                 if (jQuery.type(target) === "array") {
                     return do_eval(target);         /* XXX recursion */
                 }
                 if (target === "result") {
                     return result;
                 }
-                throw "eval_target: invalid target";
+                retval = symbols[target];
+                if (retval === undefined) {
+                    throw "eval_target: invalid target";
+                }
+
+                return retval;
+            }
+
+            // define name target
+            if (curcode[0] === "define") {
+                if (curcode.length !== 3) {
+                    throw "do_eval: define: invalid curcode length";
+                }
+                return apply_define(curcode[1], eval_target(curcode[2]));
             }
 
             // divide left right
