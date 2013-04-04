@@ -51,16 +51,12 @@ import subprocess
 import decimal
 import shutil
 
-# For portability to Python 3
-if sys.version_info[0] == 3:
-    import http.client as __lib_http
-else:
-    import httplib as __lib_http
-
 if __name__ == '__main__':
     # PARENT/neubot/updater/unix.py
     sys.path.insert(0, os.path.dirname (os.path.dirname(os.path.dirname
                                         (os.path.abspath(__file__)))))
+
+from neubot.six.moves import http_client
 
 from neubot import log
 from neubot import updater_install
@@ -267,9 +263,9 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
 
             # Send HTTP request
             if https:
-                connection = __lib_http.HTTPSConnection(address)
+                connection = http_client.HTTPSConnection(address)
             else:
-                connection = __lib_http.HTTPConnection(address)
+                connection = http_client.HTTPConnection(address)
             headers = {'User-Agent': utils_version.HTTP_HEADER}
             connection.request("GET", rpath, None, headers)
 
