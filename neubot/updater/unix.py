@@ -40,10 +40,10 @@
 import asyncore
 import getopt
 import errno
-import syslog
 import signal
 import hashlib
 import re
+import logging
 import os.path
 import sys
 import time
@@ -63,6 +63,7 @@ if __name__ == '__main__':
     sys.path.insert(0, os.path.dirname (os.path.dirname(os.path.dirname
                                         (os.path.abspath(__file__)))))
 
+from neubot import log
 from neubot import updater_install
 from neubot import utils_rc
 from neubot import utils_posix
@@ -160,10 +161,8 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
      response body.
     '''
 
-    syslog.syslog(syslog.LOG_INFO,
-                  '__download: address=%s rpath=%s tofile=%d '
-                  'https=%d maxbytes=%d' % (address, rpath,
-                  tofile, https, maxbytes))
+    logging.info('__download: address=%s rpath=%s tofile=%d https=%d '
+                 'maxbytes=%d', address, rpath, tofile, https, maxbytes)
 
     # Create communication pipe
     fdin, fdout = os.pipe()
@@ -216,8 +215,7 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
 
         # Terminated by signal?
         if os.WIFSIGNALED(status):
-            syslog.syslog(syslog.LOG_ERR,
-                          'Child terminated by signal %d' %
+            logging.error('Child terminated by signal %d',
                           os.WTERMSIG(status))
             return None
 
@@ -228,12 +226,12 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
         # Failure?
         if os.WEXITSTATUS(status) != 0:
             error = __printable_only(response.replace('ERROR ', '', 1))
-            syslog.syslog(syslog.LOG_ERR, 'Child error: %s' % error)
+            logging.error('Child error: %s', error)
             return None
 
         # Is output a file?
         if tofile:
-            syslog.syslog(syslog.LOG_ERR, 'Response saved to: %s' % lpath)
+            logging.info('Response saved to: %s', lpath)
             return lpath
 
         #
@@ -243,8 +241,7 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
         # for safety.
         #
         result = response.replace('OK ', '', 1)
-        syslog.syslog(syslog.LOG_ERR, 'Response is: %s' %
-                             __printable_only(result))
+        logging.info('Response is: %s', __printable_only(result))
         return result
 
     else:
@@ -388,7 +385,7 @@ def __verify_sig(signature, tarball):
                '-verify', '%s/pubkey.pem' % VERSIONDIR,
                '-signature', signature, tarball]
 
-    syslog.syslog(syslog.LOG_INFO, 'Cmdline: %s' % str(cmdline))
+    logging.info('Cmdline: %s', str(cmdline))
 
     retval = subprocess.call(cmdline)
 
@@ -403,23 +400,20 @@ def __download_and_verify_update(server, channel):
      file.
     '''
 
-    syslog.syslog(syslog.LOG_INFO,
-                  'Checking for updates (current version: %s)' %
-                  VERSION)
+    logging.info('Checking for updates (current version: %s)',
+                 VERSION)
 
     # Get latest version
     nversion = __download_version_info(server, channel)
     if decimal.Decimal(nversion) <= decimal.Decimal(VERSION):
-        syslog.syslog(syslog.LOG_INFO, 'No updates available')
+        logging.info('No updates available')
         return None
 
-    syslog.syslog(syslog.LOG_INFO,
-                  'Update available: %s -> %s' %
-                  (VERSION, nversion))
+    logging.info('Update available: %s -> %s', VERSION, nversion)
 
     # Get checksum
     sha256 = __download_sha256sum(nversion, server)
-    syslog.syslog(syslog.LOG_INFO, 'Expected sha256sum: %s' % sha256)
+    logging.info('Expected sha256sum: %s', sha256)
 
     # Get tarball
     tarball = __download(
@@ -438,7 +432,7 @@ def __download_and_verify_update(server, channel):
     digest = hashp.hexdigest()
     filep.close()
 
-    syslog.syslog(syslog.LOG_INFO, 'Tarball sha256sum: %s' % digest)
+    logging.info('Tarball sha256sum: %s', digest)
 
     # Verify checksum
     if digest != sha256:
@@ -456,7 +450,7 @@ def __download_and_verify_update(server, channel):
     # Verify signature
     __verify_sig(signature, tarball)
 
-    syslog.syslog(syslog.LOG_INFO, 'Tarball OK')
+    logging.info('Tarball OK')
 
     return nversion
 
@@ -469,10 +463,7 @@ def _download_and_verify_update(server='releases.neubot.org'):
         channel = CONFIG['channel']
         return __download_and_verify_update(server, channel)
     except:
-        why = asyncore.compact_traceback()
-        syslog.syslog(syslog.LOG_ERR,
-                      '_download_and_verify_update: %s' %
-                      str(why))
+        logging.error('_download_and_verify_update', exc_info=1)
         return None
 
 #
@@ -545,7 +536,7 @@ def __start_neubot_agent():
     # Fork a new process
     pid = os.fork()
     if pid > 0:
-        syslog.syslog(syslog.LOG_INFO, 'Neubot agent PID: %d' % pid)
+        logging.info('Neubot agent PID: %d', pid)
         return pid
 
     #
@@ -554,28 +545,18 @@ def __start_neubot_agent():
     # return to the caller.
     #
     try:
-        syslog.openlog('neubot', syslog.LOG_PID, syslog.LOG_DAEMON)
 
         # Add neubot directory to python search path
         if not os.access(VERSIONDIR, os.R_OK|os.X_OK):
             raise RuntimeError('Cannot access: %s' % VERSIONDIR)
 
         if not VERSIONDIR in sys.path:
-            syslog.syslog(syslog.LOG_ERR,
-                          'Prepending "%s" to Python search path' %
-                          VERSIONDIR)
+            logging.info('Prepending "%s" to Python search path', VERSIONDIR)
             sys.path.insert(0, VERSIONDIR)
 
         # Import the required modules
-        from neubot.log import LOG
         from neubot.net.poller import POLLER
         from neubot import agent
-
-        #
-        # Redirect logger to syslog now, so early errors in
-        # agent.py:main() are logged.
-        #
-        LOG.redirect()
 
         #
         # Close all unneeded file descriptors, but save stdio,
@@ -598,9 +579,7 @@ def __start_neubot_agent():
         # neubot/agent.py is going to drop the privileges to
         # the unprivileged user `_neubot`.
         #
-        agent.main(['neubot/agent.py',
-                    '-D agent.daemonize=OFF',
-                    '-D agent.use_syslog=ON'])
+        agent.main(['neubot/agent.py', '-D agent.daemonize=OFF'])
 
     #
     # We must employ __exit() instead of sys.exit() because
@@ -609,13 +588,7 @@ def __start_neubot_agent():
     # OTOH __exit() exits immediately.
     #
     except:
-        try:
-            why = asyncore.compact_traceback()
-            syslog.syslog(syslog.LOG_ERR,
-                          'Unhandled exception in the Neubot agent: %s' %
-                          str(why))
-        except:
-            pass
+        logging.error('Unhandled exception in the Neubot agent', exc_info=1)
         __exit(1)
     else:
         __exit(0)
@@ -624,29 +597,29 @@ def __stop_neubot_agent(pid):
     ''' Stop a running Neubot agent '''
 
     # Please, terminate gracefully!
-    syslog.syslog(syslog.LOG_INFO, 'Sending SIGTERM to %d' % pid)
+    logging.info('Sending SIGTERM to %d', pid)
 
     os.kill(pid, signal.SIGTERM)
 
     # Wait for the process to terminate
-    syslog.syslog(syslog.LOG_INFO, 'Waiting for process to terminate')
+    logging.info('Waiting for process to terminate')
 
     _pid, status = __waitpid(pid, 5)
 
     if _pid == 0 and status == 0:
 
         # Die die die!
-        syslog.syslog(syslog.LOG_WARNING, 'Need to send SIGKILL to %d' % pid)
+        logging.warning('Need to send SIGKILL to %d', pid)
 
         os.kill(pid, signal.SIGKILL)
 
         # Wait for process to die
         __waitpid(pid)
 
-        syslog.syslog(syslog.LOG_INFO, 'Process terminated abruptly')
+        logging.warning('Process terminated abruptly')
 
     else:
-        syslog.syslog(syslog.LOG_INFO, 'Process terminated gracefully')
+        logging.info('Process terminated gracefully')
 
 #
 # Main
@@ -668,7 +641,6 @@ def __main():
     ''' Neubot auto-updater process '''
 
     # Process command line options
-    logopt = syslog.LOG_PID
     daemonize = True
 
     try:
@@ -686,19 +658,17 @@ def __main():
         elif tpl[0] == '-n':
             check_for_updates = 0
         elif tpl[0] == '-v':
-            logopt |= syslog.LOG_PERROR|syslog.LOG_NDELAY
+            log.set_verbose()
 
     # We must be run as root
     if os.getuid() != 0 and os.geteuid() != 0:
         sys.exit('FATAL: You must be root.')
 
-    # Open the system logger
-    syslog.openlog('neubot(updater)', logopt, syslog.LOG_DAEMON)
-
     # Clear root user environment
     utils_posix.chuser(utils_posix.getpwnam('root'))
 
     if daemonize:
+        logging.getLogger().handlers = [ utils_posix.SyslogAdaptor() ]
         utils_posix.daemonize()
 
     utils_posix.write_pidfile('/var/run/neubot.pid')
@@ -728,7 +698,7 @@ def __main():
 
             # If needed start the agent
             if pid == -1:
-                syslog.syslog(syslog.LOG_INFO, 'Starting the agent')
+                logging.info('Starting the agent')
                 pid = __start_neubot_agent()
 
             if check_for_updates:
@@ -754,10 +724,10 @@ def __main():
                     else:
                         __clear_base_directory()
                 else:
-                    syslog.syslog(syslog.LOG_DEBUG,
-                      'Auto-updates check in %d sec' % updates_check_in)
+                    logging.debug('Auto-updates check in %d sec',
+                                  updates_check_in)
             else:
-                syslog.syslog(syslog.LOG_DEBUG, 'Auto-updates are disabled')
+                logging.debug('Auto-updates are disabled')
 
             # Monitor the agent
             rpid, status = __waitpid(pid, 0)
@@ -773,20 +743,16 @@ def __main():
                 if not os.WIFEXITED(status):
                     raise RuntimeError('Internal error in __waitpid()')
 
-                syslog.syslog(syslog.LOG_WARNING,
-                  'Child exited with status %d' % os.WEXITSTATUS(status))
+                logging.warning('Child exited with status %d',
+                                os.WEXITSTATUS(status))
 
         except:
-            try:
-                why = asyncore.compact_traceback()
-                syslog.syslog(syslog.LOG_ERR, 'In main loop: %s' % str(why))
-            except:
-                pass
+            logging.error('Exception in main loop', exc_info=1)
 
     if pid > 0:
         __stop_neubot_agent(pid)
 
-    syslog.syslog(syslog.LOG_INFO, 'Removing pidfile')
+    logging.info('Removing pidfile: /var/run/neubot.pid')
     os.unlink('/var/run/neubot.pid')
 
 def main():
@@ -796,11 +762,7 @@ def main():
     except SystemExit:
         raise
     except:
-        try:
-            why = asyncore.compact_traceback()
-            syslog.syslog(syslog.LOG_ERR, 'Unhandled exception: %s' % str(why))
-        except:
-            pass
+        logging.error("Unhandled exception", exc_info=1)
         sys.exit(1)
 
 if __name__ == '__main__':
