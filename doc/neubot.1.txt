@@ -5,8 +5,9 @@ The network neutrality bot
 ''''''''''''''''''''''''''
 
 ..
-.. Copyright (c) 2010-2012 Simone Basso <bassosimone@gmail.com>,
-..  NEXA Center for Internet & Society at Politecnico di Torino
+.. Copyright (c) 2010-2013
+..     Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
+..     and Simone Basso <bassosimone@gmail.com>
 ..
 .. This file is part of Neubot <http://www.neubot.org/>.
 ..
@@ -32,117 +33,181 @@ The network neutrality bot
 SYNOPSIS
 ````````
 
-|   **neubot**
 |   **neubot** **--help**
 |   **neubot** **-V**
-|   **neubot** *subcommand* [*option*]... [*argument*]...
+|   **neubot** *subcommand* ...
 
 DESCRIPTION
 ```````````
 
-**neubot** measures quality and neutrality of your Internet connection
-in the background.  It performs periodic, active transmission tests with
-remote test servers and (in future) with neubot instances installed by
-other users.  Tests send and receive random data, emulate different
-protocols and measure application-level metrics, such as latency and
-goodput.  Results are saved on the local computer and published on the
-web, allowing for better Internet-access and network-neutrality research.
-Since results contain the user IP address and that is personal data in
-the European Union, no test is performed until the user gives **neubot**
-her consent, as explained in the PRIVACY_ section.
+Neubot (the network neutrality bot) is a free-software Internet bot
+that gathers network performance data useful to investigate network
+neutrality.  It runs in the background and periodically performs
+active network tests with test servers (see the `Implemented
+tests`_ section).
 
-The *first form* of the command (with no arguments) starts **neubot**
-if it is not already running and opens the *Web User Interface* in the
-default browser.  Note that the browser is not opened: (a) when the
-user is **root**, for obvious security reasons; (b) when the environment
-does not contain the **DISPLAY** variable, because a graphical browser
-is needed.  This form of the command is now *deprecated on UNIX*, and
-users should use the *start* and *viewer* subcommands to start **neubot**
-and open the Web User Interface respectively.
+Neubot tests results contain the user's IP address that is personal
+data in the European Union. Therefore, Neubot does not perform any
+test until the user provides his/her informed consent (see
+PRIVACY_).
 
-The *second form* of the command (--help) prints on the standard output
-a brief help message that summarizes the synopsis.
+When Neubot is running, you can interact with it either using its
+subcommands (see `SUBCOMMANDS`_) or using directly the Web API (see
+`WEB API`_). The Web API is available at the *Neubot endpoint*;
+i.e., the endpoint where Neubot is listening. This endpoint is
+*127.0.0.1:9774* by default, and you can edit `$CONFIG/api` to
+change its value (see `FILES`_).
 
-The *third form* of the command (-V) prints on the standard output the
-version number.
+On UNIX systems, Neubot forks off an unprivileged child to run
+network tests. This child runs as the unprivileged _neubot user.
+You can edit `$CONFDIR/users` to change the unprivileged user name
+(see `FILES`_).
 
-The *fourth form* of the command (subcommand) allows to run the specified
-subcommand.  The remainder of this section documents the most commonly
-used subcommands.
+The first form of the command (`neubot --help`) prints on the
+standard output a brief help message. The second form of the command
+(`neubot -V`) prints on the standard output the version number.  The
+third form of the command (`neubot subcommand...`) runs the specified
+`subcommand`.
 
-neubot bittorrent [-v] [-D setting]
-  Sends a Web API request (by default to *127.0.0.1:9774*) to the local
-  instance of **neubot** running in the background, asking to run a
-  bittorrent test immediately.  If it is not possible to communicate
-  with the local instance, the subcommand will fallback to running the
-  bittorrent test in its own process context.
+SUBCOMMANDS
+```````````
 
-  The behavior of this subcommand can be controlled using the following
-  settings, where the indicated value is the default one:
+Here we document Neubot subcommands.
 
-    agent.api.address=127.0.0.1
-      Address where the local **neubot** instance is supposed to
-      be listening.
+neubot bittorrent [-6fv] [-A address] [-p port]
+  This command connects to the Neubot endpoint and requests Neubot
+  to run a *bittorrent* test using the *runner* Web API.
 
-    agent.api.port=9774
-      Port where the local **neubot** instance is supposed to be
-      listening.
+  This command accepts the following command line options:
 
-    bittorrent.address=""
-      Address to connect to in order to perform the test (client mode)
-      or address to listen to (server mode).  When the value equals *""*,
-      the subcommand uses *master.neubot.org* (client mode) or *0.0.0.0*
-      (server mode).
+    -6
+      Prefer IPv6 to IPv4.
 
-      When running in client mode, this setting is only effective if
-      the test is run in the process context of the subcommand itself.
+    -A address
+      Address of the remote test server.
 
-    bittorrent.daemonize=0
-      When on (*nonzero*) the subcommand will detach from the current
-      shell and become a daemon.  When off (*0*) the subcommand will
-      run in the context of the current shell.
+    -f
+      Force. Run the command in the local process context (i.e, don't use
+      the Web API) and override privacy settings if needed.
 
-      When running in client mode, this setting is only effective if
-      the test is run in the process context of the subcommand itself.
+    -p
+      Port of the remote test server.
 
-    bittorrent.listen=0
-      Run in client (*0*) or in server (*nonzero*) mode.
+    -v
+      Make the command more verbose.
 
-    bittorrent.negotiate=1
-      Turn off (*0*) or on (*nonzero*) negotiation.  Negotiation is the
-      procedure that ensures that client and server agree on the test
-      parameters, and that keeps the server load under control, by
-      keeping clients in queue and allowing only a subset of them to
-      perform concurrent tests.
+neubot raw [-6fv] [-A address] [-p port]
+  This command connects to the Neubot endpoint and requests Neubot
+  to run a *raw* test using the *runner* Web API.
 
-      When running in client mode, this setting is only effective if
-      the test is run in the process context of the subcommand itself.
+  This command accepts the following command line options:
 
-      You typically want this setting to be on, unless you are testing
-      the bittorrent client and server.
+    -6
+      Prefer IPv6 to IPv4.
 
-    bittorrent.negotiate.port=80
-      The port to be used for negotiation, both for client and for
-      server mode.
+    -A address
+      Address of the remote test server.
 
-      When running in client mode, this setting is only effective if
-      the test is run in the process context of the subcommand itself.
+    -f
+      Force. Run the command in the local process context (i.e, don't use
+      the Web API) and override privacy settings if needed.
 
-    bittorrent.port=6881
-      Port to connect to in order to perform the test (client mode)
-      or Port to listen to (server mode).
+    -p
+      Port of the remote test server.
 
-      When running in client mode, this setting is only effective if
-      the test is run in the process context of the subcommand itself.
+    -v
+      Make the command more verbose.
 
-    runner.enabled=1
-      When this setting is on (*nonzero*) the subcommand will try to run
-      the test in the context of the local instance of **neubot** first,
-      and then it will fallback to running the test on its own process
-      context if that fails.
+neubot speedtest [-6fv] [-A address] [-p port]
+  This command connects to the Neubot endpoint and requests Neubot
+  to run a *speedtest* test using the *runner* Web API.
 
-      When this setting is off (*zero*) the subcommand will always run
-      the test in its own process context.
+  This command accepts the following command line options:
+
+    -6
+      Prefer IPv6 to IPv4.
+
+    -A address
+      Address of the remote test server.
+
+    -f
+      Force. Run the command in the local process context (i.e, don't use
+      the Web API) and override privacy settings if needed.
+
+    -p
+      Port of the remote test server.
+
+    -v
+      Make the command more verbose.
+
+neubot start
+  *On MacOS* this command runs launchctl(1), which in turn starts
+  Neubot. On MacOS, Neubot's installer configures the system to run Neubot
+  at startup, which means you don't typically need to run this
+  command. You must be root to run this command.
+
+  On MacOS Neubot is implemented by two daemon processes. A privileged
+  daemon that forks unprivileged childs to check for updates and an
+  unprivileged daemon that performs network tests. The start command
+  controls the privileged daemon, which in turn controls the unprivileged
+  daemon.
+
+  On MacOS, the start command accepts the following options:
+
+    -d
+      Debug. When this flag is specified, Neubot runs in
+      the foreground.
+
+    -n
+      No auto-updates. When the -n flag is specified, the privileged
+      daemon does not check for updates and only controls the
+      unprivileged daemon.
+
+    -v
+      Verbose. When this flag is specified, the start command
+      is verbose (i.e., it prints on the standard error
+      the commands it is about to invoke).
+
+      When both -v and -d are specified, Neubot runs in verbose mode
+      in the foreground.
+
+  *On Windows*, the start command runs Neubot with the privileges
+  of the user that invokes it. On Windows, Neubot's installer configures
+  the system to start Neubot when a user logs in. Therefore Neubot
+  runs in the context of the user's session.
+
+  On Windows, the start command accepts the following options:
+
+    -k
+      Kill. When -k is specified, Neubot kills an already
+      running Neubot instance (if any) before starting up.
+
+      This is used by the automatic updates process: once the new
+      version of Neubot is downloaded and installed, the old version
+      executes it with `start -k`.
+
+  *On other UNIX systems*, the start command forks the Neubot
+  damon, which drops privileges and runs in the background.
+  On such systems, this command does not accept any command line
+  option.
+
+neubot status
+  This command connects to the Neubot endpoint and sends a *api*
+  Neubot Web API request.  It returns *zero* if connect() succeeds
+  and the response is OK, *one* otherwise.
+
+  *On Windows and MacOS* this command accepts the *-v* option,
+  which makes it more verbose. *On other UNIX systems*, it does
+  not accept any command line option.
+
+neubot stop
+  *On MacOS*, this command runs launchctl(1), which in turn stops
+  Neubot. You must be root to run this command. On MacOS, this
+  command accepts the *-v* option, which makes it more verbose.
+
+  *On Windows and other UNIX systems*, this command connects to the
+  Neubot endpoint and sends a *stop* Web API request. In turn, this
+  forces Neubot to exit.
 
 neubot database [--help] [-f database] [action]
   Perform low level actions on the database or print the database name
@@ -219,54 +284,6 @@ neubot privacy [-Pt] [-D setting] [-f database]
       settings allow to run periodic tests.  Exits with failure (exit
       value *nonzero*) otherwise.
 
-neubot speedtest [-v] [-D setting]
-  Sends a Web API request (by default to *127.0.0.1:9774*) to the local
-  instance of **neubot** running in the background, asking to run a
-  speedtest test immediately.  If it is not possible to communicate
-  with the local instance, the subcommand will fallback to running the
-  bittorrent test in its own process context.
-
-  The behavior of this subcommand can be controlled using the following
-  settings, where the indicated value is the default one:
-
-    agent.api.address=127.0.0.1
-      Address where the local **neubot** instance is supposed to
-      be listening.
-
-    agent.api.port=9774
-      Port where the local **neubot** instance is supposed to be
-      listening.
-
-    runner.enabled=1
-      When this setting is on (*nonzero*) the subcommand will try to run
-      the test in the context of the local instance of **neubot** first,
-      and then it will fallback to running the test on its own process
-      context if that fails.
-
-      When this setting is off (*zero*) the subcommand will always run
-      the test in its own process context.
-
-    speedtest.uri=uri
-      URI of the negotiate server to perform the negotiation with.
-
-neubot start
-  Starts **neubot** in the background.  The program will daemonize,
-  drop privileges (if needed), *listen()* for Web API requests (by
-  default at *127.0.0.1:9774*), and run periodic tests, if the user has
-  given her consent.  Typically, this form of the command is invoked by
-  startup scripts and the user should not need to run it directly.
-
-neubot status
-  Issues a Web API request (by default to *127.0.0.1:9774*) to check
-  whether **neubot** is running, and prints the result on the standard
-  output.  When the result is is "not running", it means that either
-  *connect()* failed or the response is not the expected one (meaning that
-  there isn't a **neubot** process listening on that address and port).
-
-neubot stop
-  Issues a Web API command (by default to *127.0.0.1:9774*) that forces
-  **neubot** to exit.
-
 neubot viewer [-f file] [-O option]
   Starts a viewer application that embeds the Web User Interface, if
   the dependencies are installed.  By default, the viewer connects to
@@ -294,6 +311,21 @@ neubot viewer [-f file] [-O option]
       Overrides configuration file option from the command line,
       see description of **-f** flag for the list of available
       options.
+
+WEB USER INTERFACE
+``````````````````
+
+TBD
+
+WEB API
+```````
+
+TDB
+
+IMPLEMENTED TESTS
+`````````````````
+
+TBD
 
 PRIVACY
 ```````

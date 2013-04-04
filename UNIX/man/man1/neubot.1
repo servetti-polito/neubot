@@ -1,6 +1,6 @@
-.\" Man page generated from reStructeredText.
+.\" Man page generated from reStructuredText.
 .
-.TH NEUBOT 1 "2012-07-19" "Neubot 0.4.15.7" "Neubot manual"
+.TH NEUBOT 1 "@DATE@" "Neubot 0.4.15.7" "Neubot manual"
 .SH NAME
 neubot \- The network neutrality bot
 .
@@ -32,9 +32,11 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 ..
 .\" 
 .
-.\" Copyright (c) 2010-2012 Simone Basso <bassosimone@gmail.com>,
+.\" Copyright (c) 2010-2013
 .
-.\" NEXA Center for Internet & Society at Politecnico di Torino
+.\" Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
+.
+.\" and Simone Basso <bassosimone@gmail.com>
 .
 .\" 
 .
@@ -70,124 +72,210 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .
 .SH SYNOPSIS
 .nf
-\fBneubot\fP
 \fBneubot\fP \fB\-\-help\fP
 \fBneubot\fP \fB\-V\fP
-\fBneubot\fP \fIsubcommand\fP [\fIoption\fP]... [\fIargument\fP]...
+\fBneubot\fP \fIsubcommand\fP ...
 .fi
 .sp
 .SH DESCRIPTION
 .sp
-\fBneubot\fP measures quality and neutrality of your Internet connection
-in the background.  It performs periodic, active transmission tests with
-remote test servers and (in future) with neubot instances installed by
-other users.  Tests send and receive random data, emulate different
-protocols and measure application\-level metrics, such as latency and
-goodput.  Results are saved on the local computer and published on the
-web, allowing for better Internet\-access and network\-neutrality research.
-Since results contain the user IP address and that is personal data in
-the European Union, no test is performed until the user gives \fBneubot\fP
-her consent, as explained in the \fI\%PRIVACY\fP section.
+Neubot (the network neutrality bot) is a free\-software Internet bot
+that gathers network performance data useful to investigate network
+neutrality.  It runs in the background and periodically performs
+active network tests with test servers (see the \fI\%Implemented
+tests\fP section).
 .sp
-The \fIfirst form\fP of the command (with no arguments) starts \fBneubot\fP
-if it is not already running and opens the \fIWeb User Interface\fP in the
-default browser.  Note that the browser is not opened: (a) when the
-user is \fBroot\fP, for obvious security reasons; (b) when the environment
-does not contain the \fBDISPLAY\fP variable, because a graphical browser
-is needed.  This form of the command is now \fIdeprecated on UNIX\fP, and
-users should use the \fIstart\fP and \fIviewer\fP subcommands to start \fBneubot\fP
-and open the Web User Interface respectively.
+Neubot tests results contain the user\(aqs IP address that is personal
+data in the European Union. Therefore, Neubot does not perform any
+test until the user provides his/her informed consent (see
+\fI\%PRIVACY\fP).
 .sp
-The \fIsecond form\fP of the command (\-\-help) prints on the standard output
-a brief help message that summarizes the synopsis.
+When Neubot is running, you can interact with it either using its
+subcommands (see \fI\%SUBCOMMANDS\fP) or using directly the Web API (see
+\fI\%WEB API\fP). The Web API is available at the \fINeubot endpoint\fP;
+i.e., the endpoint where Neubot is listening. This endpoint is
+\fI127.0.0.1:9774\fP by default, and you can edit \fI$CONFIG/api\fP to
+change its value (see \fI\%FILES\fP).
 .sp
-The \fIthird form\fP of the command (\-V) prints on the standard output the
-version number.
+On UNIX systems, Neubot forks off an unprivileged child to run
+network tests. This child runs as the unprivileged _neubot user.
+You can edit \fI$CONFDIR/users\fP to change the unprivileged user name
+(see \fI\%FILES\fP).
 .sp
-The \fIfourth form\fP of the command (subcommand) allows to run the specified
-subcommand.  The remainder of this section documents the most commonly
-used subcommands.
+The first form of the command (\fIneubot \-\-help\fP) prints on the
+standard output a brief help message. The second form of the command
+(\fIneubot \-V\fP) prints on the standard output the version number.  The
+third form of the command (\fIneubot subcommand...\fP) runs the specified
+\fIsubcommand\fP.
+.SH SUBCOMMANDS
+.sp
+Here we document Neubot subcommands.
 .INDENT 0.0
 .TP
-.B neubot bittorrent [\-v] [\-D setting]
-Sends a Web API request (by default to \fI127.0.0.1:9774\fP) to the local
-instance of \fBneubot\fP running in the background, asking to run a
-bittorrent test immediately.  If it is not possible to communicate
-with the local instance, the subcommand will fallback to running the
-bittorrent test in its own process context.
+.B neubot bittorrent [\-6fv] [\-A address] [\-p port]
+This command connects to the Neubot endpoint and requests Neubot
+to run a \fIbittorrent\fP test using the \fIrunner\fP Web API.
 .sp
-The behavior of this subcommand can be controlled using the following
-settings, where the indicated value is the default one:
+This command accepts the following command line options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
 .TP
-.B agent.api.address=127.0.0.1
-Address where the local \fBneubot\fP instance is supposed to
-be listening.
+.B \-6
+Prefer IPv6 to IPv4.
 .TP
-.B agent.api.port=9774
-Port where the local \fBneubot\fP instance is supposed to be
-listening.
+.BI \-A \ address
+Address of the remote test server.
 .TP
-.B bittorrent.address=""
-Address to connect to in order to perform the test (client mode)
-or address to listen to (server mode).  When the value equals \fI""\fP,
-the subcommand uses \fImaster.neubot.org\fP (client mode) or \fI0.0.0.0\fP
-(server mode).
-.sp
-When running in client mode, this setting is only effective if
-the test is run in the process context of the subcommand itself.
+.B \-f
+Force. Run the command in the local process context (i.e, don\(aqt use
+the Web API) and override privacy settings if needed.
 .TP
-.B bittorrent.daemonize=0
-When on (\fInonzero\fP) the subcommand will detach from the current
-shell and become a daemon.  When off (\fI0\fP) the subcommand will
-run in the context of the current shell.
-.sp
-When running in client mode, this setting is only effective if
-the test is run in the process context of the subcommand itself.
+.B \-p
+Port of the remote test server.
 .TP
-.B bittorrent.listen=0
-Run in client (\fI0\fP) or in server (\fInonzero\fP) mode.
-.TP
-.B bittorrent.negotiate=1
-Turn off (\fI0\fP) or on (\fInonzero\fP) negotiation.  Negotiation is the
-procedure that ensures that client and server agree on the test
-parameters, and that keeps the server load under control, by
-keeping clients in queue and allowing only a subset of them to
-perform concurrent tests.
-.sp
-When running in client mode, this setting is only effective if
-the test is run in the process context of the subcommand itself.
-.sp
-You typically want this setting to be on, unless you are testing
-the bittorrent client and server.
-.TP
-.B bittorrent.negotiate.port=80
-The port to be used for negotiation, both for client and for
-server mode.
-.sp
-When running in client mode, this setting is only effective if
-the test is run in the process context of the subcommand itself.
-.TP
-.B bittorrent.port=6881
-Port to connect to in order to perform the test (client mode)
-or Port to listen to (server mode).
-.sp
-When running in client mode, this setting is only effective if
-the test is run in the process context of the subcommand itself.
-.TP
-.B runner.enabled=1
-When this setting is on (\fInonzero\fP) the subcommand will try to run
-the test in the context of the local instance of \fBneubot\fP first,
-and then it will fallback to running the test on its own process
-context if that fails.
-.sp
-When this setting is off (\fIzero\fP) the subcommand will always run
-the test in its own process context.
+.B \-v
+Make the command more verbose.
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.TP
+.B neubot raw [\-6fv] [\-A address] [\-p port]
+This command connects to the Neubot endpoint and requests Neubot
+to run a \fIraw\fP test using the \fIrunner\fP Web API.
+.sp
+This command accepts the following command line options:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-6
+Prefer IPv6 to IPv4.
+.TP
+.BI \-A \ address
+Address of the remote test server.
+.TP
+.B \-f
+Force. Run the command in the local process context (i.e, don\(aqt use
+the Web API) and override privacy settings if needed.
+.TP
+.B \-p
+Port of the remote test server.
+.TP
+.B \-v
+Make the command more verbose.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.TP
+.B neubot speedtest [\-6fv] [\-A address] [\-p port]
+This command connects to the Neubot endpoint and requests Neubot
+to run a \fIspeedtest\fP test using the \fIrunner\fP Web API.
+.sp
+This command accepts the following command line options:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-6
+Prefer IPv6 to IPv4.
+.TP
+.BI \-A \ address
+Address of the remote test server.
+.TP
+.B \-f
+Force. Run the command in the local process context (i.e, don\(aqt use
+the Web API) and override privacy settings if needed.
+.TP
+.B \-p
+Port of the remote test server.
+.TP
+.B \-v
+Make the command more verbose.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.TP
+.B neubot start
+\fIOn MacOS\fP this command runs launchctl(1), which in turn starts
+Neubot. On MacOS, Neubot\(aqs installer configures the system to run Neubot
+at startup, which means you don\(aqt typically need to run this
+command. You must be root to run this command.
+.sp
+On MacOS Neubot is implemented by two daemon processes. A privileged
+daemon that forks unprivileged childs to check for updates and an
+unprivileged daemon that performs network tests. The start command
+controls the privileged daemon, which in turn controls the unprivileged
+daemon.
+.sp
+On MacOS, the start command accepts the following options:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-d
+Debug. When this flag is specified, Neubot runs in
+the foreground.
+.TP
+.B \-n
+No auto\-updates. When the \-n flag is specified, the privileged
+daemon does not check for updates and only controls the
+unprivileged daemon.
+.TP
+.B \-v
+Verbose. When this flag is specified, the start command
+is verbose (i.e., it prints on the standard error
+the commands it is about to invoke).
+.sp
+When both \-v and \-d are specified, Neubot runs in verbose mode
+in the foreground.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIOn Windows\fP, the start command runs Neubot with the privileges
+of the user that invokes it. On Windows, Neubot\(aqs installer configures
+the system to start Neubot when a user logs in. Therefore Neubot
+runs in the context of the user\(aqs session.
+.sp
+On Windows, the start command accepts the following options:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-k
+Kill. When \-k is specified, Neubot kills an already
+running Neubot instance (if any) before starting up.
+.sp
+This is used by the automatic updates process: once the new
+version of Neubot is downloaded and installed, the old version
+executes it with \fIstart \-k\fP.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIOn other UNIX systems\fP, the start command forks the Neubot
+damon, which drops privileges and runs in the background.
+On such systems, this command does not accept any command line
+option.
+.TP
+.B neubot status
+This command connects to the Neubot endpoint and sends a \fIapi\fP
+Neubot Web API request.  It returns \fIzero\fP if connect() succeeds
+and the response is OK, \fIone\fP otherwise.
+.sp
+\fIOn Windows and MacOS\fP this command accepts the \fI\-v\fP option,
+which makes it more verbose. \fIOn other UNIX systems\fP, it does
+not accept any command line option.
+.TP
+.B neubot stop
+\fIOn MacOS\fP, this command runs launchctl(1), which in turn stops
+Neubot. You must be root to run this command. On MacOS, this
+command accepts the \fI\-v\fP option, which makes it more verbose.
+.sp
+\fIOn Windows and other UNIX systems\fP, this command connects to the
+Neubot endpoint and sends a \fIstop\fP Web API request. In turn, this
+forces Neubot to exit.
 .TP
 .B neubot database [\-\-help] [\-f database] [action]
 Perform low level actions on the database or print the database name
@@ -288,60 +376,6 @@ value \fInonzero\fP) otherwise.
 .UNINDENT
 .UNINDENT
 .TP
-.B neubot speedtest [\-v] [\-D setting]
-Sends a Web API request (by default to \fI127.0.0.1:9774\fP) to the local
-instance of \fBneubot\fP running in the background, asking to run a
-speedtest test immediately.  If it is not possible to communicate
-with the local instance, the subcommand will fallback to running the
-bittorrent test in its own process context.
-.sp
-The behavior of this subcommand can be controlled using the following
-settings, where the indicated value is the default one:
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.B agent.api.address=127.0.0.1
-Address where the local \fBneubot\fP instance is supposed to
-be listening.
-.TP
-.B agent.api.port=9774
-Port where the local \fBneubot\fP instance is supposed to be
-listening.
-.TP
-.B runner.enabled=1
-When this setting is on (\fInonzero\fP) the subcommand will try to run
-the test in the context of the local instance of \fBneubot\fP first,
-and then it will fallback to running the test on its own process
-context if that fails.
-.sp
-When this setting is off (\fIzero\fP) the subcommand will always run
-the test in its own process context.
-.TP
-.B speedtest.uri=uri
-URI of the negotiate server to perform the negotiation with.
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.TP
-.B neubot start
-Starts \fBneubot\fP in the background.  The program will daemonize,
-drop privileges (if needed), \fIlisten()\fP for Web API requests (by
-default at \fI127.0.0.1:9774\fP), and run periodic tests, if the user has
-given her consent.  Typically, this form of the command is invoked by
-startup scripts and the user should not need to run it directly.
-.TP
-.B neubot status
-Issues a Web API request (by default to \fI127.0.0.1:9774\fP) to check
-whether \fBneubot\fP is running, and prints the result on the standard
-output.  When the result is is "not running", it means that either
-\fIconnect()\fP failed or the response is not the expected one (meaning that
-there isn\(aqt a \fBneubot\fP process listening on that address and port).
-.TP
-.B neubot stop
-Issues a Web API command (by default to \fI127.0.0.1:9774\fP) that forces
-\fBneubot\fP to exit.
-.TP
 .B neubot viewer [\-f file] [\-O option]
 Starts a viewer application that embeds the Web User Interface, if
 the dependencies are installed.  By default, the viewer connects to
@@ -382,6 +416,15 @@ options.
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SH WEB USER INTERFACE
+.sp
+TBD
+.SH WEB API
+.sp
+TDB
+.SH IMPLEMENTED TESTS
+.sp
+TBD
 .SH PRIVACY
 .\" :Version: 2.0.3
 .
@@ -607,5 +650,4 @@ as published by the Free Software Foundation, either version
 .fi
 .sp
 .\" Generated by docutils manpage writer.
-.\" 
 .
