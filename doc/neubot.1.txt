@@ -96,6 +96,40 @@ neubot bittorrent [-6fv] [-A address] [-p port]
     -v
       Make the command more verbose.
 
+neubot database [-f database] [action]
+  This command performs the specified *action*, or prints the database's
+  path if no action is specified.  We do not recommended to use this
+  command to modify the database while Neubot is running, since Neubot's
+  code is not ready for that. *On UNIX systems*, this command requires
+  root privileges to modify the database: if you are not root, the
+  database is opened in readonly mode.
+
+  This command accepts the following options:
+
+    -f database
+      Force the command to use *database* instead of the default
+      database path (see `FILES`_).
+
+  This command implements the following actions:
+
+    delete_all
+      Delete all the results in the database.
+
+    dump
+      Dump to the standard ouput the content of the database in JSON format.
+
+    prune
+      Remove results older than one year from the database.
+
+    regen_uuid
+      Generates a new Neubot random unique identifier (each Neubot has
+      its own random unique identifier, which is used to perform time
+      series analysis).
+
+    show
+      Pretty prints to the standard ouput the content of the database
+      in JSON format.
+
 neubot raw [-6fv] [-A address] [-p port]
   This command connects to the Neubot endpoint and requests Neubot
   to run a *raw* test using the *runner* Web API.
@@ -208,39 +242,6 @@ neubot stop
   *On Windows and other UNIX systems*, this command connects to the
   Neubot endpoint and sends a *stop* Web API request. In turn, this
   forces Neubot to exit.
-
-neubot database [--help] [-f database] [action]
-  Perform low level actions on the database or print the database name
-  if no action was specified.  The following options are accepted:
-
-    --help
-      Prints an help message on the standard output and exits.
-
-    -f database
-      Force to use the database at *database* instead of using the
-      default one (see `FILES`_ section for more info).
-
-  The following actions are implemented:
-
-    info
-      Print the database path.
-
-    delete_all
-      Delete all results in the database.
-
-    dump
-      Dump to stdout the content of the database in JSON format.
-
-    prune
-      Remove results older than one year from the database.
-
-    regen_uuid
-      Each **neubot** has its own random unique identifier that is sent
-      with results and allows to perform time serie anlysis.  This action
-      generates a fresh new random unique identifier.
-
-    show
-      Like *dump*, but pretty-prints database content.
 
 neubot privacy [-Pt] [-D setting] [-f database]
   Allows to read privacy policy, test and set privacy settings.  For
