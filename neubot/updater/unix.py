@@ -37,7 +37,6 @@
 # such code into smaller files.
 #
 
-import asyncore
 import getopt
 import errno
 import signal
@@ -331,12 +330,11 @@ def __download(address, rpath, tofile=False, https=False, maxbytes=67108864):
                 connection.close()
                 os.write(fdout, 'OK %s\n' % ''.join(vector))
 
+        except SystemExit:
+            __exit(1)
         except:
-            try:
-                why = asyncore.compact_traceback()
-                os.write(fdout, 'ERROR %s\n' % str(why))
-            except:
-                pass
+            why = sys.exc_info()[1]
+            os.write(fdout, 'ERROR %s\n' % str(why))
             __exit(1)
         else:
             __exit(0)
@@ -462,6 +460,8 @@ def _download_and_verify_update(server='releases.neubot.org'):
     try:
         channel = CONFIG['channel']
         return __download_and_verify_update(server, channel)
+    except SystemExit:
+        raise
     except:
         logging.error('_download_and_verify_update', exc_info=1)
         return None
@@ -587,6 +587,8 @@ def __start_neubot_agent():
     # the child process will start running the parent code.
     # OTOH __exit() exits immediately.
     #
+    except SystemExit:
+        __exit(1)
     except:
         logging.error('Unhandled exception in the Neubot agent', exc_info=1)
         __exit(1)
@@ -746,6 +748,8 @@ def __main():
                 logging.warning('Child exited with status %d',
                                 os.WEXITSTATUS(status))
 
+        except SystemExit:
+            raise
         except:
             logging.error('Exception in main loop', exc_info=1)
 
