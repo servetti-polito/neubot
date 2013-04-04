@@ -73,25 +73,15 @@ VERSIONDIR = os.path.dirname(os.path.dirname(os.path.dirname(
                                  os.path.abspath(__file__))))
 BASEDIR = os.path.dirname(VERSIONDIR)
 
-# Version number in numeric representation
 VERSION = utils_version.NUMERIC_VERSION
 
-# Configuration
 CONFIG = {
     'channel': 'latest',
     'update_user': '_neubot_update',
 }
 
-# State
 STATE = {
     'break_loop': 0,
-    #
-    # TODO By setting 'lastcheck' to the current time, we
-    # delay the first check for updates of 30 minutes.
-    # I'm not sure this is a great idea, because, ideally,
-    # Neubot should update and then run tests, not the
-    # other way round.
-    #
     'lastcheck': time.time(),
 }
 
