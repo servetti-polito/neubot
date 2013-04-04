@@ -1,8 +1,9 @@
 # neubot/updater/unix.py
 
 #
-# Copyright (c) 2011 Simone Basso <bassosimone@gmail.com>,
-#  NEXA Center for Internet & Society at Politecnico di Torino
+# Copyright (c) 2011, 2013
+#     Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
+#     and Simone Basso <bassosimone@gmail.com>
 #
 # This file is part of Neubot <http://www.neubot.org/>.
 #
@@ -83,6 +84,7 @@ CONFIG = {
 
 # State
 STATE = {
+    'break_loop': 0,
     #
     # TODO By setting 'lastcheck' to the current time, we
     # delay the first check for updates of 30 minutes.
@@ -656,6 +658,12 @@ def __sigusr1_handler(*args):
         raise RuntimeError('Invoked for the wrong signal')
     STATE['lastcheck'] = 0
 
+def __sigterm_handler(*args):
+    ''' Handler for TERM signal '''
+    if args[0] != signal.SIGTERM:
+        raise RuntimeError('Invoked for the wrong signal')
+    STATE['break_loop'] = 1
+
 def __main():
     ''' Neubot auto-updater process '''
 
@@ -690,27 +698,23 @@ def __main():
     # Clear root user environment
     utils_posix.chuser(utils_posix.getpwnam('root'))
 
-    # Daemonize
     if daemonize:
-        utils_posix.daemonize('/var/run/neubot.pid')
+        utils_posix.daemonize()
 
-    #
-    # TODO We should install a signal handler that kills
-    # properly the child process when requested to exit
-    # gracefully.
-    #
+    utils_posix.write_pidfile('/var/run/neubot.pid')
 
     firstrun = True
     pid = -1
 
     signal.signal(signal.SIGUSR1, __sigusr1_handler)
+    signal.signal(signal.SIGTERM, __sigterm_handler)
 
     #
     # Loop forever, catch and just log all exceptions.
     # Spend many time sleeping and wake up just once every
     # few seconds to make sure everything is fine.
     #
-    while True:
+    while not STATE['break_loop']:
         if firstrun:
             firstrun = False
         else:
@@ -778,6 +782,12 @@ def __main():
                 syslog.syslog(syslog.LOG_ERR, 'In main loop: %s' % str(why))
             except:
                 pass
+
+    if pid > 0:
+        __stop_neubot_agent(pid)
+
+    syslog.syslog(syslog.LOG_INFO, 'Removing pidfile')
+    os.unlink('/var/run/neubot.pid')
 
 def main():
     ''' Wrapper around the real __main() '''
