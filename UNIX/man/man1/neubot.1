@@ -1,4 +1,4 @@
-.\" Man page generated from reStructeredText.
+.\" Man page generated from reStructuredText.
 .
 .TH NEUBOT 1 "@DATE@" "Neubot 0.4.15.7" "Neubot manual"
 .SH NAME
@@ -98,7 +98,7 @@ i.e., the endpoint where Neubot is listening. This endpoint is
 change its value (see \fI\%FILES\fP).
 .sp
 On UNIX systems, Neubot forks off an unprivileged child to run
-network tests. This child runs as the unprivileged _neubot user.
+network tests. This child runs as the unprivileged \fB_neubot\fP user.
 You can edit \fI$CONFDIR/users\fP to change the unprivileged user name
 (see \fI\%FILES\fP).
 .sp
@@ -129,13 +129,14 @@ Address of the remote test server.
 .TP
 .B \-f
 Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed.
+the Web API) and override privacy settings if needed. Useful for
+developers.
 .TP
 .B \-p
 Port of the remote test server.
 .TP
 .B \-v
-Make the command more verbose.
+Makes the command more verbose.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -154,7 +155,7 @@ This command accepts the following options:
 .INDENT 0.0
 .TP
 .BI \-f \ database
-Force the command to use \fIdatabase\fP instead of the default
+Force file. Forces the command to use \fIdatabase\fP instead of the default
 database path (see \fI\%FILES\fP).
 .UNINDENT
 .UNINDENT
@@ -166,22 +167,78 @@ This command implements the following actions:
 .INDENT 0.0
 .TP
 .B delete_all
-Delete all the results in the database.
+Deletes all the results in the database.
 .TP
 .B dump
-Dump to the standard ouput the content of the database in JSON format.
+Dumps to the standard ouput the content of the database in JSON format.
 .TP
 .B prune
-Remove results older than one year from the database.
+Removes results older than one year.
 .TP
 .B regen_uuid
-Generates a new Neubot random unique identifier (each Neubot has
-its own random unique identifier, which is used to perform time
-series analysis).
+Generates a new random unique identifier (or UUID) for Neubot
+(see \fI\%PRIVACY\fP).
 .TP
 .B show
 Pretty prints to the standard ouput the content of the database
 in JSON format.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.TP
+.B neubot privacy [\-Pt] [\-D setting=value] [\-f database]
+Manage privacy settings (see \fI\%PRIVACY\fP). When invoked without
+options, this command prints the privacy settings value.
+.sp
+The privacy command accepts the following options:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-D setting=value
+Set privacy setting value. When value is \fI0\fP the privacy setting
+is "off", otherwise it is "on".
+.sp
+Note: Neubot performs network tests only when all privacy
+settings are "on" (see \fI\%PRIVACY\fP).
+.sp
+Note: this command does not propagate changes to Neubot and just
+modifies the database: you have to restart Neubot to make changes
+effective. Therefore, we recommend to use the Web User Interface
+(see \fI\%WEB USER INTERFACE\fP) to manage privacy settings.
+.sp
+Recognized settings:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B informed
+The user has read the privacy policy.
+.TP
+.B can_collect
+The user provides the permission to collect his/her IP
+address for research purposes.
+.TP
+.B can_publish
+The user provides the permission to publish his/her IP
+address allowing anyone to reuse it for research purposes.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.BI \-f \ database
+Force file. Forces the command to use database instead of the
+default database path (see FILES).
+.TP
+.B \-P
+Prints privacy policy on the standard output.
+.TP
+.B \-t
+Test.  Exits with success (exit value \fI0\fP) if privacy
+settings are all nonzero.  Exits with failure (exit value
+\fInonzero\fP) if at least one setting is zero.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -203,13 +260,14 @@ Address of the remote test server.
 .TP
 .B \-f
 Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed.
+the Web API) and override privacy settings if needed. Useful for
+developers.
 .TP
 .B \-p
 Port of the remote test server.
 .TP
 .B \-v
-Make the command more verbose.
+Makes the command more verbose.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -231,28 +289,31 @@ Address of the remote test server.
 .TP
 .B \-f
 Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed.
+the Web API) and override privacy settings if needed. Useful for
+developers.
 .TP
 .B \-p
 Port of the remote test server.
 .TP
 .B \-v
-Make the command more verbose.
+Makes the command more verbose.
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .TP
 .B neubot start
 \fIOn MacOS\fP this command runs launchctl(1), which in turn starts
-Neubot. On MacOS, Neubot\(aqs installer configures the system to run Neubot
-at startup, which means you don\(aqt typically need to run this
-command. You must be root to run this command.
+Neubot. You must be root to run this command.
 .sp
-On MacOS Neubot is implemented by two daemon processes. A privileged
-daemon that forks unprivileged childs to check for updates and an
-unprivileged daemon that performs network tests. The start command
-controls the privileged daemon, which in turn controls the unprivileged
-daemon.
+Note: On MacOS, Neubot\(aqs installer configures the system to launch
+Neubot at startup; i.e., you don\(aqt typically need to run this
+command.
+.sp
+Note: On MacOS, Neubot is implemented by two daemon processes. A
+privileged daemon that forks unprivileged childs to check for
+updates and an unprivileged daemon that performs network tests.
+The start command controls the privileged daemon, which in turn
+controls the unprivileged daemon.
 .sp
 On MacOS, the start command accepts the following options:
 .INDENT 7.0
@@ -264,9 +325,8 @@ Debug. When this flag is specified, Neubot runs in
 the foreground.
 .TP
 .B \-n
-No auto\-updates. When the \-n flag is specified, the privileged
-daemon does not check for updates and only controls the
-unprivileged daemon.
+No auto\-updates. When this flag is specified, the privileged
+daemon does not check for updates.
 .TP
 .B \-v
 Verbose. When this flag is specified, the start command
@@ -307,8 +367,8 @@ option.
 .TP
 .B neubot status
 This command connects to the Neubot endpoint and sends a \fIapi\fP
-Neubot Web API request.  It returns \fIzero\fP if connect() succeeds
-and the response is OK, \fIone\fP otherwise.
+Neubot Web API request.  It returns 0 if connect() succeeds
+and the response is OK, nonzero otherwise.
 .sp
 \fIOn Windows and MacOS\fP this command accepts the \fI\-v\fP option,
 which makes it more verbose. \fIOn other UNIX systems\fP, it does
@@ -322,60 +382,6 @@ command accepts the \fI\-v\fP option, which makes it more verbose.
 \fIOn Windows and other UNIX systems\fP, this command connects to the
 Neubot endpoint and sends a \fIstop\fP Web API request. In turn, this
 forces Neubot to exit.
-.TP
-.B neubot privacy [\-Pt] [\-D setting] [\-f database]
-Allows to read privacy policy, test and set privacy settings.  For
-more information on privacy see the \fI\%PRIVACY\fP section.  This subcommand
-accepts the following command line options:
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.BI \-D \ setting
-Allow to set privacy settings in the database.  The following
-privacy settings are defined, along with their default value:
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.B privacy.informed=""
-Turns on (\fInonzero\fP) or off (\fI0\fP) the corresponding privacy
-setting in the database, unless the setting is unspecified
-(\fI""\fP).
-.TP
-.B privacy.can_collect=""
-Turns on (\fInonzero\fP) or off (\fI0\fP) the corresponding privacy
-setting in the database, unless the setting is unspecified
-(\fI""\fP).
-.TP
-.B privacy.can_publish=""
-Turns on (\fInonzero\fP) or off (\fI0\fP) the corresponding privacy
-setting in the database, unless the setting is unspecified
-(\fI""\fP).
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Note that all privacy settings must be on for \fBneubot\fP to be
-allowed to run automatic tests.
-.sp
-Note that this command changes the database, but changes are not
-propagated to the \fBneubot\fP instance running in background.
-.TP
-.BI \-f \ database
-Force to use the database at \fIdatabase\fP instead of using the
-default one (see \fI\%FILES\fP section for more info).
-.TP
-.B \-P
-Prints privacy policy on the standard output.
-.TP
-.B \-t
-Test mode.  Exits with success (exit value \fI0\fP) if privacy
-settings allow to run periodic tests.  Exits with failure (exit
-value \fInonzero\fP) otherwise.
-.UNINDENT
-.UNINDENT
-.UNINDENT
 .TP
 .B neubot viewer [\-f file] [\-O option]
 Starts a viewer application that embeds the Web User Interface, if
@@ -651,5 +657,4 @@ as published by the Free Software Foundation, either version
 .fi
 .sp
 .\" Generated by docutils manpage writer.
-.\" 
 .

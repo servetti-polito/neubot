@@ -59,7 +59,7 @@ i.e., the endpoint where Neubot is listening. This endpoint is
 change its value (see `FILES`_).
 
 On UNIX systems, Neubot forks off an unprivileged child to run
-network tests. This child runs as the unprivileged _neubot user.
+network tests. This child runs as the unprivileged **_neubot** user.
 You can edit `$CONFDIR/users` to change the unprivileged user name
 (see `FILES`_).
 
@@ -88,13 +88,14 @@ neubot bittorrent [-6fv] [-A address] [-p port]
 
     -f
       Force. Run the command in the local process context (i.e, don't use
-      the Web API) and override privacy settings if needed.
+      the Web API) and override privacy settings if needed. Useful for
+      developers.
 
     -p
       Port of the remote test server.
 
     -v
-      Make the command more verbose.
+      Makes the command more verbose.
 
 neubot database [-f database] [action]
   This command performs the specified *action*, or prints the database's
@@ -107,28 +108,70 @@ neubot database [-f database] [action]
   This command accepts the following options:
 
     -f database
-      Force the command to use *database* instead of the default
+      Force file. Forces the command to use *database* instead of the default
       database path (see `FILES`_).
 
   This command implements the following actions:
 
     delete_all
-      Delete all the results in the database.
+      Deletes all the results in the database.
 
     dump
-      Dump to the standard ouput the content of the database in JSON format.
+      Dumps to the standard ouput the content of the database in JSON format.
 
     prune
-      Remove results older than one year from the database.
+      Removes results older than one year.
 
     regen_uuid
-      Generates a new Neubot random unique identifier (each Neubot has
-      its own random unique identifier, which is used to perform time
-      series analysis).
+      Generates a new random unique identifier (or UUID) for Neubot
+      (see `PRIVACY`_).
 
     show
       Pretty prints to the standard ouput the content of the database
       in JSON format.
+
+neubot privacy [-Pt] [-D setting=value] [-f database]
+  Manage privacy settings (see PRIVACY_). When invoked without
+  options, this command prints the privacy settings value.
+
+  The privacy command accepts the following options:
+
+    -D setting=value
+      Set privacy setting value. When value is *0* the privacy setting
+      is "off", otherwise it is "on".
+
+      Note: Neubot performs network tests only when all privacy
+      settings are "on" (see PRIVACY_).
+
+      Note: this command does not propagate changes to Neubot and just
+      modifies the database: you have to restart Neubot to make changes
+      effective. Therefore, we recommend to use the Web User Interface
+      (see `WEB USER INTERFACE`_) to manage privacy settings.
+
+      Recognized settings:
+
+        informed
+          The user has read the privacy policy.
+
+        can_collect
+          The user provides the permission to collect his/her IP
+          address for research purposes.
+
+        can_publish
+          The user provides the permission to publish his/her IP
+          address allowing anyone to reuse it for research purposes.
+
+    -f database
+      Force file. Forces the command to use database instead of the
+      default database path (see FILES).
+
+    -P
+      Prints privacy policy on the standard output.
+
+    -t
+      Test.  Exits with success (exit value *0*) if privacy
+      settings are all nonzero.  Exits with failure (exit value
+      *nonzero*) if at least one setting is zero.
 
 neubot raw [-6fv] [-A address] [-p port]
   This command connects to the Neubot endpoint and requests Neubot
@@ -144,13 +187,14 @@ neubot raw [-6fv] [-A address] [-p port]
 
     -f
       Force. Run the command in the local process context (i.e, don't use
-      the Web API) and override privacy settings if needed.
+      the Web API) and override privacy settings if needed. Useful for
+      developers.
 
     -p
       Port of the remote test server.
 
     -v
-      Make the command more verbose.
+      Makes the command more verbose.
 
 neubot speedtest [-6fv] [-A address] [-p port]
   This command connects to the Neubot endpoint and requests Neubot
@@ -166,25 +210,28 @@ neubot speedtest [-6fv] [-A address] [-p port]
 
     -f
       Force. Run the command in the local process context (i.e, don't use
-      the Web API) and override privacy settings if needed.
+      the Web API) and override privacy settings if needed. Useful for
+      developers.
 
     -p
       Port of the remote test server.
 
     -v
-      Make the command more verbose.
+      Makes the command more verbose.
 
 neubot start
   *On MacOS* this command runs launchctl(1), which in turn starts
-  Neubot. On MacOS, Neubot's installer configures the system to run Neubot
-  at startup, which means you don't typically need to run this
-  command. You must be root to run this command.
+  Neubot. You must be root to run this command.
 
-  On MacOS Neubot is implemented by two daemon processes. A privileged
-  daemon that forks unprivileged childs to check for updates and an
-  unprivileged daemon that performs network tests. The start command
-  controls the privileged daemon, which in turn controls the unprivileged
-  daemon.
+  Note: On MacOS, Neubot's installer configures the system to launch
+  Neubot at startup; i.e., you don't typically need to run this
+  command.
+
+  Note: On MacOS, Neubot is implemented by two daemon processes. A
+  privileged daemon that forks unprivileged childs to check for
+  updates and an unprivileged daemon that performs network tests.
+  The start command controls the privileged daemon, which in turn
+  controls the unprivileged daemon.
 
   On MacOS, the start command accepts the following options:
 
@@ -193,9 +240,8 @@ neubot start
       the foreground.
 
     -n
-      No auto-updates. When the -n flag is specified, the privileged
-      daemon does not check for updates and only controls the
-      unprivileged daemon.
+      No auto-updates. When this flag is specified, the privileged
+      daemon does not check for updates.
 
     -v
       Verbose. When this flag is specified, the start command
@@ -227,8 +273,8 @@ neubot start
 
 neubot status
   This command connects to the Neubot endpoint and sends a *api*
-  Neubot Web API request.  It returns *zero* if connect() succeeds
-  and the response is OK, *one* otherwise.
+  Neubot Web API request.  It returns 0 if connect() succeeds
+  and the response is OK, nonzero otherwise.
 
   *On Windows and MacOS* this command accepts the *-v* option,
   which makes it more verbose. *On other UNIX systems*, it does
@@ -242,48 +288,6 @@ neubot stop
   *On Windows and other UNIX systems*, this command connects to the
   Neubot endpoint and sends a *stop* Web API request. In turn, this
   forces Neubot to exit.
-
-neubot privacy [-Pt] [-D setting] [-f database]
-  Allows to read privacy policy, test and set privacy settings.  For
-  more information on privacy see the PRIVACY_ section.  This subcommand
-  accepts the following command line options:
-
-    -D setting
-      Allow to set privacy settings in the database.  The following
-      privacy settings are defined, along with their default value:
-
-        privacy.informed=""
-          Turns on (*nonzero*) or off (*0*) the corresponding privacy
-          setting in the database, unless the setting is unspecified
-          (*""*).
-
-        privacy.can_collect=""
-          Turns on (*nonzero*) or off (*0*) the corresponding privacy
-          setting in the database, unless the setting is unspecified
-          (*""*).
-
-        privacy.can_publish=""
-          Turns on (*nonzero*) or off (*0*) the corresponding privacy
-          setting in the database, unless the setting is unspecified
-          (*""*).
-
-      Note that all privacy settings must be on for **neubot** to be
-      allowed to run automatic tests.
-
-      Note that this command changes the database, but changes are not
-      propagated to the **neubot** instance running in background.
-
-    -f database
-      Force to use the database at *database* instead of using the
-      default one (see `FILES`_ section for more info).
-
-    -P
-      Prints privacy policy on the standard output.
-
-    -t
-      Test mode.  Exits with success (exit value *0*) if privacy
-      settings allow to run periodic tests.  Exits with failure (exit
-      value *nonzero*) otherwise.
 
 neubot viewer [-f file] [-O option]
   Starts a viewer application that embeds the Web User Interface, if
