@@ -79,44 +79,42 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 .SH DESCRIPTION
 .sp
-Neubot (the network neutrality bot) is a free\-software Internet bot
-that gathers network performance data useful to investigate network
-neutrality.  It runs in the background and periodically performs
-active network tests with test servers (see the \fI\%Implemented
-tests\fP section).
+Neubot is a free\-software Internet bot that gathers network performance
+data useful to investigate network neutrality. Neubot runs in the
+background and periodically performs active network tests with test
+servers provided by Measurement Lab (a distributed server platform
+that hosts open network measurement tools).
 .sp
-Neubot tests results contain the user\(aqs IP address that is personal
-data in the European Union. Therefore, Neubot does not perform any
-test until the user provides his/her informed consent (see
-\fI\%PRIVACY\fP).
+Neubot does not perform any network test until you grant it the
+permission to collect and publish your IP address for research
+purposes. It behaves like this because it is developed in Italy
+and must comply with European privacy laws (which consider IP
+addresses personal data).
 .sp
-When Neubot is running, you can interact with it either using its
-subcommands (see \fI\%SUBCOMMANDS\fP) or using directly the Web API (see
-\fI\%WEB API\fP). The Web API is available at the \fINeubot endpoint\fP;
-i.e., the endpoint where Neubot is listening. This endpoint is
-\fI127.0.0.1:9774\fP by default, and you can edit \fI$CONFIG/api\fP to
-change its value (see \fI\%FILES\fP).
+Neubot is a background process. You can control it by using its
+subcommands, its web interface or its web API. Neubot listens for
+web request at \fIhttp://127.0.0.1:9774/\fP. To access the web interface,
+use either your favorite browser or the \fIviewer\fP subcommand. To
+change the endpoint where it listens, edit \fI/etc/neubot/api\fP.
 .sp
-On UNIX systems, Neubot forks off an unprivileged child to run
-network tests. This child runs as the unprivileged \fB_neubot\fP user.
-You can edit \fI$CONFDIR/users\fP to change the unprivileged user name
-(see \fI\%FILES\fP).
+On UNIX Neubot runs with the privileges of the \fB_neubot\fP user
+or with the privileges of the user indicated in the \fI/etc/neubot/users\fP
+configuration file.  On Windows, Neubot is run in the context of
+the user session and has user privileges.
 .sp
-The first form of the command (\fIneubot \-\-help\fP) prints on the
-standard output a brief help message. The second form of the command
-(\fIneubot \-V\fP) prints on the standard output the version number.  The
-third form of the command (\fIneubot subcommand...\fP) runs the specified
-\fIsubcommand\fP.
+The command line interface allows you to get the usage string
+(\fIneubot \-\-help\fP), get the version number (\fIneubot \-V\fP), and run a
+Neubot\(aqs subcommand (\fIneubot subcommand...\fP).
 .SH SUBCOMMANDS
 .sp
-Here we document Neubot subcommands.
+This section documents Neubot\(aqs subcommands.
 .INDENT 0.0
 .TP
 .B neubot bittorrent [\-6fv] [\-A address] [\-p port]
-This command connects to the Neubot endpoint and requests Neubot
-to run a \fIbittorrent\fP test using the \fIrunner\fP Web API.
+Asks Neubot to run a \fIbittorrent\fP test using the web API and fails
+if Neubot is not running in the background.
 .sp
-This command accepts the following command line options:
+Accepts the following options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -128,9 +126,9 @@ Prefer IPv6 to IPv4.
 Address of the remote test server.
 .TP
 .B \-f
-Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed. Useful for
-developers.
+Force the test. Run the test in the local process context
+(instead of using the web API) and override privacy
+settings if needed. Useful for developers and for debugging.
 .TP
 .B \-p
 Port of the remote test server.
@@ -142,26 +140,26 @@ Makes the command more verbose.
 .UNINDENT
 .TP
 .B neubot database [\-f database] [action]
-This command performs the specified \fIaction\fP, or prints the database\(aqs
-path if no action is specified.  We do not recommended to use this
-command to modify the database while Neubot is running, since Neubot\(aqs
-code is not ready for that. \fIOn UNIX systems\fP, this command requires
-root privileges to modify the database: if you are not root, the
-database is opened in readonly mode.
+Performs the specified \fIaction\fP, or prints the database\(aqs path
+if no action is specified.  We do not recommended to use this
+command to modify the database while Neubot is running, since
+Neubot\(aqs code is not ready for that. \fIOn UNIX systems\fP, this
+command requires root privileges to modify the database: if you
+are not root, the database is opened in readonly mode.
 .sp
-This command accepts the following options:
+Accepts the following options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
 .TP
 .BI \-f \ database
 Force file. Forces the command to use \fIdatabase\fP instead of the default
-database path (see \fI\%FILES\fP).
+database path.
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .sp
-This command implements the following actions:
+Implements the following actions:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -176,8 +174,7 @@ Dumps to the standard ouput the content of the database in JSON format.
 Removes results older than one year.
 .TP
 .B regen_uuid
-Generates a new random unique identifier (or UUID) for Neubot
-(see \fI\%PRIVACY\fP).
+Generates a new random unique identifier (or UUID) for Neubot.
 .TP
 .B show
 Pretty prints to the standard ouput the content of the database
@@ -187,10 +184,10 @@ in JSON format.
 .UNINDENT
 .TP
 .B neubot privacy [\-Pt] [\-D setting=value] [\-f database]
-Manage privacy settings (see \fI\%PRIVACY\fP). When invoked without
+Manage privacy settings. When invoked without
 options, this command prints the privacy settings value.
 .sp
-The privacy command accepts the following options:
+Accepts the following options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -199,15 +196,11 @@ The privacy command accepts the following options:
 Set privacy setting value. When value is \fI0\fP the privacy setting
 is "off", otherwise it is "on".
 .sp
-Note: Neubot performs network tests only when all privacy
-settings are "on" (see \fI\%PRIVACY\fP).
+Note: this command just modifies the database: you have to
+restart Neubot to make changes effective. We recommend to use
+the web interface instead.
 .sp
-Note: this command does not propagate changes to Neubot and just
-modifies the database: you have to restart Neubot to make changes
-effective. Therefore, we recommend to use the Web User Interface
-(see \fI\%WEB USER INTERFACE\fP) to manage privacy settings.
-.sp
-Recognized settings:
+Privacy settings:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -225,12 +218,15 @@ address allowing anyone to reuse it for research purposes.
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.sp
+Note: Neubot performs network tests only when all privacy
+settings are "on".
 .UNINDENT
 .INDENT 0.0
 .TP
 .BI \-f \ database
 Force file. Forces the command to use database instead of the
-default database path (see FILES).
+default database path.
 .TP
 .B \-P
 Prints privacy policy on the standard output.
@@ -244,10 +240,10 @@ settings are all nonzero.  Exits with failure (exit value
 .UNINDENT
 .TP
 .B neubot raw [\-6fv] [\-A address] [\-p port]
-This command connects to the Neubot endpoint and requests Neubot
-to run a \fIraw\fP test using the \fIrunner\fP Web API.
+Asks Neubot to run a \fIraw\fP test using the web API and fails if
+Neubot is not running in the background.
 .sp
-This command accepts the following command line options:
+Accepts the following options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -259,9 +255,9 @@ Prefer IPv6 to IPv4.
 Address of the remote test server.
 .TP
 .B \-f
-Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed. Useful for
-developers.
+Force the test. Run the test in the local process context
+(instead of using the web API) and override privacy
+settings if needed. Useful for developers and for debugging.
 .TP
 .B \-p
 Port of the remote test server.
@@ -273,10 +269,10 @@ Makes the command more verbose.
 .UNINDENT
 .TP
 .B neubot speedtest [\-6fv] [\-A address] [\-p port]
-This command connects to the Neubot endpoint and requests Neubot
-to run a \fIspeedtest\fP test using the \fIrunner\fP Web API.
+Asks Neubot to run a \fIspeedtest\fP test using the web API and fails
+if Neubot is not running in the background.
 .sp
-This command accepts the following command line options:
+Accepts the following options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
@@ -288,9 +284,9 @@ Prefer IPv6 to IPv4.
 Address of the remote test server.
 .TP
 .B \-f
-Force. Run the command in the local process context (i.e, don\(aqt use
-the Web API) and override privacy settings if needed. Useful for
-developers.
+Force the test. Run the test in the local process context
+(instead of using the web API) and override privacy
+settings if needed. Useful for developers and for debugging.
 .TP
 .B \-p
 Port of the remote test server.
@@ -306,14 +302,14 @@ Makes the command more verbose.
 Neubot. You must be root to run this command.
 .sp
 Note: On MacOS, Neubot\(aqs installer configures the system to launch
-Neubot at startup; i.e., you don\(aqt typically need to run this
+Neubot at startup; i.e., you do not typically need to run this
 command.
 .sp
 Note: On MacOS, Neubot is implemented by two daemon processes. A
 privileged daemon that forks unprivileged childs to check for
-updates and an unprivileged daemon that performs network tests.
-The start command controls the privileged daemon, which in turn
-controls the unprivileged daemon.
+updates and an unprivileged daemon.  The start command controls
+the privileged daemon, which, in turn, controls the unprivileged
+daemon.
 .sp
 On MacOS, the start command accepts the following options:
 .INDENT 7.0
@@ -340,9 +336,8 @@ in the foreground.
 .UNINDENT
 .sp
 \fIOn Windows\fP, the start command runs Neubot with the privileges
-of the user that invokes it. On Windows, Neubot\(aqs installer configures
-the system to start Neubot when a user logs in. Therefore Neubot
-runs in the context of the user\(aqs session.
+of the user that invokes it. On Windows, Neubot is run when a
+user logs in and runs in the context of the user\(aqs session.
 .sp
 On Windows, the start command accepts the following options:
 .INDENT 7.0
@@ -360,15 +355,14 @@ executes it with \fIstart \-k\fP.
 .UNINDENT
 .UNINDENT
 .sp
-\fIOn other UNIX systems\fP, the start command forks the Neubot
-damon, which drops privileges and runs in the background.
-On such systems, this command does not accept any command line
-option.
+\fIOn other UNIX systems\fP, the start command forks the Neubot damon,
+which drops root privileges and runs in the background.  On such
+systems, this command does not accept any command line option.
 .TP
 .B neubot status
-This command connects to the Neubot endpoint and sends a \fIapi\fP
-Neubot Web API request.  It returns 0 if connect() succeeds
-and the response is OK, nonzero otherwise.
+This command asks the status of Neubot using the web API.  It
+returns 0 if connect() succeeds and the response is OK, nonzero
+otherwise.
 .sp
 \fIOn Windows and MacOS\fP this command accepts the \fI\-v\fP option,
 which makes it more verbose. \fIOn other UNIX systems\fP, it does
@@ -379,46 +373,28 @@ not accept any command line option.
 Neubot. You must be root to run this command. On MacOS, this
 command accepts the \fI\-v\fP option, which makes it more verbose.
 .sp
-\fIOn Windows and other UNIX systems\fP, this command connects to the
-Neubot endpoint and sends a \fIstop\fP Web API request. In turn, this
-forces Neubot to exit.
+\fIOn Windows and other UNIX systems\fP, this command uses the web
+API to request Neubot to exit.
 .TP
-.B neubot viewer [\-f file] [\-O option]
-Starts a viewer application that embeds the Web User Interface, if
-the dependencies are installed.  By default, the viewer connects to
-\fI127.0.0.1:9774\fP, but that can be changed specifying an alternate
-configuration file or overriding options from command line.
+.B neubot viewer [\-A address] [\-p port]
+Application that shows the web interface by embedding a web
+rendering engine into a window manager\(aqs window. Currently, the
+only implemented viewer is based on \fIpython\-webkit\fP.
+.sp
+By default, this command uses 127.0.0.1 as the address and 9774
+as the port. Override the default with \fI/etc/neubot/api\fP; override
+the configuration file using the command line.
 .sp
 Accepts the following command line options:
 .INDENT 7.0
 .INDENT 3.5
 .INDENT 0.0
 .TP
-.BI \-f \ file
-Forces to read settings from \fIfile\fP, instead of using the default
-configuration file \fB/etc/neubot/api\fP.  If the file does not
-exist or contains errors, this subcommand will ignore it and will
-continue with default settings.
-.sp
-The following options are recognized (here the options are
-represented together with their default values):
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
+.BI \-A \ address
+Address where Neubot is listening.
 .TP
-.B address 127.0.0.1
-Address where the Web API is supposed to be listening.
-.TP
-.B port 9774
-Port where the Web API is supposed to be listening.
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.TP
-.BI \-O \ option
-Overrides configuration file option from the command line,
-see description of \fB\-f\fP flag for the list of available
-options.
+.BI \-p \ port
+Port where Neubot is listening.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -474,7 +450,7 @@ Carlos De Martin.
 Via its web interface [4], the Neubot software asks you (a) to explicitly
 assert that you are \fIinformed\fP, i.e. that you have read the privacy
 policy, (b) to give it the permission to \fIcollect\fP and (c) \fIpublish\fP your
-IP address.  If you don\(aqt assert (a) and you don\(aqt give the permission
+IP address.  If you do not assert (a) and you don\(aqt give the permission
 to do (b) and (c), Neubot cannot run tests because, if it did, it would
 violate privacy laws and/or Measurement Lab policy.
 .sp

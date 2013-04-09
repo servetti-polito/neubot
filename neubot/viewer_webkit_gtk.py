@@ -1,10 +1,11 @@
 # neubot/viewer_webkit_gtk.py
 
 #
-# Copyright (c) 2011 Marco Scopesi <marco.scopesi@gmail.com>,
-#  Politecnico di Torino
-# Copyright (c) 2011 Simone Basso <bassosimone@gmail.com>,
-#  NEXA Center for Internet & Society at Politecnico di Torino
+# Copyright (c) 2011, 2013
+#     Nexa Center for Internet & Society, Politecnico di Torino (DAUIN)
+#     and Simone Basso <bassosimone@gmail.com>
+#
+# Copyright (c) 2011 Marco Scopesi <marco.scopesi@gmail.com>
 #
 # This file is part of Neubot <http://www.neubot.org/>.
 #
@@ -22,27 +23,21 @@
 # along with Neubot.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-''' Neubot GUI '''
+''' Neubot viewer using WebKit and Gtk '''
 
 import getopt
 import os.path
 import sys
-import time
 
-if sys.version_info[0] == 3:
-    import http.client as lib_http
-else:
-    import httplib as lib_http
-
-try:
-    import gtk
-    import webkit
-except ImportError:
-    sys.exit('Viewer support not available.')
+# If one (or both) fail, viewer.py will catch the error and
+# provide a fallback main().
+import gtk
+import webkit
 
 if __name__ == '__main__':
     sys.path.insert(0, '.')
 
+from neubot import utils_hier
 from neubot import utils_net
 from neubot import utils_rc
 from neubot import utils_ctl
@@ -90,30 +85,18 @@ def main(args):
     ''' Entry point for simple gtk+webkit GUI '''
 
     try:
-        options, arguments = getopt.getopt(args[1:], 'f:O:')
+        options, arguments = getopt.getopt(args[1:], 'A:p:')
     except getopt.error:
-        sys.exit('Usage: neubot viewer [-f file] [-O option]')
+        sys.exit('Usage: neubot viewer [-A address] [-p port]')
     if arguments:
-        sys.exit('Usage: neubot viewer [-f file] [-O option]')
+        sys.exit('Usage: neubot viewer [-A address] [-p port]')
 
-    conf = {
-        'address': '127.0.0.1',
-        'port': '9774',
-    }
-    settings = []
-    fpath = '/etc/neubot/api'
-
+    conf = utils_rc.parse_safe(utils_hier.APIFILEPATH)
     for name, value in options:
-        if name == '-f':
-            fpath = value
-        elif name == '-O':
-            settings.append(value)
-
-    cnf = utils_rc.parse_safe(fpath)
-    conf.update(cnf)
-
-    cnf = utils_rc.parse_safe(iterable=settings)
-    conf.update(cnf)
+        if name == '-A':
+            conf['address'] = value
+        elif name == '-p':
+            conf['port'] = value
 
     address, port = conf['address'], conf['port']
 
@@ -122,7 +105,7 @@ def main(args):
         uri = 'http://%s/' % utils_net.format_epnt((address, port))
 
     if not 'DISPLAY' in os.environ:
-        sys.exit('No DISPLAY available')
+        sys.exit('FATAL: No DISPLAY available')
     else:
         WebkitGUI(uri)
         gtk.main()
