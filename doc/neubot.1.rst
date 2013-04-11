@@ -46,7 +46,7 @@ background and periodically performs active network tests with test
 servers provided by `Measurement Lab`_ (a distributed server platform
 that hosts open network measurement tools).
 
-.. _`Measurement Lab`:: http://measurement-lab.net/
+.. _`Measurement Lab`: http://measurement-lab.net/
 
 Neubot does not perform any network test until you grant it the
 permission to collect and publish your IP address for research
