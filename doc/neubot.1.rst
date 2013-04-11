@@ -44,15 +44,17 @@ Neubot is a free-software Internet bot that gathers network performance
 data useful to investigate network neutrality. Neubot runs in the
 background and periodically performs active network tests with test
 servers provided by `Measurement Lab`_ (a distributed server platform
-that hosts open network measurement tools).
+that hosts open network measurement tools). Implemented tests are
+described in the `IMPLEMENTED TESTS`_ section.
 
-.. _`Measurement Lab`: http://measurement-lab.net/
+.. _`Measurement Lab`: http://measurementlab.net/
 
 Neubot does not perform any network test until you grant it the
 permission to collect and publish your IP address for research
 purposes. Neubot behaves like this because it is developed in the
 European Union, thus it must comply with European privacy laws
-(which consider IP addresses personal data).
+(which consider IP addresses personal data). More on privacy
+aspects in the PRIVACY_ section.
 
 Neubot is a background process. You can control it by using its
 subcommands, its web interface or its web API. Neubot listens for
