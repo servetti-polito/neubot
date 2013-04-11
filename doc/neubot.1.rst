@@ -107,7 +107,7 @@ neubot database [-f database] [action]
   Performs the specified *action*, or prints the database's path
   if no action is specified.  We do not recommended to use this
   command to modify the database while Neubot is running, since
-  Neubot's code is not ready for that. *On UNIX systems*, this
+  Neubot's code is not ready for that. On UNIX systems, this
   command requires root privileges to modify the database: if you
   are not root, the database is opened in readonly mode.
 
@@ -129,7 +129,8 @@ neubot database [-f database] [action]
       Removes results older than one year.
 
     regen_uuid
-      Generates a new random unique identifier (or UUID) for Neubot.
+      Generates a new random unique identifier (or UUID) for Neubot. (See
+      the `PRIVACY`_ section for more on the UUID).
 
     show
       Pretty prints to the standard ouput the content of the database
