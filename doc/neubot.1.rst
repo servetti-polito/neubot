@@ -406,8 +406,8 @@ IMPLEMENTED TESTS
 
 TBD
 
-WEB USER INTERFACE
-``````````````````
+WEB INTERFACE
+`````````````
 
 TBD
 
