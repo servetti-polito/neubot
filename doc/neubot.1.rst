@@ -335,10 +335,10 @@ list of the files installed.
     unpriv_user _neubot         # For network tests
 
 /usr/local/bin/neubot
-  The neubot executable script.
+  The Neubot executable script.
 
 /usr/local/share/neubot/*
-  Location where neubot Python modules are installed.
+  Location where Neubot Python modules are installed.
 
 /usr/local/share/neubot/www/*
   Location where the web user interface files are installed.
@@ -361,12 +361,12 @@ list of the files installed.
   results page of the *foo* experiment.
 
 /var/lib/neubot/database.sqlite3
-  System-wide results database for Linux systems, created when the
-  neubot daemon starts for the first time.
+  System-wide results database for Linux systems, created when
+  Neubot starts for the first time.
 
 /var/neubot/database.sqlite3
   System-wide results database for UNIX systems (except Linux),
-  created when the neubot daemon starts for the first time.
+  created when Neubot starts for the first time.
 
 EXAMPLES
 ````````
@@ -374,47 +374,39 @@ EXAMPLES
 In this section we represent the unprivileged user prompt with *$*
 and the root user prompt with *#*.
 
-Run ondemand `bittorrent` test:
+Run ondemand `bittorrent` test::
 
-|
-|    $ neubot bittorrent
+    $ neubot bittorrent
 
-Run ondemand `raw` test:
+Run ondemand `raw` test::
 
-|
-|    $ neubot raw
+    $ neubot raw
 
-Run ondemand `speedtest` test:
+Run ondemand `speedtest` test::
 
-|
-|    $ neubot speedtest
+    $ neubot speedtest
 
-Start **neubot**:
+Start Neubot::
 
-|
-|    # neubot start
+    # neubot start
 
-Stop **neubot**
+Stop Neubot::
 
-|
-|    # neubot stop  # MacOS
-|    $ neubot stop  # other UNIX
+    # neubot stop  # MacOS
+    $ neubot stop  # other UNIX
 
-Run neubot in foreground with verbose logging "on":
+Run Neubot in foreground with verbose logging::
 
-|
-|    # neubot start -dv                       # MacOS
-|    $ neubot agent -v -D agent.daemonize=no  # other UNIX
+    # neubot start -dv                       # MacOS
+    $ neubot agent -v -D agent.daemonize=no  # other UNIX
 
-Export system-wide results to JSON:
+Export system-wide results to JSON::
 
-|
-|    # neubot database dump > output.json
+    # neubot database dump > output.json
 
-Run Neubot *command* from the sources directory:
+Run Neubot ``command`` from the sources directory::
 
-|
-|    $ ./bin/neubot *command*
+    $ ./bin/neubot *command*
 
 IMPLEMENTED TESTS
 `````````````````
