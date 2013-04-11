@@ -408,16 +408,16 @@ list of the files installed.
 .TP
 .B \fB/etc/neubot/api\fP
 Configuration file that indicates the endpoint where Neubot should
-listen for web API requests. Example (which also indicates the
-default values):
+listen for web API requests. Example (which also shows the syntax
+and indicates the default values):
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
 #
-# /etc/neubot/api \- controls address, port where Neubot api
-# listens for incoming requests.
+# /etc/neubot/api \- controls address, port where Neubot listens
+# for incoming web API requests.
 #
 address 127.0.0.1  # Address where the listen
 port 9774          # Port where to listen
@@ -428,8 +428,8 @@ port 9774          # Port where to listen
 .TP
 .B \fB/etc/neubot/users\fP
 Configuration file that indicates the unprivileged user names
-that Neubot should use. Example (which also indicates the default
-values):
+that Neubot should use. Example (which also shows the syntax
+and indicates the default values):
 .INDENT 7.0
 .INDENT 3.5
 .sp
@@ -451,26 +451,48 @@ The Neubot executable script.
 .TP
 .B \fB/usr/local/share/neubot/\fP
 Location where Neubot Python modules are installed.
+.INDENT 7.0
 .TP
-.B \fB/usr/local/share/neubot/www/\fP
-Location where the web user interface files are installed.
+.B \fB.../neubot/www/\fP
+Location where the web interface files are installed. Neubot uses
+server side includes (on the server side) and javascript (on the
+client side) to show its web user interface.
+.INDENT 7.0
 .TP
-.B \fB/usr/local/share/neubot/www/test/foo.html\fP
-Description of the \fBfoo\fP test. It is included into the results.html
-page when the test is selected.
+.B \fB.../neubot/www/footer.html*\fP
+Common footer for all web pages.
 .TP
-.B \fB/usr/local/share/neubot/www/test/foo.json\fP
-Description of the plots and tables included into results.html
-when test \fBfoo\fP is selected. The recipe that specifies how to
-compute the values to plot and/or write into the tables is written
-in a domain\-specific language based on LISP. We describe this
-language below, in the \fI\%RECIPE DSL\fP section.
+.B \fB.../neubot/www/header.html*\fP
+Common header for all web pages.
 .TP
-.B \fB/user/local/share/neubot/www/test/foo.json.local\fP
-User\-modified \fBfoo.json\fP file. When \fBfoo.json.local\fP is present on
-the filesystem, Neubot uses the user\-modified version instead
-of the the stock version. Allows you to heavily customize the
-results page of the \fBfoo\fP experiment.
+.B \fB.../neubot/www/results.html\fP
+The results page, dynamically filled by javascript using Neubot web
+API. It allows you to see the results of recent experiments, both
+in form of plots and tables.
+.TP
+.B \fB.../neubot/www/test/\fP
+Directory that contains a \fBfoo.html\fP and a \fBfoo.json\fP file for
+each test \fBfoo\fP. The list of available tests in \fBresults.html\fP is
+automatically generated from the files in this directory.
+.INDENT 7.0
+.TP
+.B \fB.../www/test/foo.html\fP
+Description of the \fBfoo\fP test. It is included into the
+\fBresults.html\fP page when the test is selected.
+.TP
+.B \fB.../www/test/foo.json\fP
+Description of the plots and tables included into \fBresults.html\fP
+when test \fBfoo\fP is selected. The format of the JSON is documented
+into the \fI\%WEB API\fP section.
+.TP
+.B \fB.../www/test/foo.json.local\fP
+When \fBfoo.json.local\fP exists, Neubot will use it (instead of
+\fBfoo.json\fP) to prepare plots and tables in \fBresults.html\fP when
+test \fBfoo\fP is selected. Allows the user to heavily customize
+the results page for test \fBfoo\fP.
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .TP
 .B \fB/var/lib/neubot/database.sqlite3\fP
 System\-wide results database for Linux systems, created when
