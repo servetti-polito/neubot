@@ -63,12 +63,12 @@ the SUBCOMMANDS_, `WEB INTERFACE`_ and `WEB API`_ sections). Neubot
 listens for web requests at ``http://127.0.0.1:9774/``. To access
 the web interface, use either your favorite browser or the ``viewer``
 subcommand. To change the address and/or port where Neubot listens
-for web requests, edit ``/etc/neubot/api``.
+for web requests, edit ``/etc/neubot/api`` (see `FILES`_).
 
 On UNIX, Neubot runs with the privileges of the ``_neubot`` user
 or with the ones of the user indicated in the ``/etc/neubot/users``
-configuration file.  On Windows, Neubot runs in the context of
-the user session and has user privileges.
+configuration file (see `FILES`_).  On Windows, Neubot runs in
+the context of the user session and has user privileges.
 
 The command line interface allows you to get the usage string
 (``neubot --help``), get the version number (``neubot -V``), and run a
