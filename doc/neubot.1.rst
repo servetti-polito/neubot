@@ -314,6 +314,10 @@ list of the files installed.
   listen for web API requests. Example (which also indicates the
   default values)::
 
+    #
+    # /etc/neubot/api - controls address, port where Neubot api
+    # listens for incoming requests.
+    #
     address 127.0.0.1  # Address where the listen
     port 9774          # Port where to listen
  
@@ -323,6 +327,10 @@ list of the files installed.
   that Neubot should use. Example (which also indicates the default
   values)::
 
+    #
+    # /etc/neubot/users - controls the unprivileged user names used
+    # by Neubot to perform various tasks.
+    #
     update_user _neubot_update  # For auto-updates (MacOS-only)
     unpriv_user _neubot         # For network tests
 
