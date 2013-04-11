@@ -40,13 +40,14 @@ SYNOPSIS
 DESCRIPTION
 ```````````
 
-Neubot is a free-software Internet bot that gathers network performance
+`Neubot`_ is a free-software Internet bot that gathers network performance
 data useful to investigate network neutrality. Neubot runs in the
 background and periodically performs active network tests with test
 servers provided by `Measurement Lab`_ (a distributed server platform
 that hosts open network measurement tools). Implemented tests are
 described in the `IMPLEMENTED TESTS`_ section.
 
+.. _`Neubot`: http://neubot.org/
 .. _`Measurement Lab`: http://measurementlab.net/
 
 Neubot does not perform any network test until you grant it the
@@ -66,7 +67,7 @@ for web requests, edit ``/etc/neubot/api``.
 
 On UNIX, Neubot runs with the privileges of the ``_neubot`` user
 or with the ones of the user indicated in the ``/etc/neubot/users``
-configuration file.  On Windows, Neubot is run in the context of
+configuration file.  On Windows, Neubot runs in the context of
 the user session and has user privileges.
 
 The command line interface allows you to get the usage string
