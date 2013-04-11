@@ -98,7 +98,8 @@ def main(args):
         elif name == '-p':
             conf['port'] = value
 
-    address, port = conf['address'], conf['port']
+    address = conf.get('address', '127.0.0.1')
+    port = conf.get('port', 9774)
 
     uri = STATIC_PAGE
     if utils_ctl.is_running(address, port):
