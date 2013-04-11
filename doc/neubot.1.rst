@@ -81,7 +81,7 @@ SUBCOMMANDS
 This section documents Neubot's subcommands.
 
 neubot bittorrent [-6fv] [-A address] [-p port]
-  Asks Neubot to run a *bittorrent* test using the web API and fails
+  Asks Neubot to run a `bittorrent`_ test using the web API and fails
   if Neubot is not running in the background.
 
   Accepts the following options:
@@ -179,7 +179,7 @@ neubot privacy [-Pt] [-D setting=value] [-f database]
       *nonzero*) if at least one setting is zero.
 
 neubot raw [-6fv] [-A address] [-p port]
-  Asks Neubot to run a *raw* test using the web API and fails if
+  Asks Neubot to run a `raw`_ test using the web API and fails if
   Neubot is not running in the background.
 
   Accepts the following options:
@@ -202,7 +202,7 @@ neubot raw [-6fv] [-A address] [-p port]
       Makes the command more verbose.
 
 neubot speedtest [-6fv] [-A address] [-p port]
-  Asks Neubot to run a *speedtest* test using the web API and fails
+  Asks Neubot to run a `speedtest`_ test using the web API and fails
   if Neubot is not running in the background.
 
   Accepts the following options:
@@ -406,7 +406,14 @@ Run Neubot *command* from the sources directory:
 IMPLEMENTED TESTS
 `````````````````
 
-TBD
+bittorrent
+''''''''''
+
+raw
+'''
+
+speedtest
+'''''''''
 
 WEB INTERFACE
 `````````````
