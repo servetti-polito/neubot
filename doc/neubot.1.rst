@@ -390,15 +390,15 @@ EXAMPLES
 In this section we represent the unprivileged user prompt with ``$``
 and the root user prompt with ``#``.
 
-Run ondemand bittorrent test::
+Run on-demand bittorrent test::
 
     $ neubot bittorrent
 
-Run ondemand raw test::
+Run on-demand raw test::
 
     $ neubot raw
 
-Run ondemand speedtest test::
+Run on-demand speedtest test::
 
     $ neubot speedtest
 
