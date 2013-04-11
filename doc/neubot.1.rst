@@ -81,7 +81,7 @@ SUBCOMMANDS
 This section documents Neubot's subcommands.
 
 **neubot bittorrent [-6fv] [-A address] [-p port]**
-  Asks Neubot to run a `bittorrent`_ test using the web API and fails
+  Asks Neubot to run a bittorrent test using the web API and fails
   if Neubot is not running in the background.
 
   Accepts the following options:
@@ -180,7 +180,7 @@ This section documents Neubot's subcommands.
       *nonzero*) if at least one setting is zero.
 
 **neubot raw [-6fv] [-A address] [-p port]**
-  Asks Neubot to run a `raw`_ test using the web API and fails if
+  Asks Neubot to run a raw test using the web API and fails if
   Neubot is not running in the background.
 
   Accepts the following options:
@@ -203,7 +203,7 @@ This section documents Neubot's subcommands.
       Makes the command more verbose.
 
 **neubot speedtest [-6fv] [-A address] [-p port]**
-  Asks Neubot to run a `speedtest`_ test using the web API and fails
+  Asks Neubot to run a speedtest test using the web API and fails
   if Neubot is not running in the background.
 
   Accepts the following options:
@@ -374,15 +374,15 @@ EXAMPLES
 In this section we represent the unprivileged user prompt with ``$``
 and the root user prompt with ``#``.
 
-Run ondemand `bittorrent`_ test::
+Run ondemand bittorrent test::
 
     $ neubot bittorrent
 
-Run ondemand `raw`_ test::
+Run ondemand raw test::
 
     $ neubot raw
 
-Run ondemand `speedtest`_ test::
+Run ondemand speedtest test::
 
     $ neubot speedtest
 
@@ -411,14 +411,7 @@ Run Neubot ``command`` from the sources directory::
 IMPLEMENTED TESTS
 `````````````````
 
-bittorrent
-''''''''''
-
-raw
-'''
-
-speedtest
-'''''''''
+TBD
 
 WEB INTERFACE
 `````````````
@@ -516,7 +509,6 @@ The following people have helped with internationalization::
 COPYRIGHT
 `````````
 
-Individual files are copyright of the individual contributor, and
 Neubot as a collection is::
 
   Copyright (c) 2010-2013 Nexa Center for Internet & Society,
