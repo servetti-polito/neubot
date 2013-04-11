@@ -107,8 +107,8 @@ This section documents Neubot's subcommands.
   if no action is specified.  We do not recommended to use this
   command to modify the database while Neubot is running, since
   Neubot's code is not ready for that. This
-  command requires root privileges to modify the database: if you
-  are not root, the database is opened in readonly mode.
+  command requires ``root`` privileges to modify the database: if you
+  are not ``root``, the database is opened in readonly mode.
 
   Accepts the following options:
 
@@ -226,7 +226,7 @@ This section documents Neubot's subcommands.
 
 **neubot start**
   On MacOS this command runs launchctl(1), which in turn starts
-  Neubot. You must be root to run this command.  On MacOS, Neubot's
+  Neubot. You must be ``root`` to run this command.  On MacOS, Neubot's
   installer configures the system to launch Neubot at startup; i.e.,
   you do not typically need to run this command.
 
@@ -253,7 +253,7 @@ This section documents Neubot's subcommands.
       in the foreground.
 
   On other UNIX systems, the start command forks the Neubot daemon,
-  which drops root privileges and runs in the background.  On such
+  which drops ``root`` privileges and runs in the background.  On such
   systems, this command does not accept any command line option.
 
 **neubot status**
@@ -267,7 +267,7 @@ This section documents Neubot's subcommands.
 
 **neubot stop**
   On MacOS, this command runs launchctl(1), which in turn stops
-  Neubot. You must be root to run this command. On MacOS, this
+  Neubot. You must be ``root`` to run this command. On MacOS, this
   command accepts the ``-v`` option, which makes it more verbose.
 
   On other UNIX systems, this command uses the web
@@ -373,7 +373,7 @@ EXAMPLES
 ````````
 
 In this section we represent the unprivileged user prompt with ``$``
-and the root user prompt with ``#``.
+and the ``root`` user prompt with ``#``.
 
 Run on-demand bittorrent test::
 
