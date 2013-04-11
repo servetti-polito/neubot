@@ -71,6 +71,11 @@ or with the ones of the user indicated in the ``/etc/neubot/users``
 configuration file (see the `FILES`_ section).  On Windows, Neubot runs in
 the context of the user session and has user privileges.
 
+On Unix, the Neubot executable is named **neubot**. On Windows there
+are two executables: **neubot.exe**, which is the command line executable,
+and **neubotw.exe**, which is the Win32 executable. Use the former when
+you execute commands from Windows console, use the latter otherwise.
+
 The command line interface allows you to get the usage string
 (``neubot --help``), get the version number (``neubot -V``), and run a
 Neubot's subcommand (``neubot subcommand...``).
@@ -305,6 +310,10 @@ This section documents Neubot's subcommands.
 
 FILES
 `````
+
+On Unix, Neubot is typically installed at ``/usr/local`` or at
+``/usr``. On Windows, it is typically installed into the ``LOCALAPPDATA``
+directory, which is a subdirectory of the home directory.
 
 Assuming that Neubot is installed at ``/usr/local``, this is the
 list of the files installed.
