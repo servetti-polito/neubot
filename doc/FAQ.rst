@@ -109,8 +109,10 @@ locally and on the test servers.  Data is collected for research purposes
 and `published on the web`_ under Creative Commons Zero allowing anyone
 to re-use it freely for the same purpose.
 
+.. _`1.2. What is Measurement Lab?`: #12-what-is-measurement-lab
+
 1.2. What is Measurement Lab?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Measurement Lab (M-Lab_) is a distributed server platform that provides
 connectivity and servers around the world for projects that aim to
