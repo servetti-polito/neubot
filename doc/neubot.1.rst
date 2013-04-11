@@ -315,8 +315,8 @@ list of the files installed.
   and indicates the default values)::
 
     #
-    # /etc/neubot/api - controls address, port where Neubot api
-    # listens for incoming requests.
+    # /etc/neubot/api - controls address, port where Neubot listens
+    # for incoming web API requests.
     #
     address 127.0.0.1  # Address where the listen
     port 9774          # Port where to listen
