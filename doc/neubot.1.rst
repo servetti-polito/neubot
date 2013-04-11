@@ -66,15 +66,9 @@ subcommand. To change the address and/or port where Neubot listens
 for web requests, edit ``/etc/neubot/api`` (see the `FILES`_
 section).
 
-On UNIX, Neubot runs with the privileges of the ``_neubot`` user,
+Neubot runs with the privileges of the ``_neubot`` user,
 or with the ones of the user indicated in the ``/etc/neubot/users``
-configuration file (see the `FILES`_ section).  On Windows, Neubot runs in
-the context of the user session and has user privileges.
-
-On Unix, the Neubot executable is named **neubot**. On Windows there
-are two executables: **neubot.exe**, which is the command line executable,
-and **neubotw.exe**, which is the Win32 executable. Use the former when
-you execute commands from Windows console, use the latter otherwise.
+configuration file (see the `FILES`_ section).
 
 The command line interface allows you to get the usage string
 (``neubot --help``), get the version number (``neubot -V``), and run a
@@ -258,20 +252,6 @@ This section documents Neubot's subcommands.
       When both -v and -d are specified, Neubot runs in verbose mode
       in the foreground.
 
-  On Windows, the start command runs Neubot with the privileges
-  of the user that invokes it. On Windows, Neubot is run when a
-  user logs in, and runs in the context of the user's session.
-
-  On Windows, the start command accepts the following options:
-
-    -k
-      Kill. When -k is specified, Neubot kills an already
-      running Neubot instance (if any) before starting up.
-
-      This is used by the automatic updates process: once the new
-      version of Neubot is downloaded and installed, the old version
-      executes it with ``start -k``.
-
   On other UNIX systems, the start command forks the Neubot daemon,
   which drops root privileges and runs in the background.  On such
   systems, this command does not accept any command line option.
@@ -281,16 +261,16 @@ This section documents Neubot's subcommands.
   returns 0 if connect() succeeds and the response is OK, nonzero
   otherwise.
 
-  On Windows and MacOS this command accepts the ``-v`` option,
-  which makes it more verbose. On other UNIX systems, it does
-  not accept any command line option.
+  On MacOS this command accepts the ``-v`` option, which makes it
+  more verbose. On other UNIX systems, it does not accept any
+  command line option.
 
 **neubot stop**
   On MacOS, this command runs launchctl(1), which in turn stops
   Neubot. You must be root to run this command. On MacOS, this
   command accepts the ``-v`` option, which makes it more verbose.
 
-  On Windows and other UNIX systems, this command uses the web
+  On other UNIX systems, this command uses the web
   API to request Neubot to exit.
 
 **neubot viewer [-A address] [-p port]**
@@ -310,10 +290,6 @@ This section documents Neubot's subcommands.
 
 FILES
 `````
-
-On Unix, Neubot is typically installed at ``/usr/local`` or at
-``/usr``. On Windows, it is typically installed into the ``LOCALAPPDATA``
-directory, which is a subdirectory of the home directory.
 
 Assuming that Neubot is installed at ``/usr/local``, this is the
 list of the files installed.
