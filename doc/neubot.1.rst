@@ -255,7 +255,7 @@ neubot start
 
   On Windows, the start command runs Neubot with the privileges
   of the user that invokes it. On Windows, Neubot is run when a
-  user logs in and runs in the context of the user's session.
+  user logs in, and runs in the context of the user's session.
 
   On Windows, the start command accepts the following options:
 
