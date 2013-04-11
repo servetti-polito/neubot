@@ -226,10 +226,14 @@ neubot speedtest [-6fv] [-A address] [-p port]
       Makes the command more verbose.
 
 neubot start
-  *On MacOS* this command runs launchctl(1), which in turn starts
+  On MacOS this command runs launchctl(1), which in turn starts
   Neubot. You must be root to run this command.  On MacOS, Neubot's
   installer configures the system to launch Neubot at startup; i.e.,
   you do not typically need to run this command.
+
+  (On MacOS, Neubot is implemented by two daemons: the usual unprivileged
+  daemon and a privileged daemon. The latter controls the former and
+  periodically forks an unprivileged child to check for updates.)
 
   On MacOS, the start command accepts the following options:
 
@@ -249,7 +253,7 @@ neubot start
       When both -v and -d are specified, Neubot runs in verbose mode
       in the foreground.
 
-  *On Windows*, the start command runs Neubot with the privileges
+  On Windows, the start command runs Neubot with the privileges
   of the user that invokes it. On Windows, Neubot is run when a
   user logs in and runs in the context of the user's session.
 
@@ -272,16 +276,16 @@ neubot status
   returns 0 if connect() succeeds and the response is OK, nonzero
   otherwise.
 
-  *On Windows and MacOS* this command accepts the *-v* option,
-  which makes it more verbose. *On other UNIX systems*, it does
+  On Windows and MacOS this command accepts the *-v* option,
+  which makes it more verbose. On other UNIX systems, it does
   not accept any command line option.
 
 neubot stop
-  *On MacOS*, this command runs launchctl(1), which in turn stops
+  On MacOS, this command runs launchctl(1), which in turn stops
   Neubot. You must be root to run this command. On MacOS, this
-  command accepts the *-v* option, which makes it more verbose.
+  command accepts the ``-v`` option, which makes it more verbose.
 
-  *On Windows and other UNIX systems*, this command uses the web
+  On Windows and other UNIX systems, this command uses the web
   API to request Neubot to exit.
 
 neubot viewer [-A address] [-p port]
