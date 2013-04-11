@@ -28,7 +28,7 @@ The network neutrality bot
 :Manual section: 1
 :Date: @DATE@
 :Manual group: Neubot manual
-:Version: Neubot 0.4.15.7
+:Version: Neubot 0.4.16.0
 
 SYNOPSIS
 ````````
@@ -54,19 +54,19 @@ European Union, thus it must comply with European privacy laws
 
 Neubot is a background process. You can control it by using its
 subcommands, its web interface or its web API. Neubot listens for
-web requests at *http://127.0.0.1:9774/*. To access the web interface,
-use either your favorite browser or the `viewer` subcommand. To
+web requests at ``http://127.0.0.1:9774/``. To access the web interface,
+use either your favorite browser or the **viewer** subcommand. To
 change the address and/or port where Neubot listens for web requests,
-edit `/etc/neubot/api`.
+edit ``/etc/neubot/api``.
 
-On UNIX, Neubot runs with the privileges of the **_neubot** user
-or with the ones of the user indicated in the `/etc/neubot/users`
+On UNIX, Neubot runs with the privileges of the ``_neubot`` user
+or with the ones of the user indicated in the ``/etc/neubot/users``
 configuration file.  On Windows, Neubot is run in the context of
 the user session and has user privileges.
 
 The command line interface allows you to get the usage string
-(`neubot --help`), get the version number (`neubot -V`), and run a
-Neubot's subcommand (`neubot subcommand...`).
+(``neubot --help``), get the version number (``neubot -V``), and run a
+Neubot's subcommand (``neubot subcommand...``).
 
 SUBCOMMANDS
 ```````````
