@@ -57,11 +57,12 @@ European Union, thus it must comply with European privacy laws
 aspects in the PRIVACY_ section.
 
 Neubot is a background process. You can control it by using its
-subcommands, its web interface or its web API. Neubot listens for
-web requests at ``http://127.0.0.1:9774/``. To access the web interface,
-use either your favorite browser or the **viewer** subcommand. To
-change the address and/or port where Neubot listens for web requests,
-edit ``/etc/neubot/api``.
+subcommands, its web interface or its web API (see, respectively,
+the SUBCOMMANDS_, `WEB INTERFACE`_ and `WEB API`_ sections). Neubot
+listens for web requests at ``http://127.0.0.1:9774/``. To access
+the web interface, use either your favorite browser or the ``viewer``
+subcommand. To change the address and/or port where Neubot listens
+for web requests, edit ``/etc/neubot/api``.
 
 On UNIX, Neubot runs with the privileges of the ``_neubot`` user
 or with the ones of the user indicated in the ``/etc/neubot/users``
