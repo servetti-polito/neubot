@@ -66,7 +66,7 @@ subcommand. To change the address and/or port where Neubot listens
 for web requests, edit ``/etc/neubot/api`` (see the `FILES`_
 section).
 
-On UNIX, Neubot runs with the privileges of the ``_neubot`` user
+On UNIX, Neubot runs with the privileges of the ``_neubot`` user,
 or with the ones of the user indicated in the ``/etc/neubot/users``
 configuration file (see the `FILES`_ section).  On Windows, Neubot runs in
 the context of the user session and has user privileges.
