@@ -265,9 +265,9 @@ neubot start
 
       This is used by the automatic updates process: once the new
       version of Neubot is downloaded and installed, the old version
-      executes it with `start -k`.
+      executes it with ``start -k``.
 
-  *On other UNIX systems*, the start command forks the Neubot daemon,
+  On other UNIX systems, the start command forks the Neubot daemon,
   which drops root privileges and runs in the background.  On such
   systems, this command does not accept any command line option.
 
@@ -276,7 +276,7 @@ neubot status
   returns 0 if connect() succeeds and the response is OK, nonzero
   otherwise.
 
-  On Windows and MacOS this command accepts the *-v* option,
+  On Windows and MacOS this command accepts the ``-v`` option,
   which makes it more verbose. On other UNIX systems, it does
   not accept any command line option.
 
