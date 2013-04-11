@@ -5,7 +5,7 @@
 
 * `FAQ 1. General questions`_
 
-   * `FAQ 1.1. What is Neubot?`_
+   * 1.1. `What is Neubot?`_
    * `1.2. What is Measurement Lab?`_
    * `1.3. What is network neutrality?`_
    * `1.4. Why "the network neutrality bot"?`_
@@ -94,8 +94,8 @@
 FAQ 1. General questions
 ------------------------
 
-FAQ 1.1. What is Neubot?
-~~~~~~~~~~~~~~~~~~~~~~~~
+What is Neubot?
+~~~~~~~~~~~~~~~
 
 Neubot is a research project on network neutrality by the `Nexa Center for
 Internet & Society`_ at `Politecnico di Torino (DAUIN)`_.  The project is
