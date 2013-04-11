@@ -411,7 +411,7 @@ Stop Neubot::
     # neubot stop  # MacOS
     $ neubot stop  # other UNIX
 
-Run Neubot in foreground with verbose logging::
+Run Neubot in the foreground with verbose logging::
 
     # neubot start -dv                       # MacOS
     $ neubot agent -v -D agent.daemonize=no  # other UNIX
