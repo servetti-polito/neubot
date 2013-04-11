@@ -416,7 +416,7 @@ Run Neubot in the foreground with verbose logging::
     # neubot start -dv                       # MacOS
     $ neubot agent -v -D agent.daemonize=no  # other UNIX
 
-Export system-wide results to JSON::
+Export Neubot results to JSON::
 
     # neubot database dump > output.json
 
