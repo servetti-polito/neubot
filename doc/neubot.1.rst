@@ -275,7 +275,8 @@ This section documents Neubot's subcommands.
 
 **neubot viewer [-A address] [-p port]**
   This command shows the web interface by embedding a web
-  rendering engine into a window manager's window.
+  rendering engine into a window manager's window. Currently,
+  the only implemented ``viewer`` is based on ``python-webkit``.
 
   By default, this command uses 127.0.0.1 as the address and 9774
   as the port. Override the default by editing the ``/etc/neubot/api``
