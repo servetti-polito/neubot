@@ -80,7 +80,7 @@ SUBCOMMANDS
 
 This section documents Neubot's subcommands.
 
-neubot bittorrent [-6fv] [-A address] [-p port]
+**neubot bittorrent [-6fv] [-A address] [-p port]**
   Asks Neubot to run a `bittorrent`_ test using the web API and fails
   if Neubot is not running in the background.
 
@@ -103,8 +103,8 @@ neubot bittorrent [-6fv] [-A address] [-p port]
     -v
       Makes the command more verbose.
 
-neubot database [-f database] [action]
-  Performs the specified *action*, or prints the database's path
+**neubot database [-f database] [action]**
+  Performs the specified ``action``, or prints the database's path
   if no action is specified.  We do not recommended to use this
   command to modify the database while Neubot is running, since
   Neubot's code is not ready for that. On UNIX systems, this
@@ -136,7 +136,7 @@ neubot database [-f database] [action]
       Pretty prints to the standard ouput the content of the database
       in JSON format.
 
-neubot privacy [-Pt] [-D setting=value] [-f database]
+**neubot privacy [-Pt] [-D setting=value] [-f database]**
   Manage privacy settings. When invoked without
   options, this command prints the privacy settings value.
 
@@ -179,7 +179,7 @@ neubot privacy [-Pt] [-D setting=value] [-f database]
       settings are all nonzero.  Exits with failure (exit value
       *nonzero*) if at least one setting is zero.
 
-neubot raw [-6fv] [-A address] [-p port]
+**neubot raw [-6fv] [-A address] [-p port]**
   Asks Neubot to run a `raw`_ test using the web API and fails if
   Neubot is not running in the background.
 
@@ -202,7 +202,7 @@ neubot raw [-6fv] [-A address] [-p port]
     -v
       Makes the command more verbose.
 
-neubot speedtest [-6fv] [-A address] [-p port]
+**neubot speedtest [-6fv] [-A address] [-p port]**
   Asks Neubot to run a `speedtest`_ test using the web API and fails
   if Neubot is not running in the background.
 
@@ -225,7 +225,7 @@ neubot speedtest [-6fv] [-A address] [-p port]
     -v
       Makes the command more verbose.
 
-neubot start
+**neubot start**
   On MacOS this command runs launchctl(1), which in turn starts
   Neubot. You must be root to run this command.  On MacOS, Neubot's
   installer configures the system to launch Neubot at startup; i.e.,
@@ -271,7 +271,7 @@ neubot start
   which drops root privileges and runs in the background.  On such
   systems, this command does not accept any command line option.
 
-neubot status
+**neubot status**
   This command asks the status of Neubot using the web API.  It
   returns 0 if connect() succeeds and the response is OK, nonzero
   otherwise.
@@ -280,7 +280,7 @@ neubot status
   which makes it more verbose. On other UNIX systems, it does
   not accept any command line option.
 
-neubot stop
+**neubot stop**
   On MacOS, this command runs launchctl(1), which in turn stops
   Neubot. You must be root to run this command. On MacOS, this
   command accepts the ``-v`` option, which makes it more verbose.
@@ -288,7 +288,7 @@ neubot stop
   On Windows and other UNIX systems, this command uses the web
   API to request Neubot to exit.
 
-neubot viewer [-A address] [-p port]
+**neubot viewer [-A address] [-p port]**
   This command shows the web interface by embedding a web
   rendering engine into a window manager's window.
 
@@ -309,7 +309,7 @@ FILES
 Assuming that Neubot is installed at ``/usr/local``, this is the
 list of the files installed.
 
-/etc/neubot/api
+**/etc/neubot/api**
   Configuration file that indicates the endpoint where Neubot should
   listen for web API requests. Example (which also indicates the
   default values)::
@@ -322,7 +322,7 @@ list of the files installed.
     port 9774          # Port where to listen
  
 
-/etc/neubot/users
+**/etc/neubot/users**
   Configuration file that indicates the unprivileged user names
   that Neubot should use. Example (which also indicates the default
   values)::
@@ -334,55 +334,55 @@ list of the files installed.
     update_user _neubot_update  # For auto-updates (MacOS-only)
     unpriv_user _neubot         # For network tests
 
-/usr/local/bin/neubot
+**/usr/local/bin/neubot**
   The Neubot executable script.
 
-/usr/local/share/neubot/*
+**/usr/local/share/neubot/**
   Location where Neubot Python modules are installed.
 
-/usr/local/share/neubot/www/*
+**/usr/local/share/neubot/www/**
   Location where the web user interface files are installed.
 
-/user/local/share/neubot/www/test/foo.html
-  Description of the *foo* test. It is included into the results.html
+**/usr/local/share/neubot/www/test/foo.html**
+  Description of the ``foo`` test. It is included into the results.html
   page when the test is selected.
 
-/user/local/share/neubot/www/test/foo.json
+**/usr/local/share/neubot/www/test/foo.json**
   Description of the plots and tables included into results.html
-  when test *foo* is selected. The *recipe* that specifies how to
+  when test ``foo`` is selected. The recipe that specifies how to
   compute the values to plot and/or write into the tables is written
   in a domain-specific language based on LISP. We describe this
   language below, in the `RECIPE DSL`_ section.
 
-/user/local/share/neubot/www/test/foo.json.local
-  User-modified *foo.json* file. When *foo.json.local* is present on
+**/user/local/share/neubot/www/test/foo.json.local**
+  User-modified ``foo.json`` file. When ``foo.json.local`` is present on
   the filesystem, Neubot uses the user-modified version instead
   of the the stock version. Allows you to heavily customize the
-  results page of the *foo* experiment.
+  results page of the ``foo`` experiment.
 
-/var/lib/neubot/database.sqlite3
+**/var/lib/neubot/database.sqlite3**
   System-wide results database for Linux systems, created when
   Neubot starts for the first time.
 
-/var/neubot/database.sqlite3
+**/var/neubot/database.sqlite3**
   System-wide results database for UNIX systems (except Linux),
   created when Neubot starts for the first time.
 
 EXAMPLES
 ````````
 
-In this section we represent the unprivileged user prompt with *$*
-and the root user prompt with *#*.
+In this section we represent the unprivileged user prompt with ``$``
+and the root user prompt with ``#``.
 
-Run ondemand `bittorrent` test::
+Run ondemand `bittorrent`_ test::
 
     $ neubot bittorrent
 
-Run ondemand `raw` test::
+Run ondemand `raw`_ test::
 
     $ neubot raw
 
-Run ondemand `speedtest` test::
+Run ondemand `speedtest`_ test::
 
     $ neubot speedtest
 
@@ -406,7 +406,7 @@ Export system-wide results to JSON::
 
 Run Neubot ``command`` from the sources directory::
 
-    $ ./bin/neubot *command*
+    $ ./bin/neubot command
 
 IMPLEMENTED TESTS
 `````````````````
@@ -498,38 +498,38 @@ degli Abruzzi 24, 10129 Turin, ITALY."
 AUTHOR
 ``````
 
-Neubot authors are:
+Neubot authors are::
 
-|
-| Simone Basso                  <bassosimone@gmail.com>
-| Antonio Servetti              <antonio.servetti@polito.it>
+  Simone Basso                  <bassosimone@gmail.com>
+  Antonio Servetti              <antonio.servetti@polito.it>
 
-The following people have contributed patches to the project:
+The following people have contributed patches to the project::
 
-|
-| Alessio Palmero Aprosio	<alessio@apnetwork.it>
-| Roberto D'Auria		<everlastingfire@autistici.org>
-| Marco Scopesi			<marco.scopesi@gmail.com>
+  Alessio Palmero Aprosio	<alessio@apnetwork.it>
+  Roberto D'Auria		<everlastingfire@autistici.org>
+  Marco Scopesi			<marco.scopesi@gmail.com>
 
-The following people have helped with internationalization:
+The following people have helped with internationalization::
 
-|
-| Claudio Artusio               <claudioartusio@gmail.com>
+  Claudio Artusio               <claudioartusio@gmail.com>
 
 COPYRIGHT
 `````````
 
-| Copyright (c) 2010-2013 Nexa Center for Internet & Society,
-|     Politecnico di Torino (DAUIN)
+Individual files are copyright of the individual contributor, and
+Neubot as a collection is::
 
-| Neubot is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License
-| as published by the Free Software Foundation, either version
-| 3 of the License, or (at your option) any later version.
+  Copyright (c) 2010-2013 Nexa Center for Internet & Society,
+      Politecnico di Torino (DAUIN)
+ 
+  Neubot is free software: you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation, either version
+  3 of the License, or (at your option) any later version.
 
 SEE ALSO
 ````````
 
-| ``http://www.neubot.org/``
-| ``http://github.com/neubot/neubot``
-| ``http://twitter.com/neubot``
+- http://www.neubot.org/
+- http://github.com/neubot/neubot
+- http://twitter.com/neubot
