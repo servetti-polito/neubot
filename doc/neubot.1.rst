@@ -289,7 +289,7 @@ neubot stop
   API to request Neubot to exit.
 
 neubot viewer [-A address] [-p port]
-  Application that shows the web interface by embedding a web
+  This command shows the web interface by embedding a web
   rendering engine into a window manager's window.
 
   By default, this command uses 127.0.0.1 as the address and 9774
