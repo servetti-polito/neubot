@@ -293,7 +293,7 @@ neubot viewer [-A address] [-p port]
   rendering engine into a window manager's window.
 
   By default, this command uses 127.0.0.1 as the address and 9774
-  as the port. Override the default by editing the `/etc/neubot/api`
+  as the port. Override the default by editing the ``/etc/neubot/api``
   configuration file. Override the configuration file by using the
   command line, as follows:
 
