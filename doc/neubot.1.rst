@@ -341,7 +341,7 @@ list of the files installed.
   Location where Neubot Python modules are installed.
 
 **/usr/local/share/neubot/www/**
-  Location where the web user interface files are installed.
+  Location where the web interface files are installed.
 
 **/usr/local/share/neubot/www/test/foo.html**
   Description of the ``foo`` test. It is included into the results.html
