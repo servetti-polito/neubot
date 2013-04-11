@@ -97,7 +97,7 @@ neubot bittorrent [-6fv] [-A address] [-p port]
       (instead of using the web API) and override privacy
       settings if needed. Useful for developers and for debugging.
 
-    -p
+    -p port
       Port of the remote test server.
 
     -v
@@ -195,7 +195,7 @@ neubot raw [-6fv] [-A address] [-p port]
       (instead of using the web API) and override privacy
       settings if needed. Useful for developers and for debugging.
 
-    -p
+    -p port
       Port of the remote test server.
 
     -v
@@ -218,7 +218,7 @@ neubot speedtest [-6fv] [-A address] [-p port]
       (instead of using the web API) and override privacy
       settings if needed. Useful for developers and for debugging.
 
-    -p
+    -p port
       Port of the remote test server.
 
     -v
