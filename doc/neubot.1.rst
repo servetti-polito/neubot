@@ -332,10 +332,10 @@ list of the files installed.
     server side includes (on the server side) and javascript (on the
     client side) to show its web user interface.
 
-    **.../neubot/www/footer.html***
+    **.../neubot/www/footer.html**
       Common footer for all web pages.
 
-    **.../neubot/www/header.html***
+    **.../neubot/www/header.html**
       Common header for all web pages.
 
     **.../neubot/www/results.html**
