@@ -311,8 +311,8 @@ list of the files installed.
 
 **/etc/neubot/api**
   Configuration file that indicates the endpoint where Neubot should
-  listen for web API requests. Example (which also indicates the
-  default values)::
+  listen for web API requests. Example (which also shows the syntax
+  and indicates the default values)::
 
     #
     # /etc/neubot/api - controls address, port where Neubot api
@@ -324,8 +324,8 @@ list of the files installed.
 
 **/etc/neubot/users**
   Configuration file that indicates the unprivileged user names
-  that Neubot should use. Example (which also indicates the default
-  values)::
+  that Neubot should use. Example (which also shows the syntax
+  and indicates the default values)::
 
     #
     # /etc/neubot/users - controls the unprivileged user names used
