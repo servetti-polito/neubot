@@ -106,7 +106,7 @@ This section documents Neubot's subcommands.
   Performs the specified ``action``, or prints the database's path
   if no action is specified.  We do not recommended to use this
   command to modify the database while Neubot is running, since
-  Neubot's code is not ready for that. On UNIX systems, this
+  Neubot's code is not ready for that. This
   command requires root privileges to modify the database: if you
   are not root, the database is opened in readonly mode.
 
@@ -366,7 +366,7 @@ list of the files installed.
   Neubot starts for the first time.
 
 **/var/neubot/database.sqlite3**
-  System-wide results database for UNIX systems (except Linux),
+  System-wide results database for non-Linux UNIX systems,
   created when Neubot starts for the first time.
 
 EXAMPLES
