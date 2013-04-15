@@ -589,11 +589,11 @@ Here is a detailed description of each API.
 
   The API accepts the following query-string options:
 
-  **debug=BOOL**
+  **debug=integer**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
 
-  **labels=BOOL**
+  **labels=integer**
     When nonzero, returns the description of the variables instead of their
     values.
 
@@ -618,7 +618,7 @@ Here is a detailed description of each API.
 
 **/api/debug**
   This API allows you to ``GET`` information about Neubot internals, which
-  is typically useful for debugging purposes. As such, the consistencty
+  is typically useful for debugging purposes. As such, the consistency
   of the output format is not guaranteed.
 
   Example output::
@@ -635,8 +635,8 @@ Here is a detailed description of each API.
                   }}
 
 **/api/data**
-  This API allows to retrieve the results collected during Neubot tests,
-  using the ``GET`` method. As we have a single API for all tests, you
+  This API allows you to retrieve the results collected during Neubot tests
+  via the ``GET`` method. As we have a single API for all tests, you
   must provide the test name using the query string.
 
   This API returns a JSON which serializes a list of dictionaries, where
