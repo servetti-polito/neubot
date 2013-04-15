@@ -444,7 +444,7 @@ uses jQuery and jqPlot.
   ``LANG``, that maps each string to its translation.
 
   In javascript code, you mark strings for translation by wrapping them
-  with a ``i18n.get()`` calls. For example, to indicate that the string
+  with ``i18n.get()`` calls. For example, to indicate that the string
   "Disable automatic tests" should be translated, you write::
 
     ...
