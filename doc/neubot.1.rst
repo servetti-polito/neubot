@@ -112,7 +112,7 @@ transferred bytes by the elapsed time. To avoid consuming too much
 user resources, the ``bittorrent`` test adapts the number of bytes to
 transfer such that the test runs for about five seconds.
 
-See the ``WEB API`` section for a description of the results saved
+See the `WEB API`_ section for a description of the results saved
 by all the experiments (see, in particular, the ``/api/data``
 description).
 
