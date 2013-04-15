@@ -322,7 +322,7 @@ list of the files installed.
 **/usr/local/share/neubot/**
   Location where Neubot Python modules are installed.
 
-  **.../neubot/www/**
+  **.../share/neubot/www/**
     Location where the web interface files are installed. Neubot uses
     server side includes (on the server side) and javascript (on the
     client side) to show its web user interface.
@@ -350,13 +350,13 @@ list of the files installed.
       **.../www/test/foo.json**
         Description of the plots and tables included into ``results.html``
         when test ``foo`` is selected. The format of the JSON is documented
-        into the `WEB API`_ section.
+        into the `WEB API`_ section (see **/api/results** description).
 
       **.../www/test/foo.json.local**
         When ``foo.json.local`` exists, Neubot will use it (instead of
-        ``foo.json``) to prepare plots and tables in ``results.html`` when
-        test ``foo`` is selected. Allows the user to heavily customize
-        the results page for test ``foo``.
+        ``foo.json``) to prepare plots and tables in ``results.html``.
+        Allows the user to heavily customize the results page for test
+        ``foo``.
 
 **/var/lib/neubot/database.sqlite3**
   System-wide results database for Linux systems, created when
