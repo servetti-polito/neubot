@@ -639,30 +639,29 @@ Here is a detailed description of each API.
   via the ``GET`` method. As we have a single API for all tests, you
   must provide the test name using the query string.
 
-  This API returns a JSON which serializes a list of dictionaries, where
-  each dictionary is the result of a test. The structure of the dictionary
-  is test-dependent and is described later.
+  This API returns a JSON that serializes a list of dictionaries, in which
+  each dictionary is the result of a test.
 
   The API accepts the following query-string parameters:
 
-  **test=STRING**
+  **test=string**
     This parameter is mandatory and specifies the test whose results you
     want to retrieve.
 
-  **since=INT**
+  **since=integer**
     Returns only the results collected after the specified time (indicated
     as the number of seconds elapsed since the midnight of January, 1st 1970).
 
-  **until=INT**
+  **until=integer**
     Returns only the results collected before the specified time (indicated
     as the number of seconds elapsed since midnight of January, 1st 1970).
 
-  **debug=BOOL**
+  **debug=integer**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
 
-  The ``bittorrent`` test result is saved into the following
-  dictionary.
+  The ``bittorrent`` test result is represented by a dictionary that
+  contains the following fields:
 
     **connect_time (float)**
       RTT estimated by measuring the time that connect() takes
