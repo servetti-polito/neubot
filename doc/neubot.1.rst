@@ -74,6 +74,47 @@ The command line interface allows you to get the usage string
 (``neubot --help``), get the version number (``neubot -V``) and
 run a Neubot's subcommand (``neubot subcommand...``).
 
+IMPLEMENTED TESTS
+`````````````````
+
+All Neubot tests receive and send random data. Also, note that Neubot does
+not monitor the user's traffic.
+
+Neubot implements three active network tests: ``bittorrent``, ``raw`` and
+``speedtest``. For each test, there is a Neubot subcommand that allows
+to run the test immediately. Also, note that Neubot schedules one of the
+three tests at random every 23 - 27 minutes.
+
+The ``bittorrent`` test emulates BitTorrent peer-wire protocol to
+estimate the round-trip time, the download and the upload goodput.
+It uses the time that connect() takes to complete as an estimator of
+the round-trip time. It estimates the goodput by dividing the amount of
+transferred bytes by the elapsed time. To avoid consuming too much
+user resources, the ``bittorrent`` test adapts the number of bytes to
+transfer such that the test runs for about five seconds.
+
+The ``raw`` test performs a `raw` 10-second TCP download to estimate the
+download goodput. Also, it estimates the goodput from the round-trip time,
+and it collects statistics about the TCP sender by reading kernel-level
+data exported by Web100 on the server. In addition, it estimates the
+round-trip time in two ways: (1) by measuring the time that connect()
+takes to complete (like ``bittorrent``) and (2) by measuring the average
+time elapsed between sending a small request and received a small response.
+
+The ``speedtest`` test emulates HTTP to estimate the round-trip time,
+the download and the upload goodput. In addition, it estimates the
+round-trip time in two ways: (1) by measuring the time that connect()
+takes to complete (like ``bittorrent``) and (2) by measuring the average
+time elapsed between sending a small request and received a small
+response (like ``raw``). It estimates the goodput by dividing the amount of
+transferred bytes by the elapsed time. To avoid consuming too much
+user resources, the ``bittorrent`` test adapts the number of bytes to
+transfer such that the test runs for about five seconds.
+
+See the ``WEB API`` section for a description of the results saved
+by all the experiments (see, in particular, the **/api/data**
+description).
+
 SUBCOMMANDS
 ```````````
 
@@ -363,7 +404,7 @@ list of the files installed.
   Neubot starts for the first time.
 
 **/var/neubot/database.sqlite3**
-  System-wide results database for non-Linux UNIX systems,
+  System-wide results database for non-Linux systems,
   created when Neubot starts for the first time.
 
 EXAMPLES
@@ -405,11 +446,6 @@ Export Neubot results to JSON::
 Run Neubot ``command`` from the sources directory::
 
     $ ./bin/neubot command
-
-IMPLEMENTED TESTS
-`````````````````
-
-TBD
 
 WEB INTERFACE
 `````````````
