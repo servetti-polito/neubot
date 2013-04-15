@@ -456,7 +456,7 @@ uses jQuery and jqPlot.
     Javascript code for log.html. Contains code to retrieve and process
     Neubot logs.
 
-  **js/privacy.js**.
+  **js/privacy.js**
     Javascript code for privacy.html. Contains code to query and modify privacy
     settings.
 
@@ -508,10 +508,22 @@ uses jQuery and jqPlot.
         ...
     };
 
+**log.html**
+  Shows Neubot logs.
+
+**not_running.html**
+  Page displayed when Neubot is not running.
+
+**privacy.html**
+  Shows (and allows to modify) privacy settings.
+
 **results.html**
   The results page, dynamically filled by javascript using Neubot web
   API. It allows you to see the results of recent experiments, both
   in form of plots and tables. 
+
+**settings.html**
+  Shows (and allows to modify) Neubot settings.
 
 **test/**
   Directory that contains a ``foo.html`` and a ``foo.json`` file for
@@ -532,6 +544,11 @@ uses jQuery and jqPlot.
     ``foo.json``) to prepare plots and tables in ``results.html``.
     Allows the user to heavily customize the results page for test
     ``foo``.
+
+**update.html**
+  Page displayed on Windows when Neubot needs to be manually
+  updated. Now that automatic updates are implemented, it
+  should never pop up.
 
 WEB API
 ```````
