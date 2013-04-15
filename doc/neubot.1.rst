@@ -449,31 +449,27 @@ uses jQuery and jqPlot.
     Implementation of web user interface internationalization.
 
   **js/index.js**
-    Javascript code for index.html. Contains functions to retrieve and process
-    the state of Neubot.
+    Contains functions to retrieve and process the state of Neubot.
 
   **js/log.js**
-    Javascript code for log.html. Contains code to retrieve and process
-    Neubot logs.
+    Contains code to retrieve and process Neubot logs.
 
   **js/privacy.js**
-    Javascript code for privacy.html. Contains code to query and modify privacy
-    settings.
+    Contains code to query and modify privacy settings.
 
   **js/results.js**
-    Javascript code for results.html. Contains code to process Neubot
-    results, as well as code to display them as plots and tables. 
+    Contains code to process Neubot results, as well as code to display
+    them as plots and tables. 
 
   **js/settings.js**
-    Javascript code for settings.html. Contains code to retrieve and
-    modify Neubot settings.
+    Contains code to retrieve and modify Neubot settings.
 
   **js/state.js**
     Helper code for retrieving and processing Neubot state.
 
   **js/update.js**
-    Javascript code for update.html. It does not add functionalities, and it
-    just sets the active tab in the web interface.
+    Minimal script included by updater.html. It just sets the active
+    tab in the web interface.
 
   **js/utils.js**
     Miscellaneous helper functions.
@@ -483,9 +479,9 @@ uses jQuery and jqPlot.
   the web interface. Each of these javascripts contains a dictionary, named
   ``LANG``, that maps each string to its translation.
 
-  In javascript code, you mark strings for translation by wrapping them
+  In javascript, you mark strings for translation by wrapping them
   with ``i18n.get()`` calls. For example, to indicate that the string
-  "Disable automatic tests" should be translated, you write::
+  "Disable automatic tests" should be translated, you should write::
 
     ...
     i18n.get("Disable automatic tests");
@@ -553,7 +549,41 @@ uses jQuery and jqPlot.
 WEB API
 ```````
 
-TDB
+To access Neubot API, send HTTP requests to the address and port
+where Neubot is listening (which is 127.0.0.1:9774 by default, and
+which can be changed by editing ``/etc/neubot/api``).
+
+Here is a list of all the available APIs, with their brief
+description.
+
++--------------+---------------------------+
+| API          | Description               |
++--------------+---------------------------+
+| /api         | List all available APIs   |
++--------------+---------------------------+
+| /api/        | List all available APIs   |
++--------------+---------------------------+
+| /api/config  | Get/set config            |
++--------------+---------------------------+
+| /api/debug   | Get debug info            |
++--------------+---------------------------+
+| /api/data    | Get tests results data    |
++--------------+---------------------------+
+| /api/exit    | Exit immediately          |
++--------------+---------------------------+
+| /api/index   | Privacy redirection       |
++--------------+---------------------------+
+| /api/log     | Get logs                  |
++--------------+---------------------------+
+| /api/results | Results presentation info |
++--------------+---------------------------+
+| /api/runner  | Run a test now            |
++--------------+---------------------------+
+| /api/state   | Track Neubot state        |
++--------------+---------------------------+
+| /api/version | Get Neubot version        |
++--------------+---------------------------+
+
 
 PRIVACY
 ```````

@@ -102,14 +102,53 @@ subcommand. To change the address and/or port where Neubot listens
 for web requests, edit \fB/etc/neubot/api\fP (see the \fI\%FILES\fP
 section).
 .sp
-On UNIX, Neubot runs with the privileges of the \fB_neubot\fP user
+Neubot runs with the privileges of the \fB_neubot\fP user,
 or with the ones of the user indicated in the \fB/etc/neubot/users\fP
-configuration file (see the \fI\%FILES\fP section).  On Windows, Neubot runs in
-the context of the user session and has user privileges.
+configuration file (see the \fI\%FILES\fP section).
 .sp
 The command line interface allows you to get the usage string
-(\fBneubot \-\-help\fP), get the version number (\fBneubot \-V\fP), and run a
-Neubot\(aqs subcommand (\fBneubot subcommand...\fP).
+(\fBneubot \-\-help\fP), get the version number (\fBneubot \-V\fP) and
+run a Neubot\(aqs subcommand (\fBneubot subcommand...\fP).
+.SH IMPLEMENTED TESTS
+.sp
+All Neubot tests receive and send random data. Also, note that Neubot does
+not monitor the user\(aqs traffic.
+.sp
+Neubot implements three active network tests: \fBbittorrent\fP, \fBraw\fP and
+\fBspeedtest\fP. For each test, there is a Neubot subcommand that allows
+to run the test immediately. Also, note that Neubot schedules one of the
+three tests at random every 23 \- 27 minutes.
+.sp
+The \fBbittorrent\fP test emulates BitTorrent peer\-wire protocol to
+estimate the round\-trip time, the download and the upload goodput.
+It uses the time that connect() takes to complete as an estimator of
+the round\-trip time. It estimates the goodput by dividing the amount of
+transferred bytes by the elapsed time. To avoid consuming too much
+user resources, the \fBbittorrent\fP test adapts the number of bytes to
+transfer such that the test runs for about five seconds.
+.sp
+The \fBraw\fP test performs a \fIraw\fP 10\-second TCP download to estimate the
+download goodput. Also, it estimates the goodput from the round\-trip time,
+and it collects statistics about the TCP sender by reading kernel\-level
+data exported by Web100 (see \fBhttp://www.web100.org\fP) on the server. In
+addition, it estimates the round\-trip time in two ways: (1) by measuring
+the time that connect() takes to complete (like \fBbittorrent\fP) and (2)
+by measuring the average time elapsed between sending a small request
+and received a small response.
+.sp
+The \fBspeedtest\fP test emulates HTTP to estimate the round\-trip
+time, the download and the upload goodput. It estimates the round\-trip
+time in two ways: (1) by measuring the time that connect() takes
+to complete (like \fBbittorrent\fP) and (2) by measuring the average
+time elapsed between sending a small request and received a small
+response (like \fBraw\fP). It estimates the goodput by dividing the
+amount of transferred bytes by the elapsed time. To avoid consuming
+too much user resources, the \fBbittorrent\fP test adapts the number
+of bytes to transfer such that the test runs for about five seconds.
+.sp
+See the \fI\%WEB API\fP section for a description of the results saved
+by all the experiments (see, in particular, the \fB/api/data\fP
+description).
 .SH SUBCOMMANDS
 .sp
 This section documents Neubot\(aqs subcommands.
@@ -145,12 +184,13 @@ Makes the command more verbose.
 .UNINDENT
 .TP
 .B \fBneubot database [\-f database] [action]\fP
-Performs the specified \fBaction\fP, or prints the database\(aqs path
+Performs the specified \fBaction\fP or prints the database\(aqs path
 if no action is specified.  We do not recommended to use this
 command to modify the database while Neubot is running, since
-Neubot\(aqs code is not ready for that. On UNIX systems, this
-command requires root privileges to modify the database: if you
-are not root, the database is opened in readonly mode.
+Neubot\(aqs does not expect the database to change while it is
+running, so it won\(aqt pick the changes up. This command requires
+\fBroot\fP privileges to modify the database: if you are not
+\fBroot\fP, the database is opened in readonly mode.
 .sp
 Accepts the following options:
 .INDENT 7.0
@@ -191,7 +231,8 @@ in JSON format.
 .TP
 .B \fBneubot privacy [\-Pt] [\-D setting=value] [\-f database]\fP
 Manage privacy settings. When invoked without
-options, this command prints the privacy settings value.
+options, this command prints the current privacy
+settings values.
 .sp
 Accepts the following options:
 .INDENT 7.0
@@ -199,8 +240,8 @@ Accepts the following options:
 .INDENT 0.0
 .TP
 .B \-D setting=value
-Set privacy setting value. When value is \fI0\fP the privacy setting
-is "off", otherwise it is "on".
+Turn on (nonzero) and off (zero) the specified privacy
+setting.
 .sp
 Note: this command just modifies the database: you have to
 restart Neubot to make changes effective. To modify privacy
@@ -227,7 +268,7 @@ address allowing anyone to reuse it for research purposes.
 .UNINDENT
 .sp
 Note: Neubot performs network tests only when all privacy
-settings are "on".
+settings are on.
 .UNINDENT
 .INDENT 0.0
 .TP
@@ -239,8 +280,8 @@ default database path.
 Prints privacy policy on the standard output.
 .TP
 .B \-t
-Test.  Exits with success (exit value \fI0\fP) if privacy
-settings are all nonzero.  Exits with failure (exit value
+Test.  Exits with success (exit value \fI0\fP) if all privacy
+settings all nonzero.  Exits with failure (exit value
 \fInonzero\fP) if at least one setting is zero.
 .UNINDENT
 .UNINDENT
@@ -306,7 +347,7 @@ Makes the command more verbose.
 .TP
 .B \fBneubot start\fP
 On MacOS this command runs launchctl(1), which in turn starts
-Neubot. You must be root to run this command.  On MacOS, Neubot\(aqs
+Neubot. You must be \fBroot\fP to run this command.  On MacOS, Neubot\(aqs
 installer configures the system to launch Neubot at startup; i.e.,
 you do not typically need to run this command.
 .sp
@@ -319,13 +360,14 @@ On MacOS, the start command accepts the following options:
 .INDENT 3.5
 .INDENT 0.0
 .TP
+.B \-a
+Auto\-updates. When this flag is specified, the privileged
+daemon periodically forks an unprivileged child to check
+for updates.
+.TP
 .B \-d
 Debug. When this flag is specified, Neubot runs in
 the foreground.
-.TP
-.B \-n
-No auto\-updates. When this flag is specified, the privileged
-daemon does not check for updates.
 .TP
 .B \-v
 Verbose. When this flag is specified, the start command
@@ -338,28 +380,11 @@ in the foreground.
 .UNINDENT
 .UNINDENT
 .sp
-On Windows, the start command runs Neubot with the privileges
-of the user that invokes it. On Windows, Neubot is run when a
-user logs in, and runs in the context of the user\(aqs session.
-.sp
-On Windows, the start command accepts the following options:
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.B \-k
-Kill. When \-k is specified, Neubot kills an already
-running Neubot instance (if any) before starting up.
-.sp
-This is used by the automatic updates process: once the new
-version of Neubot is downloaded and installed, the old version
-executes it with \fBstart \-k\fP.
-.UNINDENT
-.UNINDENT
-.UNINDENT
+At boot time, launchctl(1) starts Neubot with the \-a and \-d
+command line options.
 .sp
 On other UNIX systems, the start command forks the Neubot daemon,
-which drops root privileges and runs in the background.  On such
+which drops \fBroot\fP privileges and runs in the background.  On such
 systems, this command does not accept any command line option.
 .TP
 .B \fBneubot status\fP
@@ -367,38 +392,23 @@ This command asks the status of Neubot using the web API.  It
 returns 0 if connect() succeeds and the response is OK, nonzero
 otherwise.
 .sp
-On Windows and MacOS this command accepts the \fB\-v\fP option,
-which makes it more verbose. On other UNIX systems, it does
-not accept any command line option.
+On MacOS this command accepts the \fB\-v\fP option, which makes it
+more verbose. On other UNIX systems, it does not accept any
+command line option.
 .TP
 .B \fBneubot stop\fP
 On MacOS, this command runs launchctl(1), which in turn stops
-Neubot. You must be root to run this command. On MacOS, this
+Neubot. You must be \fBroot\fP to run this command. On MacOS, this
 command accepts the \fB\-v\fP option, which makes it more verbose.
 .sp
-On Windows and other UNIX systems, this command uses the web
+On other UNIX systems, this command uses the web
 API to request Neubot to exit.
 .TP
-.B \fBneubot viewer [\-A address] [\-p port]\fP
+.B \fBneubot viewer\fP
 This command shows the web interface by embedding a web
-rendering engine into a window manager\(aqs window.
-.sp
-By default, this command uses 127.0.0.1 as the address and 9774
-as the port. Override the default by editing the \fB/etc/neubot/api\fP
-configuration file. Override the configuration file by using the
-command line, as follows:
-.INDENT 7.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.BI \-A \ address
-Override address where Neubot is listening.
-.TP
-.BI \-p \ port
-Override port where Neubot is listening.
-.UNINDENT
-.UNINDENT
-.UNINDENT
+rendering engine into a window manager\(aqs window. Currently,
+the only implemented \fBviewer\fP is based on \fBpython\-webkit\fP
+and \fBpygtk\fP.
 .UNINDENT
 .SH FILES
 .sp
@@ -451,63 +461,25 @@ The Neubot executable script.
 .TP
 .B \fB/usr/local/share/neubot/\fP
 Location where Neubot Python modules are installed.
-.INDENT 7.0
 .TP
-.B \fB.../neubot/www/\fP
-Location where the web interface files are installed. Neubot uses
-server side includes (on the server side) and javascript (on the
-client side) to show its web user interface.
-.INDENT 7.0
-.TP
-.B \fB.../neubot/www/footer.html*\fP
-Common footer for all web pages.
-.TP
-.B \fB.../neubot/www/header.html*\fP
-Common header for all web pages.
-.TP
-.B \fB.../neubot/www/results.html\fP
-The results page, dynamically filled by javascript using Neubot web
-API. It allows you to see the results of recent experiments, both
-in form of plots and tables.
-.TP
-.B \fB.../neubot/www/test/\fP
-Directory that contains a \fBfoo.html\fP and a \fBfoo.json\fP file for
-each test \fBfoo\fP. The list of available tests in \fBresults.html\fP is
-automatically generated from the files in this directory.
-.INDENT 7.0
-.TP
-.B \fB.../www/test/foo.html\fP
-Description of the \fBfoo\fP test. It is included into the
-\fBresults.html\fP page when the test is selected.
-.TP
-.B \fB.../www/test/foo.json\fP
-Description of the plots and tables included into \fBresults.html\fP
-when test \fBfoo\fP is selected. The format of the JSON is documented
-into the \fI\%WEB API\fP section.
-.TP
-.B \fB.../www/test/foo.json.local\fP
-When \fBfoo.json.local\fP exists, Neubot will use it (instead of
-\fBfoo.json\fP) to prepare plots and tables in \fBresults.html\fP when
-test \fBfoo\fP is selected. Allows the user to heavily customize
-the results page for test \fBfoo\fP.
-.UNINDENT
-.UNINDENT
-.UNINDENT
+.B \fB/usr/local/share/neubot/www/\fP
+Location where the web interface files are installed. The web interface
+is described in the \fI\%WEB INTERFACE\fP section.
 .TP
 .B \fB/var/lib/neubot/database.sqlite3\fP
 System\-wide results database for Linux systems, created when
 Neubot starts for the first time.
 .TP
 .B \fB/var/neubot/database.sqlite3\fP
-System\-wide results database for UNIX systems (except Linux),
+System\-wide results database for non\-Linux systems,
 created when Neubot starts for the first time.
 .UNINDENT
 .SH EXAMPLES
 .sp
 In this section we represent the unprivileged user prompt with \fB$\fP
-and the root user prompt with \fB#\fP.
+and the \fBroot\fP user prompt with \fB#\fP.
 .sp
-Run ondemand bittorrent test:
+Run on\-demand bittorrent test:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -519,7 +491,7 @@ $ neubot bittorrent
 .UNINDENT
 .UNINDENT
 .sp
-Run ondemand raw test:
+Run on\-demand raw test:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -531,7 +503,7 @@ $ neubot raw
 .UNINDENT
 .UNINDENT
 .sp
-Run ondemand speedtest test:
+Run on\-demand speedtest test:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -568,7 +540,7 @@ $ neubot stop  # other UNIX
 .UNINDENT
 .UNINDENT
 .sp
-Run Neubot in foreground with verbose logging:
+Run Neubot in the foreground with verbose logging:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -581,7 +553,7 @@ $ neubot agent \-v \-D agent.daemonize=no  # other UNIX
 .UNINDENT
 .UNINDENT
 .sp
-Export system\-wide results to JSON:
+Export Neubot results to JSON:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -604,18 +576,255 @@ $ ./bin/neubot command
 .fi
 .UNINDENT
 .UNINDENT
-.SH IMPLEMENTED TESTS
-.sp
-TBD
 .SH WEB INTERFACE
 .sp
-TBD
+Neubot web interface uses server side includes (on the server side)
+and javascript (and the client side).  On the Javascript side, Neubot
+uses jQuery and jqPlot.
+.INDENT 0.0
+.TP
+.B \fBcss/\fP
+Directory that contains CSS files.
+.TP
+.B \fBfavicon.ico\fP
+Neubot\(aqs favicon.
+.TP
+.B \fBfooter.html\fP
+Common footer for all web pages.
+.TP
+.B \fBheader.html\fP
+Common header for all web pages.
+.TP
+.B \fBimg/\fP
+Directory that contains images.
+.TP
+.B \fBjs/\fP
+Directory that contains javascript files. In addition to jQuery and
+jqPlot, it contains the following scripts.
+.INDENT 7.0
+.TP
+.B \fBjs/contrib.js\fP
+Helper functions from many authors.
+.TP
+.B \fBjs/i18n.js\fP
+Implementation of web user interface internationalization.
+.TP
+.B \fBjs/index.js\fP
+Contains functions to retrieve and process the state of Neubot.
+.TP
+.B \fBjs/log.js\fP
+Contains code to retrieve and process Neubot logs.
+.TP
+.B \fBjs/privacy.js\fP
+Contains code to query and modify privacy settings.
+.TP
+.B \fBjs/results.js\fP
+Contains code to process Neubot results, as well as code to display
+them as plots and tables.
+.TP
+.B \fBjs/settings.js\fP
+Contains code to retrieve and modify Neubot settings.
+.TP
+.B \fBjs/state.js\fP
+Helper code for retrieving and processing Neubot state.
+.TP
+.B \fBjs/update.js\fP
+Minimal script included by updater.html. It just sets the active
+tab in the web interface.
+.TP
+.B \fBjs/utils.js\fP
+Miscellaneous helper functions.
+.UNINDENT
+.TP
+.B \fBlang/\fP
+Directory that contains one javascript file for each translation of
+the web interface. Each of these javascripts contains a dictionary, named
+\fBLANG\fP, that maps each string to its translation.
+.sp
+In javascript, you mark strings for translation by wrapping them
+with \fBi18n.get()\fP calls. For example, to indicate that the string
+"Disable automatic tests" should be translated, you should write:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&...
+i18n.get("Disable automatic tests");
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+In HTML code, you mark HTML tags for translation by adding them to
+the \fBi18n\fP class. In addition, you indicate the handle to be used
+for translation by adding the selected tag to the \fBi18n_foo\fP
+class. For example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&...
+<p class="i18n i18n_foobar">Neubot web interface</p>
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To translate the two examples above in, for example, Italian you
+edit the \fBwww/lang/it.css\fP file and add:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+var LANG = {
+    ...
+    "Disable automatic tests": "Disabilita test automatici",
+    "i18n_foobar": "Interfaccia web di Neubot",
+    ...
+};
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fBlog.html\fP
+Shows Neubot logs.
+.TP
+.B \fBnot_running.html\fP
+Page displayed when Neubot is not running.
+.TP
+.B \fBprivacy.html\fP
+Shows (and allows to modify) privacy settings.
+.TP
+.B \fBresults.html\fP
+The results page, dynamically filled by javascript using Neubot web
+API. It allows you to see the results of recent experiments, both
+in form of plots and tables.
+.TP
+.B \fBsettings.html\fP
+Shows (and allows to modify) Neubot settings.
+.TP
+.B \fBtest/\fP
+Directory that contains a \fBfoo.html\fP and a \fBfoo.json\fP file for
+each test \fBfoo\fP. The list of available tests in \fBresults.html\fP is
+automatically generated from the files in this directory.
+.INDENT 7.0
+.TP
+.B \fBtest/foo.html\fP
+Description of the \fBfoo\fP test. It is included into the
+\fBresults.html\fP page when the test is selected.
+.TP
+.B \fBtest/foo.json\fP
+Description of the plots and tables included into \fBresults.html\fP
+when test \fBfoo\fP is selected. The format of the JSON is documented
+into the \fI\%WEB API\fP section (see \fB/api/results\fP description).
+.TP
+.B \fBtest/foo.json.local\fP
+When \fBfoo.json.local\fP exists, Neubot will use it (instead of
+\fBfoo.json\fP) to prepare plots and tables in \fBresults.html\fP.
+Allows the user to heavily customize the results page for test
+\fBfoo\fP.
+.UNINDENT
+.TP
+.B \fBupdate.html\fP
+Page displayed on Windows when Neubot needs to be manually
+updated. Now that automatic updates are implemented, it
+should never pop up.
+.UNINDENT
 .SH WEB API
 .sp
-TDB
-.SH RECIPE DSL
+To access Neubot API, send HTTP requests to the address and port
+where Neubot is listening (which is 127.0.0.1:9774 by default, and
+which can be changed by editing \fB/etc/neubot/api\fP).
 .sp
-TBD
+Here is a list of all the available APIs, with their brief
+description.
+.TS
+center;
+|l|l|.
+_
+T{
+API
+T}	T{
+Description
+T}
+_
+T{
+/api
+T}	T{
+List all available APIs
+T}
+_
+T{
+/api/
+T}	T{
+List all available APIs
+T}
+_
+T{
+/api/config
+T}	T{
+Get/set config
+T}
+_
+T{
+/api/debug
+T}	T{
+Get debug info
+T}
+_
+T{
+/api/data
+T}	T{
+Get tests results data
+T}
+_
+T{
+/api/exit
+T}	T{
+Exit immediately
+T}
+_
+T{
+/api/index
+T}	T{
+Privacy redirection
+T}
+_
+T{
+/api/log
+T}	T{
+Get logs
+T}
+_
+T{
+/api/results
+T}	T{
+Results presentation info
+T}
+_
+T{
+/api/runner
+T}	T{
+Run a test now
+T}
+_
+T{
+/api/state
+T}	T{
+Track Neubot state
+T}
+_
+T{
+/api/version
+T}	T{
+Get Neubot version
+T}
+_
+.TE
 .SH PRIVACY
 .\" :Version: 2.0.3
 .
