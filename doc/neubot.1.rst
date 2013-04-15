@@ -71,8 +71,8 @@ or with the ones of the user indicated in the ``/etc/neubot/users``
 configuration file (see the `FILES`_ section).
 
 The command line interface allows you to get the usage string
-(``neubot --help``), get the version number (``neubot -V``), and run a
-Neubot's subcommand (``neubot subcommand...``).
+(``neubot --help``), get the version number (``neubot -V``) and
+run a Neubot's subcommand (``neubot subcommand...``).
 
 SUBCOMMANDS
 ```````````
@@ -103,12 +103,13 @@ This section documents Neubot's subcommands.
       Makes the command more verbose.
 
 **neubot database [-f database] [action]**
-  Performs the specified ``action``, or prints the database's path
+  Performs the specified ``action`` or prints the database's path
   if no action is specified.  We do not recommended to use this
   command to modify the database while Neubot is running, since
-  Neubot's code is not ready for that. This
-  command requires ``root`` privileges to modify the database: if you
-  are not ``root``, the database is opened in readonly mode.
+  Neubot's does not expect the database to change while it is
+  running, so it won't pick the changes up. This command requires
+  ``root`` privileges to modify the database: if you are not
+  ``root``, the database is opened in readonly mode.
 
   Accepts the following options:
 
