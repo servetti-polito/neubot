@@ -440,7 +440,7 @@ uses jQuery and jqPlot.
 
 **lang/**
   Directory that contains one javascript file for each translation of
-  the web interface. Each javascript contains a dictionary, named
+  the web interface. Each of these javascripts contains a dictionary, named
   ``LANG``, that maps each string to its translation.
 
   In javascript code, you mark strings for translation by wrapping them
