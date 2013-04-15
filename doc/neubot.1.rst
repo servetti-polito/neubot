@@ -102,15 +102,15 @@ the time that connect() takes to complete (like ``bittorrent``) and (2)
 by measuring the average time elapsed between sending a small request
 and received a small response.
 
-The ``speedtest`` test emulates HTTP to estimate the round-trip time,
-the download and the upload goodput. In addition, it estimates the
-round-trip time in two ways: (1) by measuring the time that connect()
-takes to complete (like ``bittorrent``) and (2) by measuring the average
+The ``speedtest`` test emulates HTTP to estimate the round-trip
+time, the download and the upload goodput. It estimates the round-trip
+time in two ways: (1) by measuring the time that connect() takes
+to complete (like ``bittorrent``) and (2) by measuring the average
 time elapsed between sending a small request and received a small
-response (like ``raw``). It estimates the goodput by dividing the amount of
-transferred bytes by the elapsed time. To avoid consuming too much
-user resources, the ``bittorrent`` test adapts the number of bytes to
-transfer such that the test runs for about five seconds.
+response (like ``raw``). It estimates the goodput by dividing the
+amount of transferred bytes by the elapsed time. To avoid consuming
+too much user resources, the ``bittorrent`` test adapts the number
+of bytes to transfer such that the test runs for about five seconds.
 
 See the `WEB API`_ section for a description of the results saved
 by all the experiments (see, in particular, the ``/api/data``
