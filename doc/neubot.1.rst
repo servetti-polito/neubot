@@ -419,14 +419,54 @@ Run Neubot ``command`` from the sources directory::
 WEB INTERFACE
 `````````````
 
-Neubot uses server side includes (on the server side) and javascript (on
-the client side) to show its web user interface.
+Neubot web interface uses server side includes (on the server side)
+and javascript (and the client side).  On the Javascript side, Neubot
+uses jQuery and jqPlot.
+
+**css/**
+  Directory that contains CSS files.
+
+**favicon.ico**
+  Neubot's favicon.
 
 **footer.html**
   Common footer for all web pages.
 
 **header.html**
   Common header for all web pages.
+
+**img/**
+  Directory that contains images.
+
+**lang/**
+  Directory that contains one javascript file for each translation of
+  the web interface. Each javascript contains a dictionary, named
+  ``LANG``, that maps each string to its translation.
+
+  In javascript code, you mark strings for translation by wrapping them
+  with a ``i18n.get()`` calls. For example, to indicate that the string
+  "Disable automatic tests" should be translated, you write::
+
+    ...
+    i18n.get("Disable automatic tests");
+
+  In HTML code, you mark HTML tags for translation by adding them to
+  the ``i18n`` class. In addition, you indicate the handle to be used
+  for translation by adding the selected tag to the ``i18n_foo``
+  class. For example::
+
+    ...
+    <p class="i18n i18n_foobar">Neubot web interface</p>
+
+  To translate the two examples above in, for example, Italian you
+  edit the ``www/lang/it.css`` file and add::
+
+    var LANG = {
+        ...
+        "Disable automatic tests": "Disabilita test automatici",
+        "i18n_foobar": "Interfaccia web di Neubot",
+        ...
+    };
 
 **results.html**
   The results page, dynamically filled by javascript using Neubot web
