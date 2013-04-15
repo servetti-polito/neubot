@@ -240,8 +240,9 @@ This section documents Neubot's subcommands.
 
     -a
       Auto-updates. When this flag is specified, the privileged
-      daemon checks for updates. This is how Neubot is started by
-      launchctl(1) on MacOS.
+      daemon periodically forks an unprivileged child to check
+      for updates. This is how Neubot is started by launchctl(1)
+      on MacOS.
 
     -d
       Debug. When this flag is specified, Neubot runs in
