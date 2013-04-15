@@ -364,41 +364,9 @@ list of the files installed.
 **/usr/local/share/neubot/**
   Location where Neubot Python modules are installed.
 
-  **.../share/neubot/www/**
-    Location where the web interface files are installed. Neubot uses
-    server side includes (on the server side) and javascript (on the
-    client side) to show its web user interface.
-
-    **.../neubot/www/footer.html**
-      Common footer for all web pages.
-
-    **.../neubot/www/header.html**
-      Common header for all web pages.
-
-    **.../neubot/www/results.html**
-      The results page, dynamically filled by javascript using Neubot web
-      API. It allows you to see the results of recent experiments, both
-      in form of plots and tables. 
-
-    **.../neubot/www/test/**
-      Directory that contains a ``foo.html`` and a ``foo.json`` file for
-      each test ``foo``. The list of available tests in ``results.html`` is
-      automatically generated from the files in this directory.
-
-      **.../www/test/foo.html**
-        Description of the ``foo`` test. It is included into the
-        ``results.html`` page when the test is selected.
-
-      **.../www/test/foo.json**
-        Description of the plots and tables included into ``results.html``
-        when test ``foo`` is selected. The format of the JSON is documented
-        into the `WEB API`_ section (see ``/api/results`` description).
-
-      **.../www/test/foo.json.local**
-        When ``foo.json.local`` exists, Neubot will use it (instead of
-        ``foo.json``) to prepare plots and tables in ``results.html``.
-        Allows the user to heavily customize the results page for test
-        ``foo``.
+**/usr/local/share/neubot/www/**
+  Location where the web interface files are installed. The web interface
+  is described in the `WEB INTERFACE`_ section.
 
 **/var/lib/neubot/database.sqlite3**
   System-wide results database for Linux systems, created when
@@ -451,7 +419,39 @@ Run Neubot ``command`` from the sources directory::
 WEB INTERFACE
 `````````````
 
-TBD
+Neubot uses server side includes (on the server side) and javascript (on
+the client side) to show its web user interface.
+
+**footer.html**
+  Common footer for all web pages.
+
+**header.html**
+  Common header for all web pages.
+
+**results.html**
+  The results page, dynamically filled by javascript using Neubot web
+  API. It allows you to see the results of recent experiments, both
+  in form of plots and tables. 
+
+**test/**
+  Directory that contains a ``foo.html`` and a ``foo.json`` file for
+  each test ``foo``. The list of available tests in ``results.html`` is
+  automatically generated from the files in this directory.
+
+  **test/foo.html**
+    Description of the ``foo`` test. It is included into the
+    ``results.html`` page when the test is selected.
+
+  **test/foo.json**
+    Description of the plots and tables included into ``results.html``
+    when test ``foo`` is selected. The format of the JSON is documented
+    into the `WEB API`_ section (see ``/api/results`` description).
+
+  **foo.json.local**
+    When ``foo.json.local`` exists, Neubot will use it (instead of
+    ``foo.json``) to prepare plots and tables in ``results.html``.
+    Allows the user to heavily customize the results page for test
+    ``foo``.
 
 WEB API
 ```````
