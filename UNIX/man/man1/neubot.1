@@ -825,6 +825,208 @@ Get Neubot version
 T}
 _
 .TE
+.sp
+Here is a much more detailed description of each API.
+.INDENT 0.0
+.TP
+.B \fB/api\fP
+This API is an alias for \fB/api/\fP.
+.TP
+.B \fB/api/\fP
+This API responds to \fBGET\fP, \fBPOST\fP with a JSON encoding a list
+of strings. Each string is the path of one available API.
+.sp
+Example output:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ [
+  "/api",
+  "/api/",
+  "/api/results",
+  "/api/config",
+  "/api/debug",
+  "/api/exit",
+  "/api/index",
+  "/api/log",
+  "/api/runner",
+  "/api/state",
+  "/api/version"
+]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fB/api/config\fP
+This API allows to get (\fBGET\fP) and set (\fBPOST\fP) the configuration
+variables that modify the behavior of Neubot.
+.sp
+The configuration object is a dictionary. \fBGET\fP returns a dictionary,
+encoded using JSON, that contains the whole configuration object. \fBPOST\fP
+sends an url\-encoded string, which typically contains the variables you
+want to change only.
+.sp
+The API accepts the following query\-string options:
+.INDENT 7.0
+.TP
+.B \fBdebug=BOOL\fP
+When nonzero, the API returns a pretty\-printed JSON. Otherwise, the
+JSON is serialized on a single line.
+.TP
+.B \fBlabels=BOOL\fP
+When nonzero, returns the description of the variables instead of their
+values.
+.UNINDENT
+.sp
+Example output:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+{
+ "enabled": 1,
+ "negotiate.max_thresh": 64,
+ "negotiate.min_thresh": 32,
+ "negotiate.parallelism": 7,
+ "privacy.can_collect": 1,
+ "privacy.can_publish": 1,
+ "privacy.can_informed": 1,
+ ...
+ "uuid": "0964312e\-f451\-4579\-9984\-3954dcfdeb42",
+ "version": "4.2",
+ "www.lang": "default"
+}
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+We have not standardized variable names yet. Therefore, we don\(aqt provide
+here a list of variable names, types and default values.
+.TP
+.B \fB/api/debug\fP
+This API allows you to \fBGET\fP information about Neubot internals, which
+is typically useful for debugging purposes. As such, the consistencty
+of the output format is not guaranteed.
+.sp
+Example output:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+{\(aqWWW\(aq: \(aq/usr/share/neubot/www\(aq,
+ \(aqnotifier\(aq: {\(aq_subscribers\(aq: {},
+           \(aq_timestamps\(aq: {\(aqstatechange\(aq: 1336727245277393,
+                           \(aqtestdone\(aq: 1336727245277246}},
+ \(aqqueue_history\(aq: [],
+ \(aqtypestats\(aq: {\(aqABCMeta\(aq: 26,
+               \(aqBackendNeubot\(aq: 1,
+               \(aqBackendProxy\(aq: 1,
+               ...
+              }}
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fB/api/data\fP
+This API allows to retrieve the results collected during Neubot tests,
+using the \fBGET\fP method. As we have a single API for all tests, you
+must provide the test name using the query string.
+.sp
+This API returns a JSON which serializes a list of dictionaries, where
+each dictionary is the result of a test. The structure of the dictionary
+is test\-dependent and is described later.
+.sp
+The API accepts the following query\-string parameters:
+.INDENT 7.0
+.TP
+.B \fBtest=STRING\fP
+This parameter is mandatory and specifies the test whose results you
+want to retrieve.
+.TP
+.B \fBsince=INT\fP
+Returns only the results collected after the specified time (indicated
+as the number of seconds elapsed since the midnight of January, 1st 1970).
+.TP
+.B \fBuntil=INT\fP
+Returns only the results collected before the specified time (indicated
+as the number of seconds elapsed since midnight of January, 1st 1970).
+.TP
+.B \fBdebug=BOOL\fP
+When nonzero, the API returns a pretty\-printed JSON. Otherwise, the
+JSON is serialized on a single line.
+.UNINDENT
+.sp
+The following table describes the structure of the \fBbittorrent\fP
+dictionary. A description of the meaning of each field follows.
+.UNINDENT
+.TS
+center;
+|l|.
+_
+T{
+Name
+T}
+_
+T{
+connect_time
+T}
+_
+T{
+download_speed
+T}
+_
+T{
+internal_address
+T}
+_
+T{
+neubot_version
+T}
+_
+T{
+platform
+T}
+_
+T{
+privacy_can_collect
+T}
+_
+T{
+privacy_can_publish
+T}
+_
+T{
+privacy_informed
+T}
+_
+T{
+real_address
+T}
+_
+T{
+remote_address
+T}
+_
+T{
+timestamp
+T}
+_
+T{
+upload_speed
+T}
+_
+T{
+uuid
+T}
+_
+.TE
 .SH PRIVACY
 .\" :Version: 2.0.3
 .

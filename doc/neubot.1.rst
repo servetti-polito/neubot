@@ -553,37 +553,171 @@ To access Neubot API, send HTTP requests to the address and port
 where Neubot is listening (which is 127.0.0.1:9774 by default, and
 which can be changed by editing ``/etc/neubot/api``).
 
-Here is a list of all the available APIs, with their brief
-description.
+Here is a detailed description of each API.
 
-+--------------+---------------------------+
-| API          | Description               |
-+--------------+---------------------------+
-| /api         | List all available APIs   |
-+--------------+---------------------------+
-| /api/        | List all available APIs   |
-+--------------+---------------------------+
-| /api/config  | Get/set config            |
-+--------------+---------------------------+
-| /api/debug   | Get debug info            |
-+--------------+---------------------------+
-| /api/data    | Get tests results data    |
-+--------------+---------------------------+
-| /api/exit    | Exit immediately          |
-+--------------+---------------------------+
-| /api/index   | Privacy redirection       |
-+--------------+---------------------------+
-| /api/log     | Get logs                  |
-+--------------+---------------------------+
-| /api/results | Results presentation info |
-+--------------+---------------------------+
-| /api/runner  | Run a test now            |
-+--------------+---------------------------+
-| /api/state   | Track Neubot state        |
-+--------------+---------------------------+
-| /api/version | Get Neubot version        |
-+--------------+---------------------------+
+**/api**
+  This API is an alias for ``/api/``.
 
+**/api/**
+  This API responds to ``GET``, ``POST`` with a JSON encoding a list
+  of strings. Each string is the path of one available API.
+
+  Example output::
+
+    [
+     "/api",
+     "/api/",
+     "/api/results",
+     "/api/config",
+     "/api/debug",
+     "/api/exit",
+     "/api/index",
+     "/api/log",
+     "/api/runner",
+     "/api/state",
+     "/api/version"
+   ]
+
+**/api/config**
+  This API allows to get (``GET``) and set (``POST``) the configuration
+  variables that modify the behavior of Neubot.
+
+  The configuration object is a dictionary. ``GET`` returns a dictionary,
+  encoded using JSON, that contains the whole configuration object. ``POST``
+  sends an url-encoded string, which typically contains the variables you
+  want to change only.
+
+  The API accepts the following query-string options:
+
+  **debug=BOOL**
+    When nonzero, the API returns a pretty-printed JSON. Otherwise, the
+    JSON is serialized on a single line.
+
+  **labels=BOOL**
+    When nonzero, returns the description of the variables instead of their
+    values.
+
+  Example output::
+
+    {
+     "enabled": 1,
+     "negotiate.max_thresh": 64,
+     "negotiate.min_thresh": 32,
+     "negotiate.parallelism": 7,
+     "privacy.can_collect": 1,
+     "privacy.can_publish": 1,
+     "privacy.can_informed": 1,
+     ...
+     "uuid": "0964312e-f451-4579-9984-3954dcfdeb42",
+     "version": "4.2",
+     "www.lang": "default"
+    }
+
+  We have not standardized variable names yet. Therefore, we don't provide
+  here a list of variable names, types and default values.
+
+**/api/debug**
+  This API allows you to ``GET`` information about Neubot internals, which
+  is typically useful for debugging purposes. As such, the consistencty
+  of the output format is not guaranteed.
+
+  Example output::
+
+    {'WWW': '/usr/share/neubot/www',
+     'notifier': {'_subscribers': {},
+               '_timestamps': {'statechange': 1336727245277393,
+                               'testdone': 1336727245277246}},
+     'queue_history': [],
+     'typestats': {'ABCMeta': 26,
+                   'BackendNeubot': 1,
+                   'BackendProxy': 1,
+                   ...
+                  }}
+
+**/api/data**
+  This API allows to retrieve the results collected during Neubot tests,
+  using the ``GET`` method. As we have a single API for all tests, you
+  must provide the test name using the query string.
+
+  This API returns a JSON which serializes a list of dictionaries, where
+  each dictionary is the result of a test. The structure of the dictionary
+  is test-dependent and is described later.
+
+  The API accepts the following query-string parameters:
+
+  **test=STRING**
+    This parameter is mandatory and specifies the test whose results you
+    want to retrieve.
+
+  **since=INT**
+    Returns only the results collected after the specified time (indicated
+    as the number of seconds elapsed since the midnight of January, 1st 1970).
+
+  **until=INT**
+    Returns only the results collected before the specified time (indicated
+    as the number of seconds elapsed since midnight of January, 1st 1970).
+
+  **debug=BOOL**
+    When nonzero, the API returns a pretty-printed JSON. Otherwise, the
+    JSON is serialized on a single line.
+
+  The ``bittorrent`` test result is saved into the following
+  dictionary.
+
+    **connect_time (float)**
+      RTT estimated by measuring the time that connect() takes
+      to complete, measured in seconds.
+
+    **download_speed (float)**
+      Download speed (goodput) measured by dividing the number of
+      received bytes over the elapsed download time, measured in
+      bytes over seconds.
+
+    **internal_address (string)**
+      Neubot's IP address, as seen by Neubot. It is typically either
+      an IPv4 or an IPv6 address.
+
+    **neubot_version (float)**
+      Neubot version number, encoded as a floating point number. Given a
+      version number like ``<major>.<minor>.<patch>.<revision>``, the
+      encoding is as follows::
+
+        <major> + 1e-03 * <minor> + 1e-06 * <patch> + 1e-09 * <revision>
+
+      For example, Neubot ``0.4.15.3`` is encoded as ``0.004015003``.
+
+    **platform (string)**
+      The operating system platform, e.g. ``linux2``, ``win32``.
+
+    **privacy_can_collect (integer)**
+      The value of the ``can_collect`` privacy setting.
+
+    **privacy_can_publish (integer)**
+      The value of the ``can_publish`` privacy setting.
+
+    **privacy_informed (integer)**
+      The value of the ``informed`` privacy setting.
+
+    **real_address (string)**
+      Neubot's IP address, as seen by the server. It is typically either
+      an IPv4 or an IPv6 address.
+
+    **real_address (string)**
+      The server's IP address. It is typically either an IPv4 or an
+      IPv6 address.
+
+    **timestamp (integer)**
+      Time when the test was performed, expressed as number of seconds
+      elapsed since midnight of January, 1st 1970.
+
+    **upload_speed (float)**
+      Upload speed (goodput) measured by dividing the number of
+      sent bytes over the elapsed upload time, measured in
+      bytes over seconds.
+
+    **uuid (string)**
+      Random unique identifier of the Neubot instance, useful to perform
+      time series analysis.
 
 PRIVACY
 ```````
