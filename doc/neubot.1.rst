@@ -112,7 +112,7 @@ user resources, the ``bittorrent`` test adapts the number of bytes to
 transfer such that the test runs for about five seconds.
 
 See the ``WEB API`` section for a description of the results saved
-by all the experiments (see, in particular, the **/api/data**
+by all the experiments (see, in particular, the ``/api/data``
 description).
 
 SUBCOMMANDS
@@ -391,7 +391,7 @@ list of the files installed.
       **.../www/test/foo.json**
         Description of the plots and tables included into ``results.html``
         when test ``foo`` is selected. The format of the JSON is documented
-        into the `WEB API`_ section (see **/api/results** description).
+        into the `WEB API`_ section (see ``/api/results`` description).
 
       **.../www/test/foo.json.local**
         When ``foo.json.local`` exists, Neubot will use it (instead of
