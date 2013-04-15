@@ -438,6 +438,46 @@ uses jQuery and jqPlot.
 **img/**
   Directory that contains images.
 
+**js/**
+  Directory that contains javascript files. In addition to jQuery and
+  jqPlot, it contains the following scripts.
+
+  **js/contrib.js**
+    Helper functions from many authors.
+
+  **js/i18n.js**
+    Implementation of web user interface internationalization.
+
+  **js/index.js**
+    Javascript code for index.html. Contains functions to retrieve and process
+    the state of Neubot.
+
+  **js/log.js**
+    Javascript code for log.html. Contains code to retrieve and process
+    Neubot logs.
+
+  **js/privacy.js**.
+    Javascript code for privacy.html. Contains code to query and modify privacy
+    settings.
+
+  **js/results.js**
+    Javascript code for results.html. Contains code to process Neubot
+    results, as well as code to display them as plots and tables. 
+
+  **js/settings.js**
+    Javascript code for settings.html. Contains code to retrieve and
+    modify Neubot settings.
+
+  **js/state.js**
+    Helper code for retrieving and processing Neubot state.
+
+  **js/update.js**
+    Javascript code for update.html. It does not add functionalities, and it
+    just sets the active tab in the web interface.
+
+  **js/utils.js**
+    Miscellaneous helper functions.
+
 **lang/**
   Directory that contains one javascript file for each translation of
   the web interface. Each of these javascripts contains a dictionary, named
@@ -487,7 +527,7 @@ uses jQuery and jqPlot.
     when test ``foo`` is selected. The format of the JSON is documented
     into the `WEB API`_ section (see ``/api/results`` description).
 
-  **foo.json.local**
+  **test/foo.json.local**
     When ``foo.json.local`` exists, Neubot will use it (instead of
     ``foo.json``) to prepare plots and tables in ``results.html``.
     Allows the user to heavily customize the results page for test
