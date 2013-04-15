@@ -36,9 +36,9 @@ from neubot import utils_rc
 def fallback_main(args):
     ''' Fallback main function '''
     try:
-        getopt.getopt(args[1:], 'A:p:')
+        getopt.getopt(args[1:], '')
     except getopt.error:
-        sys.exit('usage: neubot viewer [-A address] [-p port]')
+        sys.exit('usage: neubot viewer')
 
     if os.path.isfile(utils_hier.APIFILEPATH):
         config = utils_rc.parse_safe(utils_hier.APIFILEPATH)

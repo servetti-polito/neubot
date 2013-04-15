@@ -85,19 +85,13 @@ def main(args):
     ''' Entry point for simple gtk+webkit GUI '''
 
     try:
-        options, arguments = getopt.getopt(args[1:], 'A:p:')
+        _, arguments = getopt.getopt(args[1:], '')
     except getopt.error:
-        sys.exit('Usage: neubot viewer [-A address] [-p port]')
+        sys.exit('Usage: neubot viewer')
     if arguments:
-        sys.exit('Usage: neubot viewer [-A address] [-p port]')
+        sys.exit('Usage: neubot viewer')
 
     conf = utils_rc.parse_safe(utils_hier.APIFILEPATH)
-    for name, value in options:
-        if name == '-A':
-            conf['address'] = value
-        elif name == '-p':
-            conf['port'] = value
-
     address = conf.get('address', '127.0.0.1')
     port = conf.get('port', 9774)
 

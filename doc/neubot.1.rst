@@ -241,8 +241,7 @@ This section documents Neubot's subcommands.
     -a
       Auto-updates. When this flag is specified, the privileged
       daemon periodically forks an unprivileged child to check
-      for updates. This is how Neubot is started by launchctl(1)
-      on MacOS.
+      for updates.
 
     -d
       Debug. When this flag is specified, Neubot runs in
@@ -255,6 +254,9 @@ This section documents Neubot's subcommands.
 
       When both -v and -d are specified, Neubot runs in verbose mode
       in the foreground.
+
+  At boot time, launchctl(1) starts Neubot with the -a and -d
+  command line options.
 
   On other UNIX systems, the start command forks the Neubot daemon,
   which drops ``root`` privileges and runs in the background.  On such
@@ -277,22 +279,11 @@ This section documents Neubot's subcommands.
   On other UNIX systems, this command uses the web
   API to request Neubot to exit.
 
-**neubot viewer [-A address] [-p port]**
+**neubot viewer**
   This command shows the web interface by embedding a web
   rendering engine into a window manager's window. Currently,
   the only implemented ``viewer`` is based on ``python-webkit``
   and ``pygtk``.
-
-  By default, this command uses 127.0.0.1 as the address and 9774
-  as the port. Override the default by editing the ``/etc/neubot/api``
-  configuration file. Override the configuration file by using the
-  command line, as follows:
-
-    -A address
-      Override address where Neubot is listening.
-
-    -p port
-      Override port where Neubot is listening.
 
 FILES
 `````
