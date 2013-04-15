@@ -664,19 +664,19 @@ def __main():
     daemonize = True
 
     try:
-        options, arguments = getopt.getopt(sys.argv[1:], 'dnv')
+        options, arguments = getopt.getopt(sys.argv[1:], 'adv')
     except getopt.error:
-        sys.exit('Usage: neubot/updater/unix.py [-dnv]')
+        sys.exit('Usage: neubot/updater/unix.py [-adv]')
 
     if arguments:
-        sys.exit('Usage: neubot/updater/unix.py [-dnv]')
+        sys.exit('Usage: neubot/updater/unix.py [-adv]')
 
-    check_for_updates = 1  # By default we check for updates
+    check_for_updates = 0  # By default we don't check for updates
     for tpl in options:
-        if tpl[0] == '-d':
+        if tpl[0] == '-a':
+            check_for_updates = 1
+        elif tpl[0] == '-d':
             daemonize = False
-        elif tpl[0] == '-n':
-            check_for_updates = 0
         elif tpl[0] == '-v':
             logopt |= syslog.LOG_PERROR|syslog.LOG_NDELAY
 

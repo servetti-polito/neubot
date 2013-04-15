@@ -40,19 +40,19 @@ def subcommand_start(args):
     ''' Start subcommand '''
 
     try:
-        options, arguments = getopt.getopt(args[1:], 'dnv')
+        options, arguments = getopt.getopt(args[1:], 'adv')
     except getopt.error:
-        sys.exit('usage: neubot start [-dnv]')
+        sys.exit('usage: neubot start [-adv]')
     if arguments:
-        sys.exit('usage: neubot start [-dnv]')
+        sys.exit('usage: neubot start [-adv]')
 
     args = '-d'
     debug = 0
     for opt in options:
-        if opt[0] == '-d':
+        if opt[0] == '-a':
+            args += 'a'
+        elif opt[0] == '-d':
             debug = 1
-        elif opt[0] == '-n':
-            args += 'n'
         elif opt[0] == '-v':
             log.set_verbose()
             args += 'v'

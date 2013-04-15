@@ -138,13 +138,14 @@ This section documents Neubot's subcommands.
 
 **neubot privacy [-Pt] [-D setting=value] [-f database]**
   Manage privacy settings. When invoked without
-  options, this command prints the privacy settings value.
+  options, this command prints the current privacy
+  settings values.
 
   Accepts the following options:
 
     -D setting=value
-      Set privacy setting value. When value is *0* the privacy setting
-      is "off", otherwise it is "on".
+      Turn on (nonzero) and off (zero) the specified privacy
+      setting.
 
       Note: this command just modifies the database: you have to
       restart Neubot to make changes effective. To modify privacy
@@ -165,7 +166,7 @@ This section documents Neubot's subcommands.
           address allowing anyone to reuse it for research purposes.
 
       Note: Neubot performs network tests only when all privacy
-      settings are "on".
+      settings are on.
 
     -f database
       Force file. Forces the command to use database instead of the
@@ -175,8 +176,8 @@ This section documents Neubot's subcommands.
       Prints privacy policy on the standard output.
 
     -t
-      Test.  Exits with success (exit value *0*) if privacy
-      settings are all nonzero.  Exits with failure (exit value
+      Test.  Exits with success (exit value *0*) if all privacy
+      settings all nonzero.  Exits with failure (exit value
       *nonzero*) if at least one setting is zero.
 
 **neubot raw [-6fv] [-A address] [-p port]**
@@ -237,13 +238,14 @@ This section documents Neubot's subcommands.
 
   On MacOS, the start command accepts the following options:
 
+    -a
+      Auto-updates. When this flag is specified, the privileged
+      daemon checks for updates. This is how Neubot is started by
+      launchctl(1) on MacOS.
+
     -d
       Debug. When this flag is specified, Neubot runs in
       the foreground.
-
-    -n
-      No auto-updates. When this flag is specified, the privileged
-      daemon does not check for updates.
 
     -v
       Verbose. When this flag is specified, the start command
