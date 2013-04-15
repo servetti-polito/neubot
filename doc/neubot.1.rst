@@ -106,7 +106,7 @@ The ``speedtest`` test emulates HTTP to estimate the round-trip
 time, the download and the upload goodput. It estimates the round-trip
 time in two ways: (1) by measuring the time that connect() takes
 to complete (like ``bittorrent``) and (2) by measuring the average
-time elapsed between sending a small request and received a small
+time elapsed between sending a small request and receiving a small
 response (like ``raw``). It estimates the goodput by dividing the
 amount of transferred bytes by the elapsed time. To avoid consuming
 too much user resources, the ``bittorrent`` test adapts the number
@@ -731,81 +731,17 @@ Here is a detailed description of each API.
       This string contains the serialization of a JSON object, which
       contains all the data collected during the test.
 
+      Note: on the server side, the ``raw`` test only saves the data
+      contained inside ``json_data``. On client side, we wrap such
+      data with a dictionary that has the same field names of the
+      ``bittorrent`` and ``speedtest`` test, because that simplifies
+      its processing in ``js/results.js``.
+
       The data encoded into this field is the data that is actually saved
       on server side. Historically, we wrapped this data into a dictionary
       that has fields with names similar to the ``bittorrent`` and
       ``speedtest`` ones, because ``js/results.js`` expected fields with
       fixed names.
-
-      Once unserialized, the JSON object is a dictionary that contains
-      the following fields:
-
-      **al_capacity (float)**
-        Median bottleneck capacity computed at application level. We are
-        still doing research to assess the reliability of this field.
-
-      **al_mss (float)**
-        MSS according to the application level (information gathered
-        using setsockopt(2)).
-
-      **al_rexmits (list)**
-        Likely retransmission events computed at application level. We are
-        still doing research to assess the reliability of this field.
-
-      **alrtt_list (list of floats)**
-        List of RTT samples estimated by measuring the average time elapsed
-        between sending a small request and received a small response,
-        measured in seconds.
-
-      **alrtt_avg (float)**
-        Same as ``latency`` in the outer dictionary.
-
-      **connect_time (float)**
-        Same as ``connect_time`` in the outer dictionary.
-
-      **goodput (float)**
-        Same as ``download_speed`` in the outer dictionary.
-
-      **goodput_snap (list of dictionaries)**
-        List that contains a dictionary, which is updated roughly every
-        second during the download, and which contains the following fields:
-
-        **ticks (float)**
-          Time when the current dictionary was saved, expressed as number
-          of seconds since midnight of January, 1st 1970.
-
-        **bytesdiff (integer)**
-          Number of bytes received since stats were previously saved.
-
-        **timediff (float)**
-          Number of seconds elapsed since stats were previously saved.
-
-        **utimediff (float)**
-          Difference since current ``tms_utime`` field of the ``tms``
-          struct modified by ``times(3)`` and the previous value of
-          such field.
-
-        **stimediff (float)**
-          Difference since current ``tms_stime`` field of the ``tms``
-          struct modified by ``times(3)`` and the previous value of
-          such field.
-
-      **myname (string)**
-        Neubot's address (according to the server). This is same as
-        ``real_address`` in the outer dictionary.
-
-      **peername (string)**
-        Servers's address. This is same as ``server_address`` in the outer
-        dictionary.
-
-      **platform (string)**
-        Same as ``platform`` in the outer dictionary.
-
-      **uuid (string)**
-        Same as ``uuid`` in the outer dictionary.
-
-      **version (string)**
-        Same as ``neubot_version`` in the outer dictionary.
 
     **internal_address (string)**
       Neubot's IP address, as seen by Neubot. It is typically either
@@ -813,7 +749,7 @@ Here is a detailed description of each API.
 
     **latency (float)**
       RTT estimated by measuring the average time elapsed between sending
-      a small request and received a small response, measured in seconds.
+      a small request and receiving a small response, measured in seconds.
 
     **neubot_version (float)**
       Neubot version number, encoded as a floating point number and printed
@@ -843,6 +779,77 @@ Here is a detailed description of each API.
       Random unique identifier of the Neubot instance, useful to perform
       time series analysis.
 
+  Once unserialized, the JSON object saved into the ``json_data`` field
+  of the ``raw`` dictionary (henceforth, 'outer dictionary') is a
+  dictionary that contains the following fields:
+
+    **al_capacity (float)**
+      Median bottleneck capacity computed at application level. We are
+      still doing research to assess the reliability of this field.
+
+    **al_mss (float)**
+      MSS according to the application level (information gathered
+      using setsockopt(2)).
+
+    **al_rexmits (list)**
+      Likely retransmission events computed at application level. We are
+      still doing research to assess the reliability of this field.
+
+    **alrtt_list (list of floats)**
+      List of RTT samples estimated by measuring the average time elapsed
+      between sending a small request and receiving a small response,
+      measured in seconds.
+
+    **alrtt_avg (float)**
+      Same as ``latency`` in the outer dictionary.
+
+    **connect_time (float)**
+      Same as ``connect_time`` in the outer dictionary.
+
+    **goodput (float)**
+      Same as ``download_speed`` in the outer dictionary.
+
+    **goodput_snap (list of dictionaries)**
+      List that contains a dictionary, which is updated roughly every
+      second during the download, and which contains the following fields:
+
+      **ticks (float)**
+        Time when the current dictionary was saved, expressed as number
+        of seconds since midnight of January, 1st 1970.
+
+      **bytesdiff (integer)**
+        Number of bytes received since stats were previously saved.
+
+      **timediff (float)**
+        Number of seconds elapsed since stats were previously saved.
+
+      **utimediff (float)**
+        Difference between current ``tms_utime`` field of the ``tms``
+        struct modified by ``times(3)`` and the previous value of
+        the same field.
+
+      **stimediff (float)**
+        Difference between current ``tms_stime`` field of the ``tms``
+        struct modified by ``times(3)`` and the previous value of
+        the same field.
+
+    **myname (string)**
+      Neubot's address (according to the server). This is same as
+      ``real_address`` in the outer dictionary.
+
+    **peername (string)**
+      Servers's address. This is same as ``server_address`` in the outer
+      dictionary.
+
+    **platform (string)**
+      Same as ``platform`` in the outer dictionary.
+
+    **uuid (string)**
+      Same as ``uuid`` in the outer dictionary.
+
+    **version (string)**
+      Same as ``neubot_version`` in the outer dictionary.
+
   We represent the data collected by the ``speedtest`` test with a
   dictionary that contains the following fields:
 
@@ -860,7 +867,7 @@ Here is a detailed description of each API.
 
     **latency (float)**
       RTT estimated by measuring the average time elapsed between sending
-      a small request and received a small response, measured in seconds.
+      a small request and receiving a small response, measured in seconds.
 
     **neubot_version (string)**
       Neubot version number, encoded as a floating point number and printed
