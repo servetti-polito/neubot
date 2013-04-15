@@ -597,7 +597,7 @@ Here is a detailed description of each API.
     When nonzero, returns the description of the variables instead of their
     values.
 
-  Example output::
+  Example::
 
     {
      "enabled": 1,
@@ -621,7 +621,7 @@ Here is a detailed description of each API.
   is typically useful for debugging purposes. As such, the consistency
   of the output format is not guaranteed.
 
-  Example output::
+  Example::
 
     {'WWW': '/usr/share/neubot/www',
      'notifier': {'_subscribers': {},
@@ -716,6 +716,27 @@ Here is a detailed description of each API.
       Random unique identifier of the Neubot instance, useful to perform
       time series analysis.
 
+  Example::
+
+   [
+    {
+     "connect_time": 0.003387928009033203, 
+     "download_speed": 4242563.145733707, 
+     "internal_address": "130.192.91.231", 
+     "neubot_version": "0.004015007", 
+     "platform": "linux2", 
+     "privacy_can_collect": 1, 
+     "privacy_can_publish": 1, 
+     "privacy_informed": 1, 
+     "real_address": "130.192.91.231", 
+     "remote_address": "194.116.85.224", 
+     "test_version": 1, 
+     "timestamp": 1366045628, 
+     "upload_speed": 4231443.875881268, 
+     "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
+    }, 
+    ...
+
   We represent the data collected by the ``raw`` test with a
   dictionary that contains the following fields:
 
@@ -778,6 +799,24 @@ Here is a detailed description of each API.
     **uuid (string)**
       Random unique identifier of the Neubot instance, useful to perform
       time series analysis.
+
+  Example::
+
+   [
+    {
+     "connect_time": 0.2981860637664795, 
+     "download_speed": 3607.120929707688, 
+     "internal_address": "130.192.91.231", 
+     "json_data": "...", 
+     "latency": 0.29875500202178956, 
+     "neubot_version": "0.004015007", 
+     "platform": "linux2", 
+     "real_address": "130.192.91.231", 
+     "remote_address": "203.178.130.237", 
+     "timestamp": 1365071100, 
+     "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
+    },
+    ...
 
   Once unserialized, the JSON object saved into the ``json_data`` field
   of the ``raw`` dictionary (henceforth, 'outer dictionary') is a
@@ -850,6 +889,74 @@ Here is a detailed description of each API.
     **version (string)**
       Same as ``neubot_version`` in the outer dictionary.
 
+  Example::
+
+   [
+    {
+     "client": {
+      "al_mss": 1448, 
+      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81", 
+      "goodput": {
+       "bytesdiff": 128200, 
+       "timediff": 35.540810108184814, 
+       "ticks": 1365071098.203412
+      }, 
+      "al_rexmits": [], 
+      "connect_time": 0.2981860637664795, 
+      "alrtt_list": [
+       0.31011295318603516, 
+       0.30966901779174805, 
+       0.29677391052246094, 
+       0.2957899570465088, 
+       0.29570794105529785, 
+       0.2956199645996094, 
+       0.29558706283569336, 
+       0.2956211566925049, 
+       0.2958400249481201, 
+       0.296828031539917
+      ], 
+      "myname": "130.192.91.231", 
+      "peername": "203.178.130.237", 
+      "platform": "linux2", 
+      "version": "0.004015007", 
+      "al_capacity": 10982553.692585895, 
+      "alrtt_avg": 0.29875500202178956, 
+      "goodput_snap": [
+       {
+        "bytesdiff": 24616, 
+        "timediff": 1.0001380443572998, 
+        "ticks": 1365071063.66274, 
+        "stimediff": 0.0, 
+        "utimediff": 0.0
+       }, 
+       ...
+      ]
+     }, 
+     "server": {
+      "timestamp": 1365070933, 
+      "myname": "203.178.130.237", 
+      "peername": "130.192.91.231", 
+      "platform": "linux2", 
+      "version": "0.004015007", 
+      "goodput": {
+       "bytesdiff": 131092, 
+       "timediff": 34.94503116607666, 
+       "ticks": 1365070933.95337
+      }, 
+      "goodput_snap": [
+       {
+        "bytesdiff": 31856, 
+        "timediff": 1.0005459785461426, 
+        "ticks": 1365070900.008885, 
+        "stimediff": 0.0, 
+        "utimediff": 0.0
+       }, 
+       ...
+      ], 
+      "web100_snap": []
+     }
+    }
+
   We represent the data collected by the ``speedtest`` test with a
   dictionary that contains the following fields:
 
@@ -909,6 +1016,28 @@ Here is a detailed description of each API.
     **uuid (string)**
       Random unique identifier of the Neubot instance, useful to perform
       time series analysis.
+
+  Example::
+
+   [
+    {
+     "connect_time": 0.0017991065979003906, 
+     "download_speed": 11626941.501993284, 
+     "internal_address": "130.192.91.231", 
+     "latency": 0.003973397341641513, 
+     "neubot_version": "0.004015007", 
+     "platform": "linux2", 
+     "privacy_can_collect": 1, 
+     "privacy_can_publish": 1, 
+     "privacy_informed": 1, 
+     "real_address": "130.192.91.231", 
+     "remote_address": "194.116.85.237", 
+     "test_version": 1, 
+     "timestamp": 1365074302, 
+     "upload_speed": 10974865.674026133, 
+     "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
+    }, 
+    ...
 
 PRIVACY
 ```````
