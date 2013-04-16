@@ -639,7 +639,7 @@ Here is a detailed description of each API.
                    ...
                   }}
 
-**/api/data**
+**/api/data?test=string**
   This API allows you to retrieve the data collected during Neubot tests
   via the ``GET`` method. As we have a single API for all tests, you
   must provide the test name using the query string.
