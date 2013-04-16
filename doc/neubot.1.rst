@@ -85,24 +85,24 @@ Neubot implements three active network tests: ``bittorrent``, ``raw`` and
 to run the test immediately. Also, note that Neubot schedules one of the
 three tests at random every 23 - 27 minutes.
 
-The ``bittorrent`` test emulates BitTorrent peer-wire protocol to
-estimate the round-trip time, the download and the upload goodput.
+The ``bittorrent`` test emulates BitTorrent peer-wire protocol and
+estimates the round-trip time, the download and the upload goodput.
 It uses the time that connect() takes to complete as an estimator of
 the round-trip time. It estimates the goodput by dividing the amount of
 transferred bytes by the elapsed time. To avoid consuming too much
 user resources, the ``bittorrent`` test adapts the number of bytes to
 transfer such that the test runs for about five seconds.
 
-The ``raw`` test performs a `raw` 10-second TCP download to estimate the
-download goodput. Also, it estimates the goodput from the round-trip time,
-and it collects statistics about the TCP sender by reading kernel-level
-data exported by Web100 (see ``http://www.web100.org``) on the server. In
-addition, it estimates the round-trip time in two ways: (1) by measuring
-the time that connect() takes to complete (like ``bittorrent``) and (2)
+The ``raw`` test performs a `raw` 10-second TCP download to estimate
+the download goodput. Also, it estimates the goodput from the
+round-trip time, and it collects statistics about the TCP sender
+by using Web100 (see ``http://www.web100.org``). In addition, it
+estimates the round-trip time in two ways: (1) by measuring the
+time that connect() takes to complete (like ``bittorrent``) and (2)
 by measuring the average time elapsed between sending a small request
-and received a small response.
+and receiving a small response.
 
-The ``speedtest`` test emulates HTTP to estimate the round-trip
+The ``speedtest`` test emulates HTTP and estimates the round-trip
 time, the download and the upload goodput. It estimates the round-trip
 time in two ways: (1) by measuring the time that connect() takes
 to complete (like ``bittorrent``) and (2) by measuring the average
@@ -423,6 +423,9 @@ Neubot web interface uses server side includes (on the server side)
 and javascript (and the client side).  On the Javascript side, Neubot
 uses jQuery and jqPlot.
 
+Here we provide a brief description of the core files of the web
+interface:
+
 **css/**
   Directory that contains CSS files.
 
@@ -440,13 +443,13 @@ uses jQuery and jqPlot.
 
 **js/**
   Directory that contains javascript files. In addition to jQuery and
-  jqPlot, it contains the following scripts.
+  jqPlot, it contains the following scripts:
 
   **js/contrib.js**
     Helper functions from many authors.
 
   **js/i18n.js**
-    Implementation of web user interface internationalization.
+    Implementation of web user interface internationalization (aka i18n).
 
   **js/index.js**
     Contains functions to retrieve and process the state of Neubot.
@@ -477,7 +480,8 @@ uses jQuery and jqPlot.
 **lang/**
   Directory that contains one javascript file for each translation of
   the web interface. Each of these javascripts contains a dictionary, named
-  ``LANG``, that maps each string to its translation.
+  ``LANG``, that maps a string (or a key representing a string) to its
+  translation.
 
   In javascript, you mark strings for translation by wrapping them
   with ``i18n.get()`` calls. For example, to indicate that the string
@@ -486,10 +490,11 @@ uses jQuery and jqPlot.
     ...
     i18n.get("Disable automatic tests");
 
-  In HTML code, you mark HTML tags for translation by adding them to
-  the ``i18n`` class. In addition, you indicate the handle to be used
-  for translation by adding the selected tag to the ``i18n_foo``
-  class. For example::
+  In HTML code, you mark the content of an HTML tag for translation by adding
+  the tag to the ``i18n`` class. Differently from javascript, we don't map
+  the content of an HTML tag to its translation; instead, we map a key that
+  represents the HTML tag content to its translation. The key is another HTML
+  class, which must start with ``i18n_``, as in the following example::
 
     ...
     <p class="i18n i18n_foobar">Neubot web interface</p>
@@ -680,9 +685,11 @@ Here is a detailed description of each API.
       printed into a string. Given a version number in the format
       ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch> + 1e-09 * <revision>
+        <major> + 1e-03 * <minor> + 1e-06 * <patch>
+                + 1e-09 * <revision>
 
-      For example, Neubot ``0.4.15.3`` is encoded as ``0.004015003``.
+      For example, the ``0.4.15.3`` version number
+      is encoded as ``0.004015003``.
 
     **platform (string)**
       The operating system platform, e.g. ``linux2``, ``win32``.
@@ -777,9 +784,11 @@ Here is a detailed description of each API.
       into a string. Given a version number in the format
       ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch> + 1e-09 * <revision>
+        <major> + 1e-03 * <minor> + 1e-06 * <patch>
+                + 1e-09 * <revision>
 
-      For example, Neubot ``0.4.15.3`` is encoded as ``0.004015003``.
+      For example, the ``0.4.15.3`` version number
+      is encoded as ``0.004015003``.
 
     **platform (string)**
       The operating system platform, e.g. ``linux2``, ``win32``.
@@ -981,9 +990,11 @@ Here is a detailed description of each API.
       into a string. Given a version number in the format
       ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch> + 1e-09 * <revision>
+        <major> + 1e-03 * <minor> + 1e-06 * <patch>
+                + 1e-09 * <revision>
 
-      For example, Neubot ``0.4.15.3`` is encoded as ``0.004015003``.
+      For example, the ``0.4.15.3`` version number
+      is encoded as ``0.004015003``.
 
     **platform (string)**
       The operating system platform, e.g. ``linux2``, ``win32``.
