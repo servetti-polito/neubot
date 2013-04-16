@@ -665,65 +665,68 @@ Here is a detailed description of each API.
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
 
-  We represent the data collected by the ``bittorrent`` test with a
-  dictionary that contains the following fields:
+BitTorrent data format
+``````````````````````
 
-    **connect_time (float)**
-      RTT estimated by measuring the time that connect() takes
-      to complete, measured in seconds.
+We represent the data collected by the ``bittorrent`` test with a
+dictionary that contains the following fields:
 
-    **download_speed (float)**
-      Download speed measured by dividing the number of received bytes over
-      the elapsed download time, measured in bytes over seconds.
+  **connect_time (float)**
+    RTT estimated by measuring the time that connect() takes
+    to complete, measured in seconds.
 
-    **internal_address (string)**
-      Neubot's IP address, as seen by Neubot. It is typically either
-      an IPv4 or an IPv6 address.
+  **download_speed (float)**
+    Download speed measured by dividing the number of received bytes over
+    the elapsed download time, measured in bytes over seconds.
 
-    **neubot_version (string)**
-      Neubot version number, encoded as a floating point number and
-      printed into a string. Given a version number in the format
-      ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
+  **internal_address (string)**
+    Neubot's IP address, as seen by Neubot. It is typically either
+    an IPv4 or an IPv6 address.
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch>
-                + 1e-09 * <revision>
+  **neubot_version (string)**
+    Neubot version number, encoded as a floating point number and
+    printed into a string. Given a version number in the format
+    ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-      For example, the ``0.4.15.3`` version number
-      is encoded as ``0.004015003``.
+      <major> + 1e-03 * <minor> + 1e-06 * <patch>
+              + 1e-09 * <revision>
 
-    **platform (string)**
-      The operating system platform, e.g. ``linux2``, ``win32``.
+    For example, the ``0.4.15.3`` version number
+    is encoded as ``0.004015003``.
 
-    **privacy_can_collect (integer)**
-      The value of the ``can_collect`` privacy setting.
+  **platform (string)**
+    The operating system platform, e.g. ``linux2``, ``win32``.
 
-    **privacy_can_publish (integer)**
-      The value of the ``can_publish`` privacy setting.
+  **privacy_can_collect (integer)**
+    The value of the ``can_collect`` privacy setting.
 
-    **privacy_informed (integer)**
-      The value of the ``informed`` privacy setting.
+  **privacy_can_publish (integer)**
+    The value of the ``can_publish`` privacy setting.
 
-    **real_address (string)**
-      Neubot's IP address, as seen by the server. It is typically either
-      an IPv4 or an IPv6 address.
+  **privacy_informed (integer)**
+    The value of the ``informed`` privacy setting.
 
-    **remote_address (string)**
-      The server's IP address. It is typically either an IPv4 or an
-      IPv6 address.
+  **real_address (string)**
+    Neubot's IP address, as seen by the server. It is typically either
+    an IPv4 or an IPv6 address.
 
-    **timestamp (integer)**
-      Time when the test was performed, expressed as number of seconds
-      elapsed since midnight of January, 1st 1970.
+  **remote_address (string)**
+    The server's IP address. It is typically either an IPv4 or an
+    IPv6 address.
 
-    **upload_speed (float)**
-      Upload speed measured by dividing the number of sent bytes over the
-      elapsed upload time, measured in bytes over seconds.
+  **timestamp (integer)**
+    Time when the test was performed, expressed as number of seconds
+    elapsed since midnight of January, 1st 1970.
 
-    **uuid (string)**
-      Random unique identifier of the Neubot instance, useful to perform
-      time series analysis.
+  **upload_speed (float)**
+    Upload speed measured by dividing the number of sent bytes over the
+    elapsed upload time, measured in bytes over seconds.
 
-  Example::
+  **uuid (string)**
+    Random unique identifier of the Neubot instance, useful to perform
+    time series analysis.
+
+Example::
 
    [
     {
@@ -744,72 +747,75 @@ Here is a detailed description of each API.
     }, 
     ...
 
-  We represent the data collected by the ``raw`` test with a
-  dictionary that contains the following fields:
+Raw test data format
+````````````````````
 
-    **connect_time (float)**
-      RTT estimated by measuring the time that connect() takes
-      to complete, measured in seconds.
+We represent the data collected by the ``raw`` test with a
+dictionary that contains the following fields:
 
-    **download_speed (float)**
-      Download speed measured by dividing the number of received bytes over
-      the elapsed download time, measured in bytes over seconds.
+  **connect_time (float)**
+    RTT estimated by measuring the time that connect() takes
+    to complete, measured in seconds.
 
-    **json_data (string)**
-      This string contains the serialization of a JSON object, which
-      contains all the data collected during the test.
+  **download_speed (float)**
+    Download speed measured by dividing the number of received bytes over
+    the elapsed download time, measured in bytes over seconds.
 
-      Note: on the server side, the ``raw`` test only saves the data
-      contained inside ``json_data``. On client side, we wrap such
-      data with a dictionary that has the same field names of the
-      ``bittorrent`` and ``speedtest`` test, because that simplifies
-      its processing in ``js/results.js``.
+  **json_data (string)**
+    This string contains the serialization of a JSON object, which
+    contains all the data collected during the test.
 
-      The data encoded into this field is the data that is actually saved
-      on server side. Historically, we wrapped this data into a dictionary
-      that has fields with names similar to the ``bittorrent`` and
-      ``speedtest`` ones, because ``js/results.js`` expected fields with
-      fixed names.
+    Note: on the server side, the ``raw`` test only saves the data
+    contained inside ``json_data``. On client side, we wrap such
+    data with a dictionary that has the same field names of the
+    ``bittorrent`` and ``speedtest`` test, because that simplifies
+    its processing in ``js/results.js``.
 
-    **internal_address (string)**
-      Neubot's IP address, as seen by Neubot. It is typically either
-      an IPv4 or an IPv6 address.
+    The data encoded into this field is the data that is actually saved
+    on server side. Historically, we wrapped this data into a dictionary
+    that has fields with names similar to the ``bittorrent`` and
+    ``speedtest`` ones, because ``js/results.js`` expected fields with
+    fixed names.
 
-    **latency (float)**
-      RTT estimated by measuring the average time elapsed between sending
-      a small request and receiving a small response, measured in seconds.
+  **internal_address (string)**
+    Neubot's IP address, as seen by Neubot. It is typically either
+    an IPv4 or an IPv6 address.
 
-    **neubot_version (float)**
-      Neubot version number, encoded as a floating point number and printed
-      into a string. Given a version number in the format
-      ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
+  **latency (float)**
+    RTT estimated by measuring the average time elapsed between sending
+    a small request and receiving a small response, measured in seconds.
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch>
-                + 1e-09 * <revision>
+  **neubot_version (float)**
+    Neubot version number, encoded as a floating point number and printed
+    into a string. Given a version number in the format
+    ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-      For example, the ``0.4.15.3`` version number
-      is encoded as ``0.004015003``.
+      <major> + 1e-03 * <minor> + 1e-06 * <patch>
+              + 1e-09 * <revision>
 
-    **platform (string)**
-      The operating system platform, e.g. ``linux2``, ``win32``.
+    For example, the ``0.4.15.3`` version number
+    is encoded as ``0.004015003``.
 
-    **real_address (string)**
-      Neubot's IP address, as seen by the server. It is typically either
-      an IPv4 or an IPv6 address.
+  **platform (string)**
+    The operating system platform, e.g. ``linux2``, ``win32``.
 
-    **remote_address (string)**
-      The server's IP address. It is typically either an IPv4 or an
-      IPv6 address.
+  **real_address (string)**
+    Neubot's IP address, as seen by the server. It is typically either
+    an IPv4 or an IPv6 address.
 
-    **timestamp (integer)**
-      Time when the test was performed, expressed as number of seconds
-      elapsed since midnight of January, 1st 1970.
+  **remote_address (string)**
+    The server's IP address. It is typically either an IPv4 or an
+    IPv6 address.
 
-    **uuid (string)**
-      Random unique identifier of the Neubot instance, useful to perform
-      time series analysis.
+  **timestamp (integer)**
+    Time when the test was performed, expressed as number of seconds
+    elapsed since midnight of January, 1st 1970.
 
-  Example::
+  **uuid (string)**
+    Random unique identifier of the Neubot instance, useful to perform
+    time series analysis.
+
+Example::
 
    [
     {
@@ -827,78 +833,78 @@ Here is a detailed description of each API.
     },
     ...
 
-  Once unserialized, the JSON object saved into the ``json_data`` field
-  of the ``raw`` dictionary (henceforth, 'outer dictionary') is a
-  dictionary that contains the following fields:
+Once unserialized, the JSON object saved into the ``json_data`` field
+of the ``raw`` dictionary (henceforth, 'outer dictionary') is a
+dictionary that contains the following fields:
 
-    **al_capacity (float)**
-      Median bottleneck capacity computed at application level. We are
-      still doing research to assess the reliability of this field.
+  **al_capacity (float)**
+    Median bottleneck capacity computed at application level. We are
+    still doing research to assess the reliability of this field.
 
-    **al_mss (float)**
-      MSS according to the application level (information gathered
-      using setsockopt(2)).
+  **al_mss (float)**
+    MSS according to the application level (information gathered
+    using setsockopt(2)).
 
-    **al_rexmits (list)**
-      Likely retransmission events computed at application level. We are
-      still doing research to assess the reliability of this field.
+  **al_rexmits (list)**
+    Likely retransmission events computed at application level. We are
+    still doing research to assess the reliability of this field.
 
-    **alrtt_list (list of floats)**
-      List of RTT samples estimated by measuring the average time elapsed
-      between sending a small request and receiving a small response,
-      measured in seconds.
+  **alrtt_list (list of floats)**
+    List of RTT samples estimated by measuring the average time elapsed
+    between sending a small request and receiving a small response,
+    measured in seconds.
 
-    **alrtt_avg (float)**
-      Same as ``latency`` in the outer dictionary.
+  **alrtt_avg (float)**
+    Same as ``latency`` in the outer dictionary.
 
-    **connect_time (float)**
-      Same as ``connect_time`` in the outer dictionary.
+  **connect_time (float)**
+    Same as ``connect_time`` in the outer dictionary.
 
-    **goodput (float)**
-      Same as ``download_speed`` in the outer dictionary.
+  **goodput (float)**
+    Same as ``download_speed`` in the outer dictionary.
 
-    **goodput_snap (list of dictionaries)**
-      List that contains a dictionary, which is updated roughly every
-      second during the download, and which contains the following fields:
+  **goodput_snap (list of dictionaries)**
+    List that contains a dictionary, which is updated roughly every
+    second during the download, and which contains the following fields:
 
-      **ticks (float)**
-        Time when the current dictionary was saved, expressed as number
-        of seconds since midnight of January, 1st 1970.
+    **ticks (float)**
+      Time when the current dictionary was saved, expressed as number
+      of seconds since midnight of January, 1st 1970.
 
-      **bytesdiff (integer)**
-        Number of bytes received since stats were previously saved.
+    **bytesdiff (integer)**
+      Number of bytes received since stats were previously saved.
 
-      **timediff (float)**
-        Number of seconds elapsed since stats were previously saved.
+    **timediff (float)**
+      Number of seconds elapsed since stats were previously saved.
 
-      **utimediff (float)**
-        Difference between current ``tms_utime`` field of the ``tms``
-        struct modified by ``times(3)`` and the previous value of
-        the same field.
+    **utimediff (float)**
+      Difference between current ``tms_utime`` field of the ``tms``
+      struct modified by ``times(3)`` and the previous value of
+      the same field.
 
-      **stimediff (float)**
-        Difference between current ``tms_stime`` field of the ``tms``
-        struct modified by ``times(3)`` and the previous value of
-        the same field.
+    **stimediff (float)**
+      Difference between current ``tms_stime`` field of the ``tms``
+      struct modified by ``times(3)`` and the previous value of
+      the same field.
 
-    **myname (string)**
-      Neubot's address (according to the server). This is same as
-      ``real_address`` in the outer dictionary.
+  **myname (string)**
+    Neubot's address (according to the server). This is same as
+    ``real_address`` in the outer dictionary.
 
-    **peername (string)**
-      Servers's address. This is same as ``server_address`` in the outer
-      dictionary.
+  **peername (string)**
+    Servers's address. This is same as ``server_address`` in the outer
+    dictionary.
 
-    **platform (string)**
-      Same as ``platform`` in the outer dictionary.
+  **platform (string)**
+    Same as ``platform`` in the outer dictionary.
 
-    **uuid (string)**
-      Same as ``uuid`` in the outer dictionary.
+  **uuid (string)**
+    Same as ``uuid`` in the outer dictionary.
 
-    **version (string)**
-      Same as ``neubot_version`` in the outer dictionary.
+  **version (string)**
+    Same as ``neubot_version`` in the outer dictionary.
 
-  Example::
+Example::
 
    [
     {
@@ -966,69 +972,72 @@ Here is a detailed description of each API.
      }
     }
 
-  We represent the data collected by the ``speedtest`` test with a
-  dictionary that contains the following fields:
+Speedtest data format
+`````````````````````
 
-    **connect_time (float)**
-      RTT estimated by measuring the time that connect() takes
-      to complete, measured in seconds.
+We represent the data collected by the ``speedtest`` test with a
+dictionary that contains the following fields:
 
-    **download_speed (float)**
-      Download speed measured by dividing the number of received bytes over
-      the elapsed download time, measured in bytes over seconds.
+  **connect_time (float)**
+    RTT estimated by measuring the time that connect() takes
+    to complete, measured in seconds.
 
-    **internal_address (string)**
-      Neubot's IP address, as seen by Neubot. It is typically either
-      an IPv4 or an IPv6 address.
+  **download_speed (float)**
+    Download speed measured by dividing the number of received bytes over
+    the elapsed download time, measured in bytes over seconds.
 
-    **latency (float)**
-      RTT estimated by measuring the average time elapsed between sending
-      a small request and receiving a small response, measured in seconds.
+  **internal_address (string)**
+    Neubot's IP address, as seen by Neubot. It is typically either
+    an IPv4 or an IPv6 address.
 
-    **neubot_version (string)**
-      Neubot version number, encoded as a floating point number and printed
-      into a string. Given a version number in the format
-      ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
+  **latency (float)**
+    RTT estimated by measuring the average time elapsed between sending
+    a small request and receiving a small response, measured in seconds.
 
-        <major> + 1e-03 * <minor> + 1e-06 * <patch>
-                + 1e-09 * <revision>
+  **neubot_version (string)**
+    Neubot version number, encoded as a floating point number and printed
+    into a string. Given a version number in the format
+    ``<major>.<minor>.<patch>.<revision>``, the encoding is as follows::
 
-      For example, the ``0.4.15.3`` version number
-      is encoded as ``0.004015003``.
+      <major> + 1e-03 * <minor> + 1e-06 * <patch>
+              + 1e-09 * <revision>
 
-    **platform (string)**
-      The operating system platform, e.g. ``linux2``, ``win32``.
+    For example, the ``0.4.15.3`` version number
+    is encoded as ``0.004015003``.
 
-    **privacy_can_collect (integer)**
-      The value of the ``can_collect`` privacy setting.
+  **platform (string)**
+    The operating system platform, e.g. ``linux2``, ``win32``.
 
-    **privacy_can_publish (integer)**
-      The value of the ``can_publish`` privacy setting.
+  **privacy_can_collect (integer)**
+    The value of the ``can_collect`` privacy setting.
 
-    **privacy_informed (integer)**
-      The value of the ``informed`` privacy setting.
+  **privacy_can_publish (integer)**
+    The value of the ``can_publish`` privacy setting.
 
-    **real_address (string)**
-      Neubot's IP address, as seen by the server. It is typically either
-      an IPv4 or an IPv6 address.
+  **privacy_informed (integer)**
+    The value of the ``informed`` privacy setting.
 
-    **remote_address (string)**
-      The server's IP address. It is typically either an IPv4 or an
-      IPv6 address.
+  **real_address (string)**
+    Neubot's IP address, as seen by the server. It is typically either
+    an IPv4 or an IPv6 address.
 
-    **timestamp (integer)**
-      Time when the test was performed, expressed as number of seconds
-      elapsed since midnight of January, 1st 1970.
+  **remote_address (string)**
+    The server's IP address. It is typically either an IPv4 or an
+    IPv6 address.
 
-    **upload_speed (float)**
-      Upload speed measured by dividing the number of sent bytes over the
-      elapsed upload time, measured in bytes over seconds.
+  **timestamp (integer)**
+    Time when the test was performed, expressed as number of seconds
+    elapsed since midnight of January, 1st 1970.
 
-    **uuid (string)**
-      Random unique identifier of the Neubot instance, useful to perform
-      time series analysis.
+  **upload_speed (float)**
+    Upload speed measured by dividing the number of sent bytes over the
+    elapsed upload time, measured in bytes over seconds.
 
-  Example::
+  **uuid (string)**
+    Random unique identifier of the Neubot instance, useful to perform
+    time series analysis.
+
+Example::
 
    [
     {
