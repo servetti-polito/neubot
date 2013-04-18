@@ -196,16 +196,16 @@ This section documents Neubot's subcommands.
 
     Privacy settings:
 
-      informed
-        The user has read the privacy policy.
+    informed
+      The user has read the privacy policy.
 
-      can_collect
-        The user provides the permission to collect his/her IP
-        address for research purposes.
+    can_collect
+      The user provides the permission to collect his/her IP
+      address for research purposes.
 
-      can_publish
-        The user provides the permission to publish his/her IP
-        address allowing anyone to reuse it for research purposes.
+    can_publish
+      The user provides the permission to publish his/her IP
+      address allowing anyone to reuse it for research purposes.
 
     Note: Neubot performs network tests only when all privacy
     settings are on.
