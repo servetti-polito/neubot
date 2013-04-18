@@ -769,13 +769,13 @@ Here is a detailed description of each API.
       **recipe (list)**
         Lisp-like code that describes how to generate one point on the Y
         axis from one row of the selected test's data. We describe this
-        lisp-like language the ``Data processing language``_ section of
+        lisp-like language in the ``Data processing language``_ section of
         this manual page.
 
     **title (string)**
       Title of the plot.
 
-    **xlable (string)**
+    **xlabel (string)**
       Label for the X axis.
 
     **ylabel (string)**
@@ -788,14 +788,14 @@ Here is a detailed description of each API.
     List of dictionaries: each dictionary is one column of the table
     that must be generated. Each dictionary contains the following fields:
 
-      **label (string)**
-        Label to use in the legend.
+    **label (string)**
+      Label to use in the legend.
 
-      **recipe (list)**
-        Lisp-like code that describes how to generate the value of the
-        current column in the table from one row of the selected test's
-        data. We describe this lisp-like language the ``Data processing
-        language``_ section of this manual page.
+    **recipe (list)**
+      Lisp-like code that describes how to generate the value of the
+      current column in the table from one row of the selected test's
+      data. We describe this lisp-like language in the ``Data processing
+      language``_ section of this manual page.
 
   **title (string)**
     The title of the test (e.g. 'BitTorrent test').
