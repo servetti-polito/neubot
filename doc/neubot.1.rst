@@ -598,7 +598,7 @@ Here is a detailed description of each API.
     When nonzero, returns the description of the variables instead of their
     values.
 
-  Returned JSON example::
+  Returned JSON example (with ``debug=1&labels=0``)::
 
     {
      "enabled": 1,
