@@ -580,7 +580,7 @@ Here is a detailed description of each API.
      "/api/version"
    ]
 
-**/api/config**
+**/api/config[?options]**
   This API allows to you get (``GET``) and set (``POST``) the variables
   that modify the behavior of Neubot.
 
@@ -615,9 +615,9 @@ Here is a detailed description of each API.
     }
 
   We have not standardized variable names yet. Therefore, we don't provide
-  here a list of variable names, types and default values.
+  here a list of variable names, types, and default values.
 
-**/api/data?test=string**
+**/api/data?test=string[&options]**
   This API allows you to retrieve (``GET``) the data collected during Neubot
   tests.  As we have a single API for all tests, you must provide the test
   name using the query string.
@@ -629,23 +629,23 @@ Here is a detailed description of each API.
 
   This API accepts the following query-string parameters:
 
-  **test=string**
-    This parameter is mandatory and specifies the test whose data you
-    want to retrieve.
+  **debug=integer [default: 0]**
+    When nonzero, the API returns a pretty-printed JSON. Otherwise, the
+    JSON is serialized on a single line.
 
   **since=integer [default: 0]**
     Returns only the data collected after the specified time (indicated
     as the number of seconds elapsed since the midnight of January,
     1st 1970).
 
+  **test=string**
+    This parameter is mandatory and specifies the test whose data you
+    want to retrieve.
+
   **until=integer [default: 0]**
     Returns only the data collected before the specified time (indicated
     as the number of seconds elapsed since midnight of January,
     1st 1970).
-
-  **debug=integer [default: 0]**
-    When nonzero, the API returns a pretty-printed JSON. Otherwise, the
-    JSON is serialized on a single line.
 
 **/api/debug**
   This API allows you to get (``GET``) information about Neubot internals,
@@ -679,7 +679,7 @@ Here is a detailed description of each API.
   caller to either ``index.html`` (if privacy settings are OK)
   or on ``privacy.html`` (if privacy settings are not OK).
 
-**/api/log**
+**/api/log[?options]**
   This API allows you to get (``GET``) Neubot logs, as a list of
   dictionaries. Each dictionary represents a log record and contains
   the following fields:
@@ -735,7 +735,7 @@ Here is a detailed description of each API.
    ]
 
 
-**/api/results?test=string**
+**/api/results?test=string[&options]**
   This API allows the web interface to get information on how to format
   results. It returns a dictionary, encoded as JSON, that indicates the plots
   and the tables to be generated in the ``results.html`` page for the
@@ -821,6 +821,16 @@ Here is a detailed description of each API.
   **www_no_title (integer)**
     Whether to include the title of the test in the results page (zero)
     or not (nonzero).
+
+  The API accepts the following query-string options:
+
+  **debug=integer**
+    When nonzero, the API returns a pretty-printed JSON. Otherwise,
+    the JSON is serialized on a single line.
+
+  **test=string**
+    This parameter is mandatory and specifies that you want to retrieve
+    the information to present the results of the specified test.
 
   Returned JSON example::
 
@@ -920,7 +930,7 @@ Here is a detailed description of each API.
     "www_no_title": 0
    }
 
-**/api/runner?test=string**
+**/api/runner?test=string[&options]**
   This API allows the caller to schedule a test for immediate
   execution. If a test is already running the API returns an
   error ``500``, otherwise it returns ``200``.
@@ -944,7 +954,7 @@ Here is a detailed description of each API.
 
    {}
 
-**/api/state**
+**/api/state[?options]**
   This API allows you to get (``GET``) and track (via comet) the state
   of Neubot. The API returns a dictionary with the following fields:
 
@@ -969,6 +979,10 @@ Here is a detailed description of each API.
     The identifier of the current event.
 
   The API accepts the following query-string options:
+
+  **debug=integer**
+    When nonzero, the API returns a pretty-printed JSON. Otherwise,
+    the JSON is serialized on a single line.
 
   **t=integer**
     When this option is present, Neubot does not return a response until
