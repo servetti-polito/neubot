@@ -1113,19 +1113,11 @@ dictionary that contains the following fields:
 
 **json_data (string)**
   This string contains the serialization of a JSON object, which
-  contains all the data collected during the test.
-
-  Note: on the server side, the ``raw`` test only saves the data
-  contained inside ``json_data``. On client side, we wrap such
-  data with a dictionary that has the same field names of the
-  ``bittorrent`` and ``speedtest`` test, because that simplifies
-  its processing in ``js/results.js``.
-
-  The data encoded into this field is the data that is actually saved
-  on server side. Historically, we wrapped this data into a dictionary
-  that has fields with names similar to the ``bittorrent`` and
-  ``speedtest`` ones, because ``js/results.js`` expected fields with
-  fixed names.
+  contains all the data collected during the test, both on the server
+  and on the client side. The dictionary that we are describing, in
+  fact, contains just a subset of the collected results. We can
+  not store the full JSON object directly until Neubot's ``database``
+  module and web interface get ready for that.
 
 **internal_address (string)**
   Neubot's IP address, as seen by Neubot. It is typically either
