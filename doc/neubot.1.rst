@@ -665,6 +665,15 @@ Here is a detailed description of each API.
                    ...
                   }}
 
+**/api/exit**
+  When this API is invoked, Neubot exits immediately (i.e. without
+  sending any response).
+
+  Don't use this API to shut down Neubot on MacOS, use the ``neubot
+  stop`` command instead. For this API has effect on the unprivileged
+  Neubot process only and the privileged process will respawn it,
+  once it notices it died.
+
 BitTorrent data format
 ``````````````````````
 
