@@ -829,8 +829,7 @@ Here is a detailed description of each API.
     the JSON is serialized on a single line.
 
   **test=string**
-    This parameter is mandatory and specifies that you want to retrieve
-    the information to present the results of the specified test.
+    This parameter is mandatory and specifies the selected test.
 
   Returned JSON example::
 
@@ -954,6 +953,24 @@ Here is a detailed description of each API.
 
    {}
 
+  Returned text example::
+
+   1366299354 [INFO] runner_core: Need to auto-discover first...
+   1366299355 [INFO] runner_mlabns: server discovery... in progress
+   1366299356 [INFO] runner_mlabns: server discovery... complete
+   1366299356 [INFO] raw_clnt: connection established with ...
+   1366299356 [INFO] raw_clnt: connect_time: 13.6 ms
+   1366299357 [INFO] raw_clnt: sending auth to server... in progress
+   1366299357 [INFO] raw_clnt: sending auth to server... complete
+   1366299357 [INFO] raw_clnt: receiving auth from server... in progress
+   1366299357 [INFO] raw_clnt: receiving auth from server... complete
+   1366299357 [INFO] raw_clnt: estimating ALRTT... in progress
+   1366299357 [INFO] raw_clnt: alrtt_avg: 14.3 ms
+   1366299357 [INFO] raw_clnt: estimating ALRTT... complete
+   1366299357 [INFO] raw_clnt: raw goodput test... in progress
+   1366299367 [INFO] raw_clnt: raw goodput test... complete
+   1366299367 [INFO] raw_clnt: goodput: 65.5 Mbit/s
+
 **/api/state[?options]**
   This API allows you to get (``GET``) and track (via comet) the state
   of Neubot. The API returns a dictionary with the following fields:
@@ -986,15 +1003,15 @@ Here is a detailed description of each API.
 
   **t=integer**
     When this option is present, Neubot does not return a response until
-    the next event after the one identifier by ``integer`` expires (or
+    the next event after the one identified by ``integer`` is fired (or
     until a timeout expires). This behavior allows to implement the comet
-    pattern and timely update the web interface with low overhead.
+    pattern and to timely update the web interface with low overhead.
 
 **/api/version**
   This API allows you to get (``GET``) the version number of Neubot, in
   ``text/plain`` format.
 
-  Return text example::
+  Returned text example::
 
    0.4.15.7
 
