@@ -584,12 +584,12 @@ Here is a detailed description of each API.
    ]
 
 **/api/config**
-  This API allows to you get (``GET``) and set (``POST``) the configuration
-  variables that modify the behavior of Neubot.
+  This API allows to you get (``GET``) and set (``POST``) the variables
+  that modify the behavior of Neubot.
 
-  ``GET`` returns a dictionary, encoded using JSON, that contains settings
-  variables and their values. ``POST`` sends a url-encoded string, which
-  contains ``variable=new_value`` pairs.
+  ``GET`` returns a dictionary, encoded using JSON, that maps each variable
+  to its value.  ``POST`` sends a url-encoded string, which contains
+  ``variable=new_value`` pairs.
 
   The API accepts the following query-string options:
 
