@@ -567,7 +567,7 @@ Here is a detailed description of each API.
   This API allows you to get (``GET``) the list of available APIs,
   encoded as a JSON.
 
-  Example output::
+  Returned JSON example::
 
     [
      "/api",
@@ -601,7 +601,7 @@ Here is a detailed description of each API.
     When nonzero, returns the description of the variables instead of their
     values.
 
-  Example::
+  Returned JSON example::
 
     {
      "enabled": 1,
@@ -621,11 +621,11 @@ Here is a detailed description of each API.
   here a list of variable names, types and default values.
 
 **/api/debug**
-  This API allows you to ``GET`` information about Neubot internals, which
-  is typically useful for debugging purposes. As such, the consistency
+  This API allows you to get (``GET``) information about Neubot internals,
+  which is typically useful for debugging purposes. As such, the consistency
   of the output format is not guaranteed.
 
-  Example::
+  Returned JSON example::
 
     {'WWW': '/usr/share/neubot/www',
      'notifier': {'_subscribers': {},
@@ -639,14 +639,16 @@ Here is a detailed description of each API.
                   }}
 
 **/api/data?test=string**
-  This API allows you to retrieve the data collected during Neubot tests
-  via the ``GET`` method. As we have a single API for all tests, you
-  must provide the test name using the query string.
+  This API allows you to retrieve (``GET``) the data collected during Neubot
+  tests.  As we have a single API for all tests, you must provide the test
+  name using the query string.
 
   This API returns a JSON that serializes a list of dictionaries, in which
-  each dictionary is the data collected during a test.
+  each dictionary is the data collected during a test. The structure of the
+  dictionary returned by each test is described in a dedicated section of
+  this manual page.
 
-  The API accepts the following query-string parameters:
+  This API accepts the following query-string parameters:
 
   **test=string**
     This parameter is mandatory and specifies the test whose data you
@@ -654,11 +656,13 @@ Here is a detailed description of each API.
 
   **since=integer**
     Returns only the data collected after the specified time (indicated
-    as the number of seconds elapsed since the midnight of January, 1st 1970).
+    as the number of seconds elapsed since the midnight of January,
+    1st 1970).
 
   **until=integer**
     Returns only the data collected before the specified time (indicated
-    as the number of seconds elapsed since midnight of January, 1st 1970).
+    as the number of seconds elapsed since midnight of January,
+    1st 1970).
 
   **debug=integer**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
