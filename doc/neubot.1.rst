@@ -671,8 +671,13 @@ Here is a detailed description of each API.
 
   Don't use this API to shut down Neubot on MacOS, use the ``neubot
   stop`` command instead. For this API has effect on the unprivileged
-  Neubot process only and the privileged process will respawn it,
+  Neubot process only, and the privileged process will respawn it,
   once it notices it died.
+
+**/api/index**
+  This API redirects (using ``302 Found`` and ``Location``) the
+  caller to either ``index.html`` (if privacy settings are OK)
+  or on ``privacy.html`` (if privacy settings are not OK).
 
 BitTorrent data format
 ``````````````````````
