@@ -590,11 +590,11 @@ Here is a detailed description of each API.
 
   The API accepts the following query-string options:
 
-  **debug=integer**
+  **debug=integer [default: 0]**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
 
-  **labels=integer**
+  **labels=integer [default: 0]**
     When nonzero, returns the description of the variables instead of their
     values.
 
@@ -633,17 +633,17 @@ Here is a detailed description of each API.
     This parameter is mandatory and specifies the test whose data you
     want to retrieve.
 
-  **since=integer**
+  **since=integer [default: 0]**
     Returns only the data collected after the specified time (indicated
     as the number of seconds elapsed since the midnight of January,
     1st 1970).
 
-  **until=integer**
+  **until=integer [default: 0]**
     Returns only the data collected before the specified time (indicated
     as the number of seconds elapsed since midnight of January,
     1st 1970).
 
-  **debug=integer**
+  **debug=integer [default: 0]**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
 
@@ -678,6 +678,41 @@ Here is a detailed description of each API.
   This API redirects (using ``302 Found`` and ``Location``) the
   caller to either ``index.html`` (if privacy settings are OK)
   or on ``privacy.html`` (if privacy settings are not OK).
+
+**/api/log**
+  This API allows you to get (``GET``) Neubot logs, as a list of
+  dictionaries. Each dictionary represents a log record and contains
+  the following fields:
+
+  **timestamp (integer)**
+    Time when this log was generated, expressed as number of seconds
+    elapsed since January, 1st 1970.
+
+  **severity (string)**
+    The log message severity, one of ``DEBUG``, ``INFO``, ``WARNING``,
+    and ``ERROR``.
+
+  **message (string)**
+    The log message string.
+
+  This API accepts the following query-string options:
+
+  **debug (int) [default: 0]**
+    If nonzero, the API formats logs like they are printed on the
+    system logger (i.e. as a text/plain sequence of lines). Otherwise,
+    the API returns the JSON list of dictionaries described above.
+
+  **reversed (int) [default: 0]**
+    If nonzero logs are reversed (i.e. the most recent log record is
+    the first element of the list). Otherwise logs are returned in
+    natural order (the most recent log record is the last element of
+    the list).
+
+  **verbosity (int) [default: 1]**
+    When the verbosity is less than 1, only ``ERROR`` and ``WARNING``
+    messages are returned. When the verbosity is 1, the API returns
+    also ``INFO`` messages. When the verbosity is greater than 1,
+    the API returns both ``INFO`` and ``DEBUG`` messages.
 
 BitTorrent data format
 ``````````````````````
