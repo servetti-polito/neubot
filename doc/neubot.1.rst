@@ -551,7 +551,7 @@ WEB API
 ```````
 
 To access Neubot API, send HTTP requests to the address and port
-where Neubot is listening (which is 127.0.0.1:9774 by default, and
+where Neubot is listening (which is ``127.0.0.1:9774`` by default, and
 which can be changed by editing ``/etc/neubot/api``).
 
 Here is a detailed description of each API.
