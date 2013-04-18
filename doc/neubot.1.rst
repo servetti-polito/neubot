@@ -59,7 +59,7 @@ aspects in the PRIVACY_ section.
 
 Neubot is a background process. You can control it by using its
 subcommands, its web interface or its web API (see, respectively,
-the SUBCOMMANDS_, `WEB INTERFACE`_ and `WEB API`_ sections). Neubot
+the SUBCOMMANDS_, `WEB INTERFACE FILES`_ and `WEB API`_ sections). Neubot
 listens for web requests at ``http://127.0.0.1:9774/``. To access
 the web interface, use either your favorite browser or the ``viewer``
 subcommand. To change the address and/or port where Neubot listens
@@ -366,7 +366,7 @@ list of the files installed.
 
 **/usr/local/share/neubot/www/**
   Location where the web interface files are installed. The web interface
-  is described in the `WEB INTERFACE`_ section.
+  is described in the `WEB INTERFACE FILES`_ section.
 
 **/var/lib/neubot/database.sqlite3**
   System-wide results database for Linux systems, created when
@@ -416,8 +416,8 @@ Run Neubot ``command`` from the sources directory::
 
     $ ./bin/neubot command
 
-WEB INTERFACE
-`````````````
+WEB INTERFACE FILES
+```````````````````
 
 Neubot web interface uses server side includes (on the server side)
 and javascript (and the client side).  On the Javascript side, Neubot
