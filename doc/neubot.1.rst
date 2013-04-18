@@ -635,7 +635,7 @@ Here is a detailed description of each API.
 
   **since=integer [default: 0]**
     Returns only the data collected after the specified time (indicated
-    as the number of seconds elapsed since the midnight of January,
+    as the number of seconds elapsed since midnight of January,
     1st 1970).
 
   **test=string**
@@ -686,7 +686,7 @@ Here is a detailed description of each API.
 
   **timestamp (integer)**
     Time when this log was generated, expressed as number of seconds
-    elapsed since January, 1st 1970.
+    elapsed since midnight of January, 1st 1970.
 
   **severity (string)**
     The log message severity, one of ``DEBUG``, ``INFO``, ``WARNING``,
@@ -1400,6 +1400,11 @@ Example::
      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
     },
     ...
+
+Data processing language
+````````````````````````
+
+TDB
 
 PRIVACY
 ```````
