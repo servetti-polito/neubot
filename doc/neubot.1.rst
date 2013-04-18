@@ -344,7 +344,7 @@ list of the files installed.
     #
     address 127.0.0.1  # Address where the listen
     port 9774          # Port where to listen
- 
+
 
 **/etc/neubot/users**
   Configuration file that indicates the unprivileged user names
@@ -458,7 +458,7 @@ interface:
 
   **js/results.js**
     Contains code to process Neubot results, as well as code to display
-    them as plots and tables. 
+    them as plots and tables.
 
   **js/settings.js**
     Contains code to retrieve and modify Neubot settings.
@@ -517,7 +517,7 @@ interface:
 **results.html**
   The results page, dynamically filled by javascript using Neubot web
   API. It allows you to see the results of recent experiments, both
-  in form of plots and tables. 
+  in form of plots and tables.
 
 **settings.html**
   Shows (and allows to modify) Neubot settings.
@@ -712,7 +712,213 @@ Here is a detailed description of each API.
     When the verbosity is less than 1, only ``ERROR`` and ``WARNING``
     messages are returned. When the verbosity is 1, the API returns
     also ``INFO`` messages. When the verbosity is greater than 1,
-    the API returns both ``INFO`` and ``DEBUG`` messages.
+    the API returns also ``INFO`` and ``DEBUG`` messages.
+
+  Returned JSON example::
+
+   [
+    {
+     "message": "raw_negotiate: not reached final state",
+     "severity": "WARNING",
+     "timestamp": 1366195042
+    },
+    {
+     "message": "raw_negotiate: bad response",
+     "severity": "ERROR",
+     "timestamp": 1366236483
+    },
+    {
+     "message": "raw_negotiate: not reached final state",
+     "severity": "WARNING",
+     "timestamp": 1366236484
+    }
+   ]
+
+
+**/api/results?test=string**
+  This API allows the web interface to get information on how to format
+  results. It returns a dictionary, encoded as JSON, that indicates the plots
+  and the tables to be generated in the ``results.html`` page for the
+  *selected test* (which is either the test selected via query string or
+  the default test if none was specified).
+
+  The dictionary is generated using ``www/test/foo.json`` as template, and
+  it contains the following fields:
+
+  **available_tests (list of strings)**
+    List that contains the name of all the available tests.
+
+  **description (string)**
+    String that contains a long description of the selected test. This is
+    the content of the ``www/test/foo.html`` file.
+
+  **plots (list of dictionaries)**
+    List of dictionaries: each dictionary contains the instructions to
+    generate a plot. The dictionary contains the following fields:
+
+    **datasets (list of dictionaries)**
+      List of dictionaries: each dictionary contains the instructions to
+      plot one serie of data. The dictionary contains the following fields:
+
+      **label (string)**
+        Label to use in the legend.
+
+      **marker (string)**
+        Indicates the marker to use, either ``circle`` or ``square``.
+
+      **recipe (list)**
+        Lisp-like code that describes how to generate one point on the Y
+        axis from one row of the selected test's data. We describe this
+        lisp-like language the ``Data processing language``_ section of
+        this manual page.
+
+    **title (string)**
+      Title of the plot.
+
+    **xlable (string)**
+      Label for the X axis.
+
+    **ylabel (string)**
+      Label for the Y axis.
+
+  **selected_test**
+    The selected test name.
+
+  **table (list of dictionaries)**
+    List of dictionaries: each dictionary is one column of the table
+    that must be generated. Each dictionary contains the following fields:
+
+      **label (string)**
+        Label to use in the legend.
+
+      **recipe (list)**
+        Lisp-like code that describes how to generate the value of the
+        current column in the table from one row of the selected test's
+        data. We describe this lisp-like language the ``Data processing
+        language``_ section of this manual page.
+
+  **title (string)**
+    The title of the test (e.g. 'BitTorrent test').
+
+  **www_no_description (integer)**
+    Whether to include a description of the test in the results page (zero)
+    or not (nonzero).
+
+  **www_no_legend (integer)**
+    Whether to include a legend in the plots (zero) or not (nonzero).
+
+  **www_no_plot (integer)**
+    Whether to generate plots or not.
+
+  **www_no_split_by_ip (integer)**
+    Whether to split the selected test's data by IP and plot a different line
+    for each IP (zero) or not (nonzero).
+
+  **www_no_table (integer)**
+    Whether to generate a table that contains the selected test's data (zero)
+    or not (nonzero).
+
+  **www_no_title (integer)**
+    Whether to include the title of the test in the results page (zero)
+    or not (nonzero).
+
+  Returned JSON example::
+
+   {
+    "available_tests": [
+        "raw",
+        "speedtest",
+        "bittorrent"
+    ],
+    "description": "...",
+    "www_no_split_by_ip": 0,
+    "title": "Your recent Speedtest results",
+    "www_no_legend": 0,
+    "selected_test": "speedtest",
+    "www_no_plot": 0,
+    "www_no_table": 0,
+    "table": [
+        {
+            "recipe": ["to-datetime",
+                        ["select", "timestamp", "result"]],
+            "label": "Timestamp"
+        },
+        {
+            "recipe": ["select", "internal_address", "result"],
+            "label": "Internal address"
+        },
+        {
+            "recipe": ["select", "real_address", "result"],
+            "label": "Real address"
+        },
+        {
+            "recipe": ["select", "remote_address", "result"],
+            "label": "Remote address"
+        },
+        {
+            "recipe": ["to-millisecond-string",
+                        ["select", "connect_time", "result"]],
+            "label": "Connect time"
+        },
+        {
+            "recipe": ["to-millisecond-string",
+                        ["select", "latency", "result"]],
+            "label": "Appl. latency"
+        },
+        {
+            "recipe": ["to-speed-string",
+                        ["select", "download_speed", "result"]],
+            "label": "Download speed"
+        },
+        {
+            "recipe": ["to-speed-string",
+                        ["select", "upload_speed", "result"]],
+            "label": "Upload speed"
+        }
+    ],
+    "www_no_description": 0,
+    "plots": [
+        {
+            "datasets": [
+                {
+                    "marker": "circle",
+                    "recipe": ["to-speed",
+                                ["select", "download_speed", "result"]],
+                    "label": "Dload"
+                },
+                {
+                    "marker": "square",
+                    "recipe": ["to-speed",
+                                ["select", "upload_speed", "result"]],
+                    "label": "Upload"
+                }
+            ],
+            "ylabel": "Goodput (Mbit/s)",
+            "xlabel": "Date",
+            "title": "Download and upload speed"
+        },
+        {
+            "datasets": [
+                {
+                    "marker": "circle",
+                    "recipe": ["to-millisecond",
+                                ["select", "latency", "result"]],
+                    "label": "Appl. latency"
+                },
+                {
+                    "marker": "square",
+                    "recipe": ["to-millisecond",
+                                ["select", "connect_time", "result"]],
+                    "label": "Connect time"
+                }
+            ],
+            "ylabel": "Delay (ms)",
+            "xlabel": "Date",
+            "title": "Connect time and latency"
+        }
+    ],
+    "www_no_title": 0
+   }
 
 BitTorrent data format
 ``````````````````````
@@ -779,21 +985,21 @@ Example::
 
    [
     {
-     "connect_time": 0.003387928009033203, 
-     "download_speed": 4242563.145733707, 
-     "internal_address": "130.192.91.231", 
-     "neubot_version": "0.004015007", 
-     "platform": "linux2", 
-     "privacy_can_collect": 1, 
-     "privacy_can_publish": 1, 
-     "privacy_informed": 1, 
-     "real_address": "130.192.91.231", 
-     "remote_address": "194.116.85.224", 
-     "test_version": 1, 
-     "timestamp": 1366045628, 
-     "upload_speed": 4231443.875881268, 
+     "connect_time": 0.003387928009033203,
+     "download_speed": 4242563.145733707,
+     "internal_address": "130.192.91.231",
+     "neubot_version": "0.004015007",
+     "platform": "linux2",
+     "privacy_can_collect": 1,
+     "privacy_can_publish": 1,
+     "privacy_informed": 1,
+     "real_address": "130.192.91.231",
+     "remote_address": "194.116.85.224",
+     "test_version": 1,
+     "timestamp": 1366045628,
+     "upload_speed": 4231443.875881268,
      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
-    }, 
+    },
     ...
 
 Raw test data format
@@ -868,16 +1074,16 @@ Example::
 
    [
     {
-     "connect_time": 0.2981860637664795, 
-     "download_speed": 3607.120929707688, 
-     "internal_address": "130.192.91.231", 
-     "json_data": "...", 
-     "latency": 0.29875500202178956, 
-     "neubot_version": "0.004015007", 
-     "platform": "linux2", 
-     "real_address": "130.192.91.231", 
-     "remote_address": "203.178.130.237", 
-     "timestamp": 1365071100, 
+     "connect_time": 0.2981860637664795,
+     "download_speed": 3607.120929707688,
+     "internal_address": "130.192.91.231",
+     "json_data": "...",
+     "latency": 0.29875500202178956,
+     "neubot_version": "0.004015007",
+     "platform": "linux2",
+     "real_address": "130.192.91.231",
+     "remote_address": "203.178.130.237",
+     "timestamp": 1365071100,
      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
     },
     ...
@@ -958,65 +1164,65 @@ Example::
    [
     {
      "client": {
-      "al_mss": 1448, 
-      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81", 
+      "al_mss": 1448,
+      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81",
       "goodput": {
-       "bytesdiff": 128200, 
-       "timediff": 35.540810108184814, 
+       "bytesdiff": 128200,
+       "timediff": 35.540810108184814,
        "ticks": 1365071098.203412
-      }, 
-      "al_rexmits": [], 
-      "connect_time": 0.2981860637664795, 
+      },
+      "al_rexmits": [],
+      "connect_time": 0.2981860637664795,
       "alrtt_list": [
-       0.31011295318603516, 
-       0.30966901779174805, 
-       0.29677391052246094, 
-       0.2957899570465088, 
-       0.29570794105529785, 
-       0.2956199645996094, 
-       0.29558706283569336, 
-       0.2956211566925049, 
-       0.2958400249481201, 
+       0.31011295318603516,
+       0.30966901779174805,
+       0.29677391052246094,
+       0.2957899570465088,
+       0.29570794105529785,
+       0.2956199645996094,
+       0.29558706283569336,
+       0.2956211566925049,
+       0.2958400249481201,
        0.296828031539917
-      ], 
-      "myname": "130.192.91.231", 
-      "peername": "203.178.130.237", 
-      "platform": "linux2", 
-      "version": "0.004015007", 
-      "al_capacity": 10982553.692585895, 
-      "alrtt_avg": 0.29875500202178956, 
+      ],
+      "myname": "130.192.91.231",
+      "peername": "203.178.130.237",
+      "platform": "linux2",
+      "version": "0.004015007",
+      "al_capacity": 10982553.692585895,
+      "alrtt_avg": 0.29875500202178956,
       "goodput_snap": [
        {
-        "bytesdiff": 24616, 
-        "timediff": 1.0001380443572998, 
-        "ticks": 1365071063.66274, 
-        "stimediff": 0.0, 
+        "bytesdiff": 24616,
+        "timediff": 1.0001380443572998,
+        "ticks": 1365071063.66274,
+        "stimediff": 0.0,
         "utimediff": 0.0
-       }, 
+       },
        ...
       ]
-     }, 
+     },
      "server": {
-      "timestamp": 1365070933, 
-      "myname": "203.178.130.237", 
-      "peername": "130.192.91.231", 
-      "platform": "linux2", 
-      "version": "0.004015007", 
+      "timestamp": 1365070933,
+      "myname": "203.178.130.237",
+      "peername": "130.192.91.231",
+      "platform": "linux2",
+      "version": "0.004015007",
       "goodput": {
-       "bytesdiff": 131092, 
-       "timediff": 34.94503116607666, 
+       "bytesdiff": 131092,
+       "timediff": 34.94503116607666,
        "ticks": 1365070933.95337
-      }, 
+      },
       "goodput_snap": [
        {
-        "bytesdiff": 31856, 
-        "timediff": 1.0005459785461426, 
-        "ticks": 1365070900.008885, 
-        "stimediff": 0.0, 
+        "bytesdiff": 31856,
+        "timediff": 1.0005459785461426,
+        "ticks": 1365070900.008885,
+        "stimediff": 0.0,
         "utimediff": 0.0
-       }, 
+       },
        ...
-      ], 
+      ],
       "web100_snap": []
      }
     }
@@ -1090,22 +1296,22 @@ Example::
 
    [
     {
-     "connect_time": 0.0017991065979003906, 
-     "download_speed": 11626941.501993284, 
-     "internal_address": "130.192.91.231", 
-     "latency": 0.003973397341641513, 
-     "neubot_version": "0.004015007", 
-     "platform": "linux2", 
-     "privacy_can_collect": 1, 
-     "privacy_can_publish": 1, 
-     "privacy_informed": 1, 
-     "real_address": "130.192.91.231", 
-     "remote_address": "194.116.85.237", 
-     "test_version": 1, 
-     "timestamp": 1365074302, 
-     "upload_speed": 10974865.674026133, 
+     "connect_time": 0.0017991065979003906,
+     "download_speed": 11626941.501993284,
+     "internal_address": "130.192.91.231",
+     "latency": 0.003973397341641513,
+     "neubot_version": "0.004015007",
+     "platform": "linux2",
+     "privacy_can_collect": 1,
+     "privacy_can_publish": 1,
+     "privacy_informed": 1,
+     "real_address": "130.192.91.231",
+     "remote_address": "194.116.85.237",
+     "test_version": 1,
+     "timestamp": 1365074302,
+     "upload_speed": 10974865.674026133,
      "uuid": "7528d674-25f0-4ac4-aff6-46f446034d81"
-    }, 
+    },
     ...
 
 PRIVACY
@@ -1193,7 +1399,7 @@ Neubot as a collection is::
 
   Copyright (c) 2010-2013 Nexa Center for Internet & Society,
       Politecnico di Torino (DAUIN)
- 
+
   Neubot is free software: you can redistribute it and/or
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation, either version
