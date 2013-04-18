@@ -419,10 +419,6 @@ Run Neubot ``command`` from the sources directory::
 WEB INTERFACE FILES
 ```````````````````
 
-Neubot web interface uses server side includes (on the server side)
-and javascript (and the client side).  On the Javascript side, Neubot
-uses jQuery and jqPlot.
-
 Here we provide a brief description of the core files of the web
 interface:
 
@@ -433,10 +429,10 @@ interface:
   Neubot's favicon.
 
 **footer.html**
-  Common footer for all web pages.
+  Common footer for all web pages (Neubot uses server-side includes).
 
 **header.html**
-  Common header for all web pages.
+  Common header for all web pages (Neubot uses server-side includes).
 
 **img/**
   Directory that contains images.
