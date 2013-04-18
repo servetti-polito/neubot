@@ -742,8 +742,8 @@ Here is a detailed description of each API.
   *selected test* (which is either the test selected via query string or
   the default test if none was specified).
 
-  The dictionary is generated using ``www/test/foo.json`` as template, and
-  it contains the following fields:
+  The dictionary for test ``foo`` is generated using ``www/test/foo.json`` as
+  template, and it contains the following fields:
 
   **available_tests (list of strings)**
     List that contains the name of all the available tests.
