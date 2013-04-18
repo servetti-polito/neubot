@@ -564,8 +564,8 @@ Here is a detailed description of each API.
   This API is an alias for ``/api/``.
 
 **/api/**
-  This API responds to ``GET``, ``POST`` with a JSON encoding a list
-  of strings. Each string is the path of one available API.
+  This API allows you to get (``GET``) the list of available APIs,
+  encoded as a JSON.
 
   Example output::
 
@@ -584,7 +584,7 @@ Here is a detailed description of each API.
    ]
 
 **/api/config**
-  This API allows to get (``GET``) and set (``POST``) the configuration
+  This API allows to you get (``GET``) and set (``POST``) the configuration
   variables that modify the behavior of Neubot.
 
   The configuration object is a dictionary. ``GET`` returns a dictionary,
