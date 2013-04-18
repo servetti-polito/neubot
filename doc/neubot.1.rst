@@ -271,7 +271,7 @@ This section documents Neubot's subcommands.
 **neubot start**
   On MacOS this command runs launchctl(1), which in turn starts
   Neubot. You must be ``root`` to run this command.  On MacOS, Neubot's
-  installer configures the system to launch Neubot at startup; i.e.,
+  installer configures the system to launch Neubot at startup; i.e.
   you do not typically need to run this command.
 
   (On MacOS, Neubot is implemented by two daemons: the usual unprivileged
@@ -291,7 +291,7 @@ This section documents Neubot's subcommands.
 
   -v
     Verbose. When this flag is specified, the start command
-    is verbose (i.e., it prints on the standard error
+    is verbose (i.e. it prints on the standard error
     the commands it is about to invoke).
 
     When both -v and -d are specified, Neubot runs in verbose mode
@@ -598,7 +598,7 @@ Here is a detailed description of each API.
     When nonzero, returns the description of the variables instead of their
     values.
 
-  Returned JSON example (with ``debug=1&labels=0``)::
+  Returned JSON example::
 
     {
      "enabled": 1,
@@ -671,8 +671,8 @@ Here is a detailed description of each API.
 
   Don't use this API to shut down Neubot on MacOS, use the ``neubot
   stop`` command instead. For this API has effect on the unprivileged
-  Neubot process only, and the privileged process will respawn it,
-  once it notices it died.
+  Neubot process only, and the privileged process will respawn the
+  unprivileged process, once it notices it died.
 
 **/api/index**
   This API redirects (using ``302 Found`` and ``Location``) the
@@ -736,14 +736,14 @@ Here is a detailed description of each API.
 
 
 **/api/results?test=string[&options]**
-  This API allows the web interface to get information on how to format
-  results. It returns a dictionary, encoded as JSON, that indicates the plots
-  and the tables to be generated in the ``results.html`` page for the
-  *selected test* (which is either the test selected via query string or
+  This API allows the web interface to get (``GET``) information on how to
+  format results. It returns a dictionary, encoded as JSON, that indicates
+  the plots and the tables to be generated in the ``results.html`` page for the
+  *selected test* (which is either the test specified via query string or
   the default test if none was specified).
 
-  The dictionary for test ``foo`` is generated using ``www/test/foo.json`` as
-  template, and it contains the following fields:
+  The dictionary for test ``foo`` is generated using ``www/test/foo.json`` (or
+  ``www/test/foo.json.local``) as template and contains the following fields:
 
   **available_tests (list of strings)**
     List that contains the name of all the available tests.
