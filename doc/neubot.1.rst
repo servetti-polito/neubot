@@ -585,8 +585,8 @@ Here is a detailed description of each API.
   that modify the behavior of Neubot.
 
   ``GET`` returns a dictionary, encoded using JSON, that maps each variable
-  to its value.  ``POST`` sends a url-encoded string, which contains
-  ``variable=new_value`` pairs.
+  to its value.  ``POST`` sends a url-encoded string, which contains one
+  or more ``variable=new_value`` atoms separated by ``&``.
 
   The API accepts the following query-string options:
 
