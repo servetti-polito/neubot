@@ -568,12 +568,13 @@ Here is a detailed description of each API.
     [
      "/api",
      "/api/",
-     "/api/results",
      "/api/config",
+     "/api/data",
      "/api/debug",
      "/api/exit",
      "/api/index",
      "/api/log",
+     "/api/results",
      "/api/runner",
      "/api/state",
      "/api/version"
@@ -616,24 +617,6 @@ Here is a detailed description of each API.
   We have not standardized variable names yet. Therefore, we don't provide
   here a list of variable names, types and default values.
 
-**/api/debug**
-  This API allows you to get (``GET``) information about Neubot internals,
-  which is typically useful for debugging purposes. As such, the consistency
-  of the output format is not guaranteed.
-
-  Returned JSON example::
-
-    {'WWW': '/usr/share/neubot/www',
-     'notifier': {'_subscribers': {},
-               '_timestamps': {'statechange': 1336727245277393,
-                               'testdone': 1336727245277246}},
-     'queue_history': [],
-     'typestats': {'ABCMeta': 26,
-                   'BackendNeubot': 1,
-                   'BackendProxy': 1,
-                   ...
-                  }}
-
 **/api/data?test=string**
   This API allows you to retrieve (``GET``) the data collected during Neubot
   tests.  As we have a single API for all tests, you must provide the test
@@ -663,6 +646,24 @@ Here is a detailed description of each API.
   **debug=integer**
     When nonzero, the API returns a pretty-printed JSON. Otherwise, the
     JSON is serialized on a single line.
+
+**/api/debug**
+  This API allows you to get (``GET``) information about Neubot internals,
+  which is typically useful for debugging purposes. As such, the consistency
+  of the output format is not guaranteed.
+
+  Returned JSON example::
+
+    {'WWW': '/usr/share/neubot/www',
+     'notifier': {'_subscribers': {},
+               '_timestamps': {'statechange': 1336727245277393,
+                               'testdone': 1336727245277246}},
+     'queue_history': [],
+     'typestats': {'ABCMeta': 26,
+                   'BackendNeubot': 1,
+                   'BackendProxy': 1,
+                   ...
+                  }}
 
 BitTorrent data format
 ``````````````````````
