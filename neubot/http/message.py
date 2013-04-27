@@ -294,6 +294,7 @@ class Message(object):
 
     def prettyprintbody(self, prefix):
         ''' Pretty print body '''
+        return
         if self["content-type"] not in ("application/json", "text/xml",
                                         "application/xml"):
             return

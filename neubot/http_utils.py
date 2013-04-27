@@ -86,6 +86,6 @@ def urlsplit(uri):
 
 def prettyprint_json(obj, prefix):
     ''' Pretty-print JSON body '''
-    string = json.dumps(obj, indent=4, sort_keys=True)
-    for line in string.split('\n'):
-        logging.debug('%s %s', prefix, line.rstrip())
+#   string = json.dumps(obj, indent=4, sort_keys=True)
+#   for line in string.split('\n'):
+#       logging.debug('%s %s', prefix, line.rstrip())

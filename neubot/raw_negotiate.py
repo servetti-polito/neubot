@@ -36,6 +36,7 @@
 import getopt
 import logging
 import sys
+import zlib
 
 if __name__ == '__main__':
     sys.path.insert(0, '.')
@@ -206,6 +207,7 @@ class RawNegotiate(HttpClient):
                   'al_capacity': raw_analyze.compute_bottleneck_capacity(
                      state['rcvr_data'], state['mss']),
                   'al_mss': state['mss'],
+                  'al_recvr_data': state['rcvr_data'],
                   'al_rexmits': raw_analyze.select_likely_rexmits(
                      state['rcvr_data'], state['connect_time'], state['mss']),
                   'alrtt_list': state['alrtt_list'],
@@ -234,7 +236,7 @@ class RawNegotiate(HttpClient):
         context = stream.opaque
         extra = context.extra
         extra['local_result'] = result
-        body = six.b(json.dumps(result))
+        body = six.b(zlib.compress(json.dumps(result, indent=4), 9))
         host_header = utils_net.format_epnt((extra['address'], extra['port']))
         self.append_request(stream, 'POST', '/collect/raw', 'HTTP/1.1')
         self.append_header(stream, 'Host', host_header)
@@ -244,6 +246,7 @@ class RawNegotiate(HttpClient):
         self.append_header(stream, 'Cache-Control', 'no-cache')
         self.append_header(stream, 'Pragma', 'no-cache')
         self.append_header(stream, 'Connection', 'close')
+        self.append_header(stream, 'Content-Encoding', 'gzip')
         if extra['authorization']:
             self.append_header(stream, 'Authorization', extra['authorization'])
         self.append_end_of_headers(stream)
