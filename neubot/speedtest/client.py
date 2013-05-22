@@ -88,7 +88,7 @@ class ClientDownload(ClientHTTP):
 
     def connection_ready(self, stream):
         request = Message()
-        request.compose(method="GET", pathquery="/speedtest/download",
+        request.compose(method="GET", pathquery="/speedtest/download?size=1000000",
           host=self.host_header)
 
         #
@@ -96,8 +96,8 @@ class ClientDownload(ClientHTTP):
         # server will understand that it needs to send us chunked
         # data for its TARGET number of seconds.
         #
-        if self.conf['version'] == 1:
-            request["range"] = "bytes=0-%d" % ESTIMATE['download']
+        #if self.conf['version'] == 1:
+        #    request["range"] = "bytes=0-%d" % ESTIMATE['download']
 
         request["authorization"] = self.conf.get(
           "speedtest.client.authorization", "")
@@ -417,10 +417,10 @@ class ClientSpeedtest(ClientHTTP):
                     else:
                         self.state = "collect"
                 elif elapsed > LO_THRESH/3:
-                    del self.conf["speedtest.client.%s" % self.state]
+                    #del self.conf["speedtest.client.%s" % self.state]
                     ESTIMATE[self.state] *= TARGET/elapsed
                 else:
-                    del self.conf["speedtest.client.%s" % self.state]
+                    #del self.conf["speedtest.client.%s" % self.state]
                     ESTIMATE[self.state] *= 2
 
             else:

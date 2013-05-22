@@ -77,7 +77,7 @@ def run(argv):
     module = argv[0]
 
     if module == "help":
-        sys.stdout.write("Neubot help -- prints available commands\n")
+        sys.stdout.write("Neubot help --- prints available commands\n")
 
         commands = " ".join(sorted(MODULES.keys()))
         lines =  textwrap.wrap(commands, 60)

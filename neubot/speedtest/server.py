@@ -22,6 +22,8 @@
 
 ''' Speedtest server '''
 
+import urlparse
+
 from neubot.utils_random import RandomBody
 from neubot.http.message import Message
 from neubot.http.server import ServerHTTP
@@ -37,9 +39,14 @@ class SpeedtestServer(ServerHTTP):
     # Adapted from neubot/negotiate/server.py
     def got_request_headers(self, stream, request):
         ''' Filter incoming HTTP requests '''
-        isgood = (request.uri == '/speedtest/latency' or
-                  request.uri == '/speedtest/download' or
-                  request.uri == '/speedtest/upload')
+        if '?' in request.uri:
+            request_uri = request.uri.split('?')[0]
+        else:
+            request_uri = request.uri
+
+        isgood = (request_uri == '/speedtest/latency' or
+                  request_uri == '/speedtest/download' or
+                  request_uri == '/speedtest/upload')
         #
         # NOTE Ignore the request body.  First of all, we are
         # not interested in reading it, we just want to receive
@@ -64,13 +71,27 @@ class SpeedtestServer(ServerHTTP):
     def process_request(self, stream, request):
         ''' Process incoming HTTP request '''
 
+        if '?' in request.uri:
+            request_uri = request.uri.split('?')[0]
+        else:
+            request_uri = request.uri
+
         # Just ignore the incoming body
-        if request.uri in ('/speedtest/latency', '/speedtest/upload'):
+        if request_uri in ('/speedtest/latency', '/speedtest/upload'):
             response = Message()
             response.compose(code='200', reason='Ok')
             stream.send_response(request, response)
 
-        elif request.uri == '/speedtest/download':
+        elif request_uri == '/speedtest/download':
+
+	    # Default download resource size set to 1000 bytes
+	    bodySize = 1000
+
+            # If ?size=<bytes> query is present, then set body size accordingly
+	    parsed = urlparse.urlparse(request.uri)
+            query = urlparse.parse_qs(parsed.query)
+	    if 'size' in query.keys():
+                bodySize = int(query['size'][0])
 
             #
             # If range is not present send chunked
@@ -78,11 +99,10 @@ class SpeedtestServer(ServerHTTP):
             # This is version 2 of the speedtest.
             #
             if not request['range']:
-                body = BytegenSpeedtest(TARGET)
                 response = Message()
                 response.compose(code='200', reason='Ok',
                   mimetype='application/octet-stream',
-                  chunked=body)
+                  body=RandomBody(bodySize+1))  # Changed to fixed size !chunked
                 stream.send_response(request, response)
                 return
 
