@@ -88,7 +88,7 @@ class ClientDownload(ClientHTTP):
 
     def connection_ready(self, stream):
         request = Message()
-        request.compose(method="GET", pathquery="/speedtest/download?size=1000000",
+        request.compose(method="GET", pathquery="/speedtest/download?size=%d" % ESTIMATE['download'],
           host=self.host_header)
 
         #
@@ -278,6 +278,7 @@ class ClientSpeedtest(ClientHTTP):
         self.streams = collections.deque()
         self.finished = False
         self.state = None
+        self.iterations = 10
 
     def configure(self, conf):
         ClientHTTP.configure(self, conf)
@@ -393,9 +394,11 @@ class ClientSpeedtest(ClientHTTP):
 
                 # Calculate average speed
                 speed = self.conf["speedtest.client.%s" % self.state]
-                elapsed = (max(map(lambda t: t[1], speed)) -
-                  min(map(lambda t: t[0], speed)))
-                speed = sum(map(lambda t: t[2], speed)) / elapsed
+		elapsed = speed[-1][1]-speed[-1][0]
+                #elapsed = (max(map(lambda t: t[1], speed)) - min(map(lambda t: t[0], speed)))
+                #speed = sum(map(lambda t: t[2], speed)) / elapsed
+		speed = speed[-1][2] / elapsed
+		logging.info("* speedtest: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
 
                 #
                 # O(N) loopless adaptation to the channel w/ memory
@@ -404,8 +407,13 @@ class ClientSpeedtest(ClientHTTP):
                 # subsequent tests.  In addition to that, the bittorrent
                 # code also anticipates the update of target_bytes.
                 #
-                if elapsed > LO_THRESH:
-                    ESTIMATE[self.state] *= TARGET/elapsed
+		if self.iterations:
+		    factor = 2/elapsed
+		    ESTIMATE[self.state] = ESTIMATE[self.state]*factor
+	 	    self.iterations = self.iterations - 1;
+                else:
+#                if elapsed > LO_THRESH:
+#                    ESTIMATE[self.state] *= TARGET/elapsed
                     self.conf["speedtest.client.%s" % self.state] = speed
                     # Advertise
                     STATE.update("test_%s" % self.state,
@@ -416,12 +424,12 @@ class ClientSpeedtest(ClientHTTP):
                         self.state = "upload"
                     else:
                         self.state = "collect"
-                elif elapsed > LO_THRESH/3:
-                    #del self.conf["speedtest.client.%s" % self.state]
-                    ESTIMATE[self.state] *= TARGET/elapsed
-                else:
-                    #del self.conf["speedtest.client.%s" % self.state]
-                    ESTIMATE[self.state] *= 2
+#                elif elapsed > LO_THRESH/3:
+#                    #del self.conf["speedtest.client.%s" % self.state]
+#                    ESTIMATE[self.state] *= TARGET/elapsed
+#                else:
+#                    #del self.conf["speedtest.client.%s" % self.state]
+#                    ESTIMATE[self.state] *= 2
 
             else:
                 # Wait for all pending requests to complete
