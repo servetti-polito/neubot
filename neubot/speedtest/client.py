@@ -278,7 +278,7 @@ class ClientSpeedtest(ClientHTTP):
         self.streams = collections.deque()
         self.finished = False
         self.state = None
-        self.iterations = 10
+        self.iterations = 20
 
     def configure(self, conf):
         ClientHTTP.configure(self, conf)
@@ -414,8 +414,15 @@ class ClientSpeedtest(ClientHTTP):
                 else:
 #                if elapsed > LO_THRESH:
 #                    ESTIMATE[self.state] *= TARGET/elapsed
-                    self.conf["speedtest.client.%s" % self.state] = speed
+                    results = self.conf["speedtest.client.%s" % self.state]
+		    speedlst = []
+		    for i in range(len(results)):
+ 		        elapsed = results[i][1]-results[i][0]
+                        speed = results[i][2] / elapsed
+			speedlst.append(speed)
+                    self.conf["speedtest.client.%s" % self.state] = "%s" % speedlst
                     # Advertise
+		    logging.info("* speedtest: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
                     STATE.update("test_%s" % self.state,
                       utils.speed_formatter(speed))
                     logging.info("* speedtest: %s ...  done, %s\n", self.state,
