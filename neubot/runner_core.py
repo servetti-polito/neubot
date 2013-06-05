@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
 from neubot.net.poller import POLLER
 from neubot.speedtest.client import ClientSpeedtest
+from neubot.dash.client import ClientDash
 
 from neubot.config import CONFIG
 from neubot.database import DATABASE
@@ -135,6 +136,13 @@ class RunnerCore(object):
             uri = RUNNER_TESTS.test_to_negotiate_uri('speedtest')
             conf['speedtest.client.uri'] =  uri
             client = ClientSpeedtest(POLLER)
+            client.configure(conf)
+            client.connect_uri()
+
+        elif first_elem[0] == 'dash':
+            uri = RUNNER_TESTS.test_to_negotiate_uri('dash')
+            conf['dash.client.uri'] =  uri
+            client = ClientDash(POLLER)
             client.configure(conf)
             client.connect_uri()
 

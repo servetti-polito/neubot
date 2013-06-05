@@ -1,7 +1,7 @@
-# neubot/backend_null.py
+# neubot/speedtest/__init__.py
 
 #
-# Copyright (c) 2012 Simone Basso <bassosimone@gmail.com>,
+# Copyright (c) 2010-2011 Simone Basso <bassosimone@gmail.com>,
 #  NEXA Center for Internet & Society at Politecnico di Torino
 #
 # This file is part of Neubot <http://www.neubot.org/>.
@@ -20,19 +20,6 @@
 # along with Neubot.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-''' Null backend driver '''
+''' Main for speedtest module '''
 
-class BackendNull(object):
-    ''' Null backend driver '''
-
-    def bittorrent_store(self, message):
-        ''' Save result of BitTorrent test '''
-
-    def store_raw(self, message):
-        ''' Save result of RAW test '''
-
-    def speedtest_store(self, message):
-        ''' Save result of speedtest test '''
-
-    def dash_store(self, message):
-        ''' Save result of dash test '''
+from neubot.speedtest.client import main

@@ -165,6 +165,7 @@ def main(args):
 
     BACKEND.bittorrent_store(msg)
     BACKEND.speedtest_store(msg)
+    BACKEND.dash_store(msg)
 
 if __name__ == '__main__':
     main(sys.argv)

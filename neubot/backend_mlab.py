@@ -50,6 +50,10 @@ class BackendMLab(BackendNull):
         ''' Saves the results of a speedtest test '''
         self.do_store('speedtest', message)
 
+    def dash_store(self, message):
+        ''' Saves the results of a dash test '''
+        self.do_store('dash', message)
+
     @staticmethod
     def do_store(test, message):
         ''' Saves the results of the given test '''

@@ -31,6 +31,7 @@ TEST_NAMES = [
               'bittorrent',
               'raw',
               'speedtest',
+              'dash',
              ]
 
 class RunnerPolicy(object):

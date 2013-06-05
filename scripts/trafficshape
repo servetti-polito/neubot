@@ -1,0 +1,8 @@
+# DELETE EXISTING RULES
+/sbin/tc qdisc del dev lo root
+
+/sbin/tc qdisc add dev lo root handle 1:0 htb default 10
+/sbin/tc class add dev lo parent 1:0 classid 1:10 htb rate 512kbps ceil 640kbps prio 1
+/sbin/tc qdisc add dev lo parent 1:10 handle 11:0 netem delay 10ms 2ms 25% distribution normal
+/sbin/tc filter add dev lo parent 1:0 prio 1 protocol ip handle 10 fw flowid 1:10
+/sbin/iptables -A OUTPUT -t mangle -p tcp --dport 8080 -j MARK --set-mark 10

@@ -37,6 +37,7 @@ SUBCOMMANDS = {
     'privacy': 'neubot.privacy',
     'raw': 'neubot.raw',
     'speedtest': 'neubot.speedtest.client',
+    'dash': 'neubot.dash.client',
     'viewer': 'neubot.viewer',
 }
 

@@ -24,6 +24,7 @@
 
 from neubot.config import CONFIG
 from neubot.negotiate.server_speedtest import NEGOTIATE_SERVER_SPEEDTEST
+from neubot.negotiate.server_dash import NEGOTIATE_SERVER_DASH
 from neubot.negotiate.server_bittorrent import NEGOTIATE_SERVER_BITTORRENT
 from neubot.negotiate.server_raw import NEGOTIATE_SERVER_RAW
 from neubot.negotiate.server import NEGOTIATE_SERVER
@@ -39,6 +40,7 @@ def run(poller, conf):
     ''' Start the negotiate server '''
 
     NEGOTIATE_SERVER.register_module('speedtest', NEGOTIATE_SERVER_SPEEDTEST)
+    NEGOTIATE_SERVER.register_module('dash', NEGOTIATE_SERVER_DASH)
     NEGOTIATE_SERVER.register_module('bittorrent', NEGOTIATE_SERVER_BITTORRENT)
     NEGOTIATE_SERVER.register_module('raw', NEGOTIATE_SERVER_RAW)
 

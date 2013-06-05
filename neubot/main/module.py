@@ -38,9 +38,13 @@ MODULES = {
     "rendezvous.server"   : "rendezvous.server",
     "server"              : "server",
     "speedtest"           : "speedtest.client",
+    "dash"           : "dash.client",
     "speedtest.client"    : "speedtest.client",
+    "dash.client"    : "dash.client",
     "speedtest.negotiate" : "speedtest.negotiate",
+    "dash.negotiate" : "dash.negotiate",
     "speedtest.server"    : "speedtest.server",
+    "dash.server"    : "dash.server",
     "stream"              : "net.stream",
     'viewer'              : 'viewer',
 }
@@ -68,6 +72,10 @@ if sys.platform == 'win32' and not hasattr(sys, 'frozen'):
     import neubot.speedtest.client
     import neubot.speedtest.negotiate
     import neubot.speedtest.server
+    import neubot.dash.client
+    import neubot.dash.client
+    import neubot.dash.negotiate
+    import neubot.dash.server
     import neubot.net.stream
 
 def run(argv):

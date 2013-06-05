@@ -26,6 +26,7 @@ import sys
 from neubot.database import DATABASE
 from neubot.database import table_config
 from neubot.database import table_speedtest
+from neubot.database import table_dash
 
 from neubot import compat
 from neubot import utils
@@ -72,17 +73,19 @@ def main(args):
             sys.exit('ERROR: readonly database')
 
         table_speedtest.prune(DATABASE.connection())
+        table_dash.prune(DATABASE.connection())
 
     elif arguments[0] == "delete_all":
         if DATABASE.readonly:
             sys.exit('ERROR: readonly database')
 
-        table_speedtest.prune(DATABASE.connection(), until=utils.timestamp())
+        table_dash.prune(DATABASE.connection(), until=utils.timestamp())
         DATABASE.connection().execute("VACUUM;")
 
     elif arguments[0] in ("show", "dump"):
         d = { "config": table_config.dictionarize(DATABASE.connection()),
-             "speedtest": table_speedtest.listify(DATABASE.connection()) }
+             "speedtest": table_speedtest.listify(DATABASE.connection()),
+             "dash": table_dash.listify(DATABASE.connection()) }
         if arguments[0] == "show":
             compat.json.dump(d, sys.stdout, indent=4)
         elif arguments[0] == "dump":

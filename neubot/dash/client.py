@@ -1,4 +1,4 @@
-# neubot/speedtest/client.py
+# neubot/dash/client.py
 
 #
 # Copyright (c) 2010-2012 Simone Basso <bassosimone@gmail.com>,
@@ -31,14 +31,14 @@ import os
 from neubot.utils_random import RandomBody
 from neubot.config import CONFIG
 from neubot.database import DATABASE
-from neubot.database import table_speedtest
+from neubot.database import table_dash
 from neubot.http.client import ClientHTTP
 from neubot.http.message import Message
 from neubot.net.poller import POLLER
 from neubot.notify import NOTIFIER
 from neubot.state import STATE
-from neubot.speedtest.wrapper import SpeedtestCollect
-from neubot.speedtest.wrapper import SpeedtestNegotiate_Response
+from neubot.dash.wrapper import DashCollect
+from neubot.dash.wrapper import DashNegotiate_Response
 from neubot import utils_version
 
 from neubot.backend import BACKEND
@@ -69,16 +69,16 @@ class ClientLatency(ClientHTTP):
 
     def connection_ready(self, stream):
         request = Message()
-        request.compose(method="HEAD", pathquery="/speedtest/latency",
+        request.compose(method="HEAD", pathquery="/dash/latency",
           host=self.host_header)
         request["authorization"] = self.conf.get(
-          "speedtest.client.authorization", "")
+          "dash.client.authorization", "")
         self.ticks[stream] = utils.ticks()
         stream.send_request(request)
 
     def got_response(self, stream, request, response):
         ticks = utils.ticks() - self.ticks[stream]
-        self.conf.setdefault("speedtest.client.latency",
+        self.conf.setdefault("dash.client.latency",
           []).append(ticks)
 
 class ClientDownload(ClientHTTP):
@@ -89,7 +89,7 @@ class ClientDownload(ClientHTTP):
 
     def connection_ready(self, stream):
         request = Message()
-        request.compose(method="GET", pathquery="/speedtest/download?size=%d" % ESTIMATE['download'],
+        request.compose(method="GET", pathquery="/dash/download?size=%d" % ESTIMATE['download'],
           host=self.host_header)
 
         #
@@ -101,7 +101,7 @@ class ClientDownload(ClientHTTP):
         #    request["range"] = "bytes=0-%d" % ESTIMATE['download']
 
         request["authorization"] = self.conf.get(
-          "speedtest.client.authorization", "")
+          "dash.client.authorization", "")
         self.ticks[stream] = utils.ticks()
         self.bytes[stream] = stream.bytes_recv_tot
         response = Message()
@@ -110,7 +110,7 @@ class ClientDownload(ClientHTTP):
 
     def got_response(self, stream, request, response):
         total = stream.bytes_recv_tot - self.bytes[stream]
-        self.conf.setdefault("speedtest.client.download",
+        self.conf.setdefault("dash.client.download",
           []).append((self.ticks[stream], utils.ticks(), total))
 
 class ClientUpload(ClientHTTP):
@@ -129,57 +129,57 @@ class ClientUpload(ClientHTTP):
         if self.conf['version'] == 2:
             body = BytegenSpeedtest(TARGET)
             request.compose(method='POST', chunked=body,
-              pathquery='/speedtest/upload', host=self.host_header)
+              pathquery='/dash/upload', host=self.host_header)
             request['authorization'] = self.conf[
-              'speedtest.client.authorization']
+              'dash.client.authorization']
             stream.send_request(request)
             self.ticks[stream] = utils.ticks()
             self.bytes[stream] = stream.bytes_sent_tot
             return
 
         request.compose(method="POST", body=RandomBody(ESTIMATE["upload"]),
-          pathquery="/speedtest/upload", host=self.host_header)
+          pathquery="/dash/upload", host=self.host_header)
         request["authorization"] = self.conf.get(
-          "speedtest.client.authorization", "")
+          "dash.client.authorization", "")
         self.ticks[stream] = utils.ticks()
         self.bytes[stream] = stream.bytes_sent_tot
         stream.send_request(request)
 
     def got_response(self, stream, request, response):
         total = stream.bytes_sent_tot - self.bytes[stream]
-        self.conf.setdefault("speedtest.client.upload",
+        self.conf.setdefault("dash.client.upload",
           []).append((self.ticks[stream], utils.ticks(), total))
 
 class ClientNegotiate(ClientHTTP):
     def connection_ready(self, stream):
         request = Message()
-        request.compose(method="GET", pathquery="/speedtest/negotiate",
+        request.compose(method="GET", pathquery="/dash/negotiate",
           host=self.host_header)
         request["authorization"] = self.conf.get(
-          "speedtest.client.authorization", "")
+          "dash.client.authorization", "")
         stream.send_request(request)
 
     def got_response(self, stream, request, response):
         m = marshal.unmarshal_object(response.body.read(), "text/xml",
-                                     SpeedtestNegotiate_Response)
-        self.conf["speedtest.client.authorization"] = m.authorization
-        self.conf["speedtest.client.public_address"] = m.publicAddress
-        self.conf["speedtest.client.unchoked"] = utils.intify(m.unchoked)
+                                     DashNegotiate_Response)
+        self.conf["dash.client.authorization"] = m.authorization
+        self.conf["dash.client.public_address"] = m.publicAddress
+        self.conf["dash.client.unchoked"] = utils.intify(m.unchoked)
         if m.queuePos:
-            self.conf["speedtest.client.queuepos"] = m.queuePos
+            self.conf["dash.client.queuepos"] = m.queuePos
 
 ### Glue result class and dictionary ###
 
 #
-# FIXME The following function glues the speedtest code and
-# the database code.  The speedtest code passes downstream a
+# FIXME The following function glues the dash code and
+# the database code.  The dash code passes downstream a
 # an object with the following problems:
 #
 # 1. the timestamp _might_ be a floating because old
 #    neubot clients have this bug;
 #
 def obj_to_dict(obj):
-    ''' Hack to convert speedtest result object into a
+    ''' Hack to convert dash result object into a
         dictionary. '''
     dictionary = {
         "uuid": obj.client,
@@ -203,25 +203,25 @@ def obj_to_dict(obj):
     return dictionary
 
 def insertxxx(connection, obj, commit=True, override_timestamp=True):
-    ''' Hack to insert a result object into speedtest table,
+    ''' Hack to insert a result object into dash table,
         converting it into a dictionary. '''
-    table_speedtest.insert(connection, obj_to_dict(obj), commit,
+    table_dash.insert(connection, obj_to_dict(obj), commit,
                            override_timestamp)
 
 ### Glue result class and dictionary ###
 
 class ClientCollect(ClientHTTP):
     def connection_ready(self, stream):
-        m1 = SpeedtestCollect()
+        m1 = DashCollect()
         m1.client = self.conf.get("uuid", "")
         m1.timestamp = utils.timestamp()
         m1.internalAddress = stream.myname[0]
-        m1.realAddress = self.conf.get("speedtest.client.public_address", "")
+        m1.realAddress = self.conf.get("dash.client.public_address", "")
         m1.remoteAddress = stream.peername[0]
 
-        m1.latency = self.conf.get("speedtest.client.latency", 0.0)
-        m1.downloadSpeed = self.conf.get("speedtest.client.download", 0.0)
-        m1.uploadSpeed = self.conf.get("speedtest.client.upload", 0.0)
+        m1.latency = self.conf.get("dash.client.latency", 0.0)
+        m1.downloadSpeed = self.conf.get("dash.client.download", 0.0)
+        m1.uploadSpeed = self.conf.get("dash.client.upload", 0.0)
 
         m1.privacy_informed = self.conf.get("privacy.informed", 0)
         m1.privacy_can_collect = self.conf.get("privacy.can_collect", 0)
@@ -233,7 +233,7 @@ class ClientCollect(ClientHTTP):
         m1.connectTime = sum(self.rtts) / len(self.rtts)
 
         # Test version (added Neubot 0.4.12)
-        m1.testVersion = CONFIG['speedtest_test_version']
+        m1.testVersion = CONFIG['dash_test_version']
 
         s = marshal.marshal_object(m1, "text/xml")
         stringio = StringIO.StringIO(s)
@@ -244,16 +244,16 @@ class ClientCollect(ClientHTTP):
         #
         if privacy.collect_allowed(m1.__dict__):
             if DATABASE.readonly:
-                logging.warning('speedtest: readonly database')
+                logging.warning('dash: readonly database')
             else:
                 insertxxx(DATABASE.connection(), m1)
 
         request = Message()
-        request.compose(method="POST", pathquery="/speedtest/collect",
+        request.compose(method="POST", pathquery="/dash/collect",
                         body=stringio, mimetype="application/xml",
                         host=self.host_header)
         request["authorization"] = self.conf.get(
-          "speedtest.client.authorization", "")
+          "dash.client.authorization", "")
 
         stream.send_request(request)
 
@@ -268,18 +268,18 @@ class ClientCollect(ClientHTTP):
 #
 QUEUE_HISTORY = []
 
-class ClientSpeedtest(ClientHTTP):
+class ClientDash(ClientHTTP):
     def __init__(self, poller):
         ClientHTTP.__init__(self, poller)
         STATE.update("test_latency", "---", publish=False)
         STATE.update("test_download", "---", publish=False)
         STATE.update("test_upload", "---", publish=False)
-        STATE.update("test_name", "speedtest")
+        STATE.update("test_name", "dash")
         self.child = None
         self.streams = collections.deque()
         self.finished = False
         self.state = None
-        self.iterations = 20
+        self.iterations = 5
         self.rates = [100,150,200,250,300,400,500,700,900,1200,1500,2000,2500,3000,4000,5000,6000]
 
     def configure(self, conf):
@@ -287,19 +287,19 @@ class ClientSpeedtest(ClientHTTP):
 
     def connect_uri(self, uri=None, count=None):
         if not uri:
-            uri = self.conf.get("speedtest.client.uri",
+            uri = self.conf.get("dash.client.uri",
               "http://master.neubot.org/")
         if not count:
-            count = self.conf.get("speedtest.client.nconn", 1)
-        logging.info("* speedtest with %s", uri)
+            count = self.conf.get("dash.client.nconn", 1)
+        logging.info("* dash with %s", uri)
         ClientHTTP.connect_uri(self, uri, count)
 
     def connection_ready(self, stream):
 
-        self.conf['version'] = CONFIG['speedtest_test_version']
+        self.conf['version'] = CONFIG['dash_test_version']
 
         self.streams.append(stream)
-        if len(self.streams) == self.conf.get("speedtest.client.nconn", 1):
+        if len(self.streams) == self.conf.get("dash.client.nconn", 1):
             self.update()
 
     #
@@ -322,7 +322,7 @@ class ClientSpeedtest(ClientHTTP):
         if not self.finished:
             self.finished = True
             if message:
-                logging.error("* speedtest: %s", message)
+                logging.error("* dash: %s", message)
             while self.streams:
                 self.streams.popleft().close()
             self.child = None
@@ -354,7 +354,7 @@ class ClientSpeedtest(ClientHTTP):
 
         #
         # Decide whether we can transition to the next phase of
-        # the speedtest or not.  Fall through to next request if
+        # the dash or not.  Fall through to next request if
         # needed, or return to the caller and rewind the stack.
         #
 
@@ -365,42 +365,42 @@ class ClientSpeedtest(ClientHTTP):
             del QUEUE_HISTORY[:]
 
         elif self.state == "negotiate":
-            if self.conf.get("speedtest.client.unchoked", False):
-                logging.info("* speedtest: %s ... authorized to "
+            if self.conf.get("dash.client.unchoked", False):
+                logging.info("* dash: %s ... authorized to "
                   "take the test\n", self.state)
                 self.state = "latency"
-            elif "speedtest.client.queuepos" in self.conf:
-                queuepos = self.conf["speedtest.client.queuepos"]
-                logging.info("* speedtest: %s ... waiting in queue, "
+            elif "dash.client.queuepos" in self.conf:
+                queuepos = self.conf["dash.client.queuepos"]
+                logging.info("* dash: %s ... waiting in queue, "
                   "pos %s\n", self.state, queuepos)
                 STATE.update("negotiate", {"queue_pos": queuepos})
                 QUEUE_HISTORY.append(queuepos)
 
         elif self.state == "latency":
-            tries = self.conf.get("speedtest.client.latency_tries", 10)
+            tries = self.conf.get("dash.client.latency_tries", 10)
             if tries == 0:
                 # Calculate average latency
-                latency = self.conf["speedtest.client.latency"]
+                latency = self.conf["dash.client.latency"]
                 latency = sum(latency) / len(latency)
-                self.conf["speedtest.client.latency"] = latency
+                self.conf["dash.client.latency"] = latency
                 # Advertise the result
                 STATE.update("test_latency", utils.time_formatter(latency))
-                logging.info("* speedtest: %s ...  done, %s\n", self.state,
+                logging.info("* dash: %s ...  done, %s\n", self.state,
                   utils.time_formatter(latency))
                 self.state = "download"
             else:
-                self.conf["speedtest.client.latency_tries"] = tries - 1
+                self.conf["dash.client.latency_tries"] = tries - 1
 
         elif self.state in ("download", "upload"):
-            if len(self.streams) == self.conf.get("speedtest.client.nconn", 1):
+            if len(self.streams) == self.conf.get("dash.client.nconn", 1):
 
                 # Calculate average speed
-                speed = self.conf["speedtest.client.%s" % self.state]
+                speed = self.conf["dash.client.%s" % self.state]
 		elapsed = speed[-1][1]-speed[-1][0]
                 #elapsed = (max(map(lambda t: t[1], speed)) - min(map(lambda t: t[0], speed)))
                 #speed = sum(map(lambda t: t[2], speed)) / elapsed
 		speed = speed[-1][2] / elapsed
-		logging.info("* speedtest: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
+		logging.info("* dash: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
 
                 #
                 # O(N) loopless adaptation to the channel w/ memory
@@ -414,34 +414,34 @@ class ClientSpeedtest(ClientHTTP):
 		    rate_list = self.rates
 		    rate = rate_list[max(bisect.bisect_right(rate_list, speed/1024)-1,0)]
 		    ESTIMATE[self.state] = rate*1024*2	# FIXME: change 2 with desired segment length in seconds
-		    logging.info("* speedtest: %s - speed: %s, elapsed: %s, next_rate: %d, size: %d\n", self.state, speed/1024, elapsed, rate, ESTIMATE[self.state]);
+		    logging.info("* dash: %s - speed: %s, elapsed: %s, next_rate: %d, size: %d\n", self.state, speed/1024, elapsed, rate, ESTIMATE[self.state]);
 		    #ESTIMATE[self.state] = ESTIMATE[self.state]*factor
 	 	    self.iterations = self.iterations - 1;
                 else:
 #                if elapsed > LO_THRESH:
 #                    ESTIMATE[self.state] *= TARGET/elapsed
-                    results = self.conf["speedtest.client.%s" % self.state]
+                    results = self.conf["dash.client.%s" % self.state]
 		    speedlst = []
 		    for i in range(len(results)):
  		        elapsed = results[i][1]-results[i][0]
                         speed = results[i][2] / elapsed
 			speedlst.append(speed)
-                    self.conf["speedtest.client.%s" % self.state] = "%s" % speedlst
+                    self.conf["dash.client.%s" % self.state] = "%s" % speedlst
                     # Advertise
-		    logging.info("* speedtest: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
+		    logging.info("* dash: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
                     STATE.update("test_%s" % self.state,
                       utils.speed_formatter(speed))
-                    logging.info("* speedtest: %s ...  done, %s\n", self.state,
+                    logging.info("* dash: %s ...  done, %s\n", self.state,
                       utils.speed_formatter(speed))
                     if self.state == "download":
                         self.state = "upload"
                     else:
                         self.state = "collect"
 #                elif elapsed > LO_THRESH/3:
-#                    #del self.conf["speedtest.client.%s" % self.state]
+#                    #del self.conf["dash.client.%s" % self.state]
 #                    ESTIMATE[self.state] *= TARGET/elapsed
 #                else:
-#                    #del self.conf["speedtest.client.%s" % self.state]
+#                    #del self.conf["dash.client.%s" % self.state]
 #                    ESTIMATE[self.state] *= 2
 
             else:
@@ -449,7 +449,7 @@ class ClientSpeedtest(ClientHTTP):
                 return
 
         elif self.state == "collect":
-            logging.info("* speedtest: %s ... done\n", self.state)
+            logging.info("* dash: %s ... done\n", self.state)
             self.cleanup()
             return
 
@@ -458,7 +458,7 @@ class ClientSpeedtest(ClientHTTP):
 
         #
         # Perform state transition and run the next phase of the
-        # speedtest.  Not all phases need to employ all the connection
+        # dash.  Not all phases need to employ all the connection
         # with the upstream server.
         #
 
@@ -481,12 +481,12 @@ class ClientSpeedtest(ClientHTTP):
             self.child.host_header = self.host_header
             if self.state not in ("negotiate", "collect"):
                 if ostate == "negotiate" and self.state == "latency":
-                    STATE.update("test", "speedtest")
+                    STATE.update("test", "dash")
             else:
                 STATE.update(self.state)
-            logging.info("* speedtest: %s in progress...", self.state)
+            logging.info("* dash: %s in progress...", self.state)
         elif self.state == "negotiate":
-            logging.info("* speedtest: %s in progress...", self.state)
+            logging.info("* dash: %s in progress...", self.state)
 
         while self.streams:
             #
@@ -500,9 +500,9 @@ class ClientSpeedtest(ClientHTTP):
                 break
 
 CONFIG.register_defaults({
-    "speedtest.client.uri": "http://master.neubot.org/",
-    "speedtest.client.nconn": 1,
-    "speedtest.client.latency_tries": 10,
+    "dash.client.uri": "http://master.neubot.org/",
+    "dash.client.nconn": 1,
+    "dash.client.latency_tries": 10,
 })
 
 def main(args):
@@ -510,9 +510,9 @@ def main(args):
     try:
         options, arguments = getopt.getopt(args[1:], '6A:fp:v')
     except getopt.error:
-        sys.exit('usage: neubot speedtest [-6fv] [-A address] [-p port]')
+        sys.exit('usage: neubot dash [-6fv] [-A address] [-p port]')
     if arguments:
-        sys.exit('usage: neubot speedtest [-6fv] [-A address] [-p port]')
+        sys.exit('usage: neubot dash [-6fv] [-A address] [-p port]')
 
     prefer_ipv6 = 0
     address = 'master.neubot.org'
@@ -535,28 +535,28 @@ def main(args):
         DATABASE.connect()
         CONFIG.merge_database(DATABASE.connection())
     else:
-        logging.warning('speedtest: database file is missing: %s',
+        logging.warning('dash: database file is missing: %s',
                         DATABASE.path)
         BACKEND.use_backend('null')
     if noisy:
         log.set_verbose()
 
     conf = CONFIG.copy()
-    conf["speedtest.client.uri"] = "http://%s:%d/" % (address, port)
+    conf["dash.client.uri"] = "http://%s:%d/" % (address, port)
     conf["prefer_ipv6"] = prefer_ipv6
 
     if not force:
         if runner_clnt.runner_client(conf["agent.api.address"],
                                      conf["agent.api.port"],
                                      CONFIG['verbose'],
-                                     "speedtest"):
+                                     "dash"):
             sys.exit(0)
         logging.warning(
-          'speedtest: failed to contact Neubot; is Neubot running?')
+          'dash: failed to contact Neubot; is Neubot running?')
         sys.exit(1)
 
-    logging.info('speedtest: run the test in the local process context...')
-    client = ClientSpeedtest(POLLER)
+    logging.info('dash: run the test in the local process context...')
+    client = ClientDash(POLLER)
     client.configure(conf)
     client.connect_uri()
     POLLER.loop()

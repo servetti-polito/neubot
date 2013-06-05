@@ -30,6 +30,7 @@ from neubot.database import table_config
 from neubot.database import table_geoloc
 from neubot.database import table_log
 from neubot.database import table_speedtest
+from neubot.database import table_dash
 from neubot.database import table_bittorrent
 from neubot.database import table_raw
 from neubot.database import migrate
@@ -98,6 +99,7 @@ class DatabaseManager(object):
             migrate2.migrate(self.dbc)
 
             table_speedtest.create(self.dbc)
+            table_dash.create(self.dbc)
             table_geoloc.create(self.dbc)
             table_bittorrent.create(self.dbc)
             table_log.create(self.dbc)

@@ -33,6 +33,7 @@ import logging
 from neubot.database import DATABASE
 from neubot.database import table_bittorrent
 from neubot.database import table_speedtest
+from neubot.database import table_dash
 from neubot.database import table_raw
 
 from neubot.backend_null import BackendNull
@@ -63,3 +64,11 @@ class BackendNeubot(BackendNull):
             logging.warning('backend_neubot: readonly database')
             return
         table_speedtest.insert(DATABASE.connection(), message)
+
+    def dash_store(self, message):
+        ''' Saves the results of a dash test '''
+        DATABASE.connect()
+        if DATABASE.readonly:
+            logging.warning('backend_neubot: readonly database')
+            return
+        table_dash.insert(DATABASE.connection(), message)
