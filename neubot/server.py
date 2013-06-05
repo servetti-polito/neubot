@@ -41,6 +41,7 @@ from neubot.net.poller import POLLER
 
 from neubot.negotiate.server import NEGOTIATE_SERVER
 from neubot.negotiate.server_speedtest import NEGOTIATE_SERVER_SPEEDTEST
+from neubot.negotiate.server_dash import NEGOTIATE_SERVER_DASH
 from neubot.negotiate.server_bittorrent import NEGOTIATE_SERVER_BITTORRENT
 from neubot.notify import NOTIFIER
 from neubot.state import STATE
@@ -63,6 +64,9 @@ import neubot.rendezvous.server
 
 #from neubot import speedtest           # Not yet
 import neubot.speedtest.wrapper
+
+#from neubot import dash           # Not yet
+import neubot.dash.wrapper
 
 class DebugAPI(ServerHTTP):
     ''' Implements the debugging API '''
@@ -167,6 +171,7 @@ SETTINGS = {
     "server.rendezvous": False,         # Not needed on the random server
     "server.sapi": True,
     "server.speedtest": True,
+    "server.dash": True,
 }
 
 USAGE = '''\
@@ -185,11 +190,12 @@ valid defines:
   server.raw        Set to nonzero to enable RAW server (default: 1)
   server.rendezvous Set to nonzero to enable rendezvous server (default: 0)
   server.sapi       Set to nonzero to enable nagios API (default: 1)
-  server.speedtest  Set to nonzero to enable speedtest server (default: 1)'''
+  server.speedtest  Set to nonzero to enable speedtest server (default: 1)
+  server.dash       Set to nonzero to enable dash server (default: 1)'''
 
 VALID_MACROS = ('server.bittorrent', 'server.daemonize', 'server.debug',
                 'server.negotiate', 'server.raw', 'server.rendezvous',
-                'server.sapi', 'server.speedtest')
+                'server.sapi', 'server.speedtest', 'server.dash')
 
 def main(args):
     """ Starts the server module """
@@ -269,6 +275,11 @@ def main(args):
         #conf['speedtest.listen'] = 1           # Not yet
         #conf['speedtest.negotiate'] = 1        # Not yet
         neubot.speedtest.wrapper.run(POLLER, conf)
+
+    if conf['server.dash']:
+        #conf['speedtest.listen'] = 1           # Not yet
+        #conf['speedtest.negotiate'] = 1        # Not yet
+        neubot.dash.wrapper.run(POLLER, conf)
 
     # Migrating from old style to new style
     if conf["server.rendezvous"]:
