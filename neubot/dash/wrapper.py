@@ -1,4 +1,4 @@
-# neubot/speedtest/wrapper.py
+# neubot/dash/wrapper.py
 
 #
 # Copyright (c) 2011 Simone Basso <bassosimone@gmail.com>,
@@ -20,7 +20,7 @@
 # along with Neubot.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-''' Wrapper for speedtest server.  The new negotiator uses JSON
+''' Wrapper for dash server.  The new negotiator uses JSON
     messages but old clients still use XML.  Hence this layer
     of code that maps between the old and the new semantic. '''
 
@@ -28,20 +28,20 @@ import StringIO
 
 from neubot.http.server import ServerHTTP
 from neubot.http.server import HTTP_SERVER
-from neubot.speedtest.server import SPEEDTEST_SERVER
+from neubot.dash.server import DASH_SERVER
 from neubot.negotiate.server import NEGOTIATE_SERVER
 from neubot.compat import json
 from neubot import marshal
 
 #
 # Classes that represent the old XML messages used
-# by speedtest.  I need to disable pylint because
+# by dash.  I need to disable pylint because
 # it's not possible here to fix the names and/or to
 # add methods or remove fields.  Doing that will
 # break the protocol.
 #
 
-class SpeedtestCollect(object):
+class DashCollect(object):
 
     ''' Old XML collect request '''
 
@@ -68,7 +68,7 @@ class SpeedtestCollect(object):
         # Test version (added Neubot 0.4.12)
         self.testVersion = 1
 
-class SpeedtestNegotiate_Response(object):
+class DashNegotiate_Response(object):
 
     ''' Old XML negotiate response '''
 
@@ -88,9 +88,9 @@ class SpeedtestNegotiate_Response(object):
 # and server expectations, waiting for clients to switch to
 # JSON.
 #
-class SpeedtestWrapper(ServerHTTP):
+class DashWrapper(ServerHTTP):
 
-    ''' Speedtest server wrapper '''
+    ''' Dash server wrapper '''
 
     # Adapted from neubot/negotiate/server.py
     def got_request_headers(self, stream, request):
@@ -100,14 +100,14 @@ class SpeedtestWrapper(ServerHTTP):
                   (request['content-length'] == '' or
                    request.content_length() <= 1048576) and
                   # XXX wrong because the scope of the check is too broad
-                  request.uri.startswith('/speedtest/'))
+                  request.uri.startswith('/dash/'))
         return isgood
 
     def process_request(self, stream, request):
         ''' Dispatch and process the incoming HTTP request '''
-        if request.uri == '/speedtest/negotiate':
+        if request.uri == '/dash/negotiate':
             self.do_negotiate(stream, request)
-        elif request.uri == '/speedtest/collect':
+        elif request.uri == '/dash/collect':
             self.do_collect(stream, request)
         else:
             raise RuntimeError('Invalid URI')
@@ -121,10 +121,10 @@ class SpeedtestWrapper(ServerHTTP):
             return
 
         # Convert JSON response to XML
-        elif request.uri == '/negotiate/speedtest':
+        elif request.uri == '/negotiate/dash':
             response_body = json.loads(response.body)
 
-            xmlresp = SpeedtestNegotiate_Response()
+            xmlresp = DashNegotiate_Response()
             xmlresp.authorization = response_body['authorization']
             xmlresp.unchoked = response_body['unchoked']
             xmlresp.queuePos = response_body['queue_pos']
@@ -137,7 +137,7 @@ class SpeedtestWrapper(ServerHTTP):
             response['content-length'] = str(len(response.body))
 
         # Suppress JSON response
-        elif request.uri == '/collect/speedtest':
+        elif request.uri == '/collect/dash':
             del response['content-type']
             del response['content-length']
             response.body = ''
@@ -156,14 +156,14 @@ class SpeedtestWrapper(ServerHTTP):
 
     #
     # Set the response rewriter so that we can spit out XML
-    # as expected by speedtest clients.
+    # as expected by dash clients.
     # We should rewrite the URI because the negotiate server
-    # does not like a URI starting with /speedtest.
+    # does not like a URI starting with /dash.
     #
     def do_negotiate(self, stream, request):
-        ''' Invoked on GET /speedtest/negotiate '''
+        ''' Invoked on GET /dash/negotiate '''
         stream.response_rewriter = self._rewrite_response
-        request.uri = '/negotiate/speedtest'
+        request.uri = '/negotiate/dash'
         request.body = StringIO.StringIO('{}')
         NEGOTIATE_SERVER.process_request(stream, request)
 
@@ -171,18 +171,18 @@ class SpeedtestWrapper(ServerHTTP):
     # Set the response rewriter so that we can suppress the
     # empty JSON returned by the negotiation server.
     # We should rewrite the URI because the negotiate server
-    # does not like a URI starting with /speedtest.
+    # does not like a URI starting with /dash.
     # Map message fields from the unserialized XML object
-    # to the serialized JSON expected by the new speedtest
+    # to the serialized JSON expected by the new dash
     # negotiator code.
     #
     def do_collect(self, stream, request):
-        ''' Invoked on GET /speedtest/collect '''
+        ''' Invoked on GET /dash/collect '''
         stream.response_rewriter = self._rewrite_response
-        request.uri = '/collect/speedtest'
+        request.uri = '/collect/dash'
 
         xmlreq = marshal.unmarshal_object(request.body.read(),
-           'application/xml', SpeedtestCollect)
+           'application/xml', DashCollect)
         message = {
             'uuid': xmlreq.client,
             'timestamp': int(float(xmlreq.timestamp)),  # old clients bug
@@ -209,19 +209,19 @@ class SpeedtestWrapper(ServerHTTP):
         NEGOTIATE_SERVER.process_request(stream, request)
 
 # No poller, so it cannot be used directly
-SPEEDTEST_WRAPPER = SpeedtestWrapper(None)
+DASH_WRAPPER = DashWrapper(None)
 
 #
 # TODO I've added here the run() function for convenience,
-# but this should actually be moved in speedtest/__init__.py
+# but this should actually be moved in dash/__init__.py
 # in the future.
 #
 def run(poller, conf):
-    ''' Start the server-side of the speedtest module '''
+    ''' Start the server-side of the dash module '''
 
-    HTTP_SERVER.register_child(SPEEDTEST_WRAPPER, '/speedtest/negotiate')
-    HTTP_SERVER.register_child(SPEEDTEST_WRAPPER, '/speedtest/collect')
+    HTTP_SERVER.register_child(DASH_WRAPPER, '/dash/negotiate')
+    HTTP_SERVER.register_child(DASH_WRAPPER, '/dash/collect')
 
-    HTTP_SERVER.register_child(SPEEDTEST_SERVER, '/speedtest/latency')
-    HTTP_SERVER.register_child(SPEEDTEST_SERVER, '/speedtest/download')
-    HTTP_SERVER.register_child(SPEEDTEST_SERVER, '/speedtest/upload')
+    HTTP_SERVER.register_child(DASH_SERVER, '/dash/latency')
+    HTTP_SERVER.register_child(DASH_SERVER, '/dash/download')
+    HTTP_SERVER.register_child(DASH_SERVER, '/dash/upload')

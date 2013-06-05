@@ -1,4 +1,4 @@
-# neubot/speedtest/server.py
+# neubot/dash/server.py
 
 #
 # Copyright (c) 2010-2012 Simone Basso <bassosimone@gmail.com>,
@@ -20,7 +20,7 @@
 # along with Neubot.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-''' Speedtest server '''
+''' Dash server '''
 
 import urlparse
 
@@ -32,9 +32,9 @@ from neubot.bytegen_speedtest import BytegenSpeedtest
 
 TARGET = 5
 
-class SpeedtestServer(ServerHTTP):
+class DashServer(ServerHTTP):
 
-    ''' Server-side of the speedtest test '''
+    ''' Server-side of the dash test '''
 
     # Adapted from neubot/negotiate/server.py
     def got_request_headers(self, stream, request):
@@ -44,9 +44,9 @@ class SpeedtestServer(ServerHTTP):
         else:
             request_uri = request.uri
 
-        isgood = (request_uri == '/speedtest/latency' or
-                  request_uri == '/speedtest/download' or
-                  request_uri == '/speedtest/upload')
+        isgood = (request_uri == '/dash/latency' or
+                  request_uri == '/dash/download' or
+                  request_uri == '/dash/upload')
         #
         # NOTE Ignore the request body.  First of all, we are
         # not interested in reading it, we just want to receive
@@ -77,12 +77,12 @@ class SpeedtestServer(ServerHTTP):
             request_uri = request.uri
 
         # Just ignore the incoming body
-        if request_uri in ('/speedtest/latency', '/speedtest/upload'):
+        if request_uri in ('/dash/latency', '/dash/upload'):
             response = Message()
             response.compose(code='200', reason='Ok')
             stream.send_response(request, response)
 
-        elif request_uri == '/speedtest/download':
+        elif request_uri == '/dash/download':
 
 	    # Default download resource size set to 1000 bytes
 	    bodySize = 1000
@@ -96,7 +96,7 @@ class SpeedtestServer(ServerHTTP):
             #
             # If range is not present send chunked
             # data for TARGET seconds.
-            # This is version 2 of the speedtest.
+            # This is version 2 of the dash.
             #
             if not request['range']:
                 response = Message()
@@ -119,4 +119,4 @@ class SpeedtestServer(ServerHTTP):
             raise RuntimeError('Unexpected URI')
 
 # No poller, so it cannot be used directly
-SPEEDTEST_SERVER = SpeedtestServer(None)
+DASH_SERVER = DashServer(None)

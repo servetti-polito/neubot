@@ -95,6 +95,8 @@ class DebugAPI(ServerHTTP):
                         len(NEGOTIATE_SERVER_BITTORRENT.peers),
                     'NEGOTIATE_SERVER_SPEEDTEST.clients': \
                         len(NEGOTIATE_SERVER_SPEEDTEST.clients),
+                    'NEGOTIATE_SERVER_DASH.clients': \
+                        len(NEGOTIATE_SERVER_DASH.clients),
                     'POLLER.readset': len(POLLER.readset),
                     'POLLER.writeset': len(POLLER.writeset),
                     'LOG._queue': len(LOG._queue),
