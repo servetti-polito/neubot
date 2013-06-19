@@ -143,7 +143,7 @@ class HttpClient(Handler):
     def append_request(stream, method, uri, protocol):
         ''' Append request to output buffer '''
         context = stream.opaque
-        #logging.debug('> %s %s %s', method, uri, protocol)
+        logging.debug('> %s %s %s', method, uri, protocol)
         context.method = six.b(method)
         context.outq.append(six.b(method))
         context.outq.append(SPACE)
@@ -156,7 +156,7 @@ class HttpClient(Handler):
     def append_header(stream, name, value):
         ''' Append header to output buffer '''
         context = stream.opaque
-        #logging.debug('>> %s: %s', name, value)
+        logging.debug('>> %s: %s', name, value)
         context.outq.append(six.b(name))
         context.outq.append(COLON)
         context.outq.append(SPACE)
@@ -167,7 +167,7 @@ class HttpClient(Handler):
     def append_end_of_headers(stream):
         ''' Append end-of-headers (an empty line) to output buffer '''
         context = stream.opaque
-        #logging.debug('>')
+        logging.debug('>')
         context.outq.append(CRLF)
 
     @staticmethod

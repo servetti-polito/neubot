@@ -380,7 +380,7 @@ ROOT_LOGGER.setLevel(logging.DEBUG)
 
 def set_verbose():
     ''' Make logger verbose '''
-    CONFIG['verbose'] = 1
+    CONFIG['verbose'] = 0
 
 def is_verbose():
     ''' Is the logger verbose? '''
