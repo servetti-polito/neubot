@@ -1,26 +1,19 @@
-Neubot, the network neutrality bot
-``````````````````````````````````
+Neubot Dash: testing HTTP streaming network neutrality
+``````````````````````````````````````````````````````
 
-Neubot is a research project on network neutrality of the NEXA
-Center for Internet & Society at Politecnico di Torino. The project
-is based on a lightweight free software program that interested users
-can download and install on their computers. The program runs in
-the background and periodically performs transmission tests with
-test servers, hosted by the distributed Measurement Lab platform,
-and (in future) with other instances of the program itself.
-Transmission tests probe the Internet using various application
-level protocols and test results are saved both locally and on the
-test servers. The results dataset contains samples from various
-Providers and is published on the web, allowing anyone to analyze
-the data for research purposes.
+This is a fork of the neubot project that adds a new test for the DASH
+protocol. The test will be performed against the server hosted on
+streaming.polito.it.
 
-As a collection Neubot is Copyright (c) 2010-2012 NEXA Center for
-Internet & Society at Politecnico di Torino <http://nexa.polito.it/>.
-Each file is copyrighted by the individual contributor.
+At this moment, only the development branch is up to date, no release has been
+made. You can clone the development version with this command:
 
-Neubot collects your Internet address along with the results, and
-that is personal data under the European law.  For more details
-regarding our privacy policy, please refer to the file PRIVACY, in
-this directory.
+    git clone -b develop https://github.com/servetti-polito/neubot-dash.git
 
-For more info: http://www.neubot.org/
+The DASH test can be run from the command line:
+
+    python ./bin/neubot dash -fv -A streaming.polito.it
+
+
+
+Check also the Neubot site: http://www.neubot.org/
