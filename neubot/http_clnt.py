@@ -143,7 +143,7 @@ class HttpClient(Handler):
     def append_request(stream, method, uri, protocol):
         ''' Append request to output buffer '''
         context = stream.opaque
-        logging.debug('> %s %s %s', method, uri, protocol)
+        #logging.debug('> %s %s %s', method, uri, protocol)
         context.method = six.b(method)
         context.outq.append(six.b(method))
         context.outq.append(SPACE)
@@ -156,7 +156,7 @@ class HttpClient(Handler):
     def append_header(stream, name, value):
         ''' Append header to output buffer '''
         context = stream.opaque
-        logging.debug('>> %s: %s', name, value)
+        #logging.debug('>> %s: %s', name, value)
         context.outq.append(six.b(name))
         context.outq.append(COLON)
         context.outq.append(SPACE)
@@ -167,7 +167,7 @@ class HttpClient(Handler):
     def append_end_of_headers(stream):
         ''' Append end-of-headers (an empty line) to output buffer '''
         context = stream.opaque
-        logging.debug('>')
+        #logging.debug('>')
         context.outq.append(CRLF)
 
     @staticmethod
@@ -264,7 +264,7 @@ class HttpClient(Handler):
         ''' Handles the FIRSTLINE event '''
         context = stream.opaque
         line = line.rstrip()
-        logging.debug('< %s', six.bytes_to_string_safe(line, 'utf-8'))
+        #logging.debug('< %s', six.bytes_to_string_safe(line, 'utf-8'))
         vector = line.split(None, 2)
         if len(vector) != 3:
             raise RuntimeError('http_clnt: invalid first line')
@@ -289,10 +289,10 @@ class HttpClient(Handler):
         context = stream.opaque
         line = line.rstrip()
         if not line:
-            logging.debug('<')
+            #logging.debug('<')
             handle_done(stream)
             return
-        logging.debug('< %s', six.bytes_to_string_safe(line, 'utf-8'))
+        #logging.debug('< %s', six.bytes_to_string_safe(line, 'utf-8'))
         # Note: must preceed header parsing to permit colons in folded line(s)
         if context.last_hdr and line[0:1] in (SPACE, TAB):
             value = context.headers[context.last_hdr]
