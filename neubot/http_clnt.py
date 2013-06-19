@@ -156,7 +156,7 @@ class HttpClient(Handler):
     def append_header(stream, name, value):
         ''' Append header to output buffer '''
         context = stream.opaque
-        logging.debug('> %s: %s', name, value)
+        logging.debug('>> %s: %s', name, value)
         context.outq.append(six.b(name))
         context.outq.append(COLON)
         context.outq.append(SPACE)
