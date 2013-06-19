@@ -400,7 +400,7 @@ class ClientDash(ClientHTTP):
                 #elapsed = (max(map(lambda t: t[1], speed)) - min(map(lambda t: t[0], speed)))
                 #speed = sum(map(lambda t: t[2], speed)) / elapsed
 		speed = speed[-1][2] / elapsed
-		logging.info("* dash: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
+		# logging.info("* dash: %s - speed: %s, elapsed: %s\n", self.state, speed, elapsed);
 
                 #
                 # O(N) loopless adaptation to the channel w/ memory
@@ -412,9 +412,9 @@ class ClientDash(ClientHTTP):
 		if self.iterations:
 		    #factor = 2/elapsed
 		    rate_list = self.rates
-		    rate = rate_list[max(bisect.bisect_right(rate_list, speed/1024)-1,0)]
-		    ESTIMATE[self.state] = rate*1024*2	# FIXME: change 2 with desired segment length in seconds
-		    logging.info("* dash: %s - speed: %s, elapsed: %s, next_rate: %d, size: %d\n", self.state, speed/1024, elapsed, rate, ESTIMATE[self.state]);
+		    rate = rate_list[max(bisect.bisect_right(rate_list, speed*8/1024)-1,0)]
+		    ESTIMATE[self.state] = (rate*1024/8)*2	# FIXME: change 2 with desired segment length in seconds
+		    logging.info("* dash: %s - speed: %s (kb/s), elapsed: %s (s), next_rate: %d (kb/s), size: %d B\n", self.state, speed*8/1024, elapsed, rate, ESTIMATE[self.state]);
 		    #ESTIMATE[self.state] = ESTIMATE[self.state]*factor
 	 	    self.iterations = self.iterations - 1;
                 else:
