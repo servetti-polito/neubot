@@ -16,6 +16,7 @@ made. You can clone the development version with this command:
 Then, move to the neubot-dash folder:
 
     cd neubot-dash
+    bye
 
 To allow the collection of the test results you must have granted us the right
 to do that. A quick and dirty trick is to create a database with this
@@ -34,6 +35,7 @@ Sample output
 Sample output of the dash test:
 
 
+```
     WARNING: database: opening database in readonly mode
     dash: run the test in the local process context...
     dash with http://streaming.polito.it:8080/
@@ -55,7 +57,7 @@ Sample output of the dash test:
     dash: collect in progress...
     WARNING: dash: readonly database
     dash: collect ... done
-
+```
 
 Check also the Neubot site: http://www.neubot.org/
 
