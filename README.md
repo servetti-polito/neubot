@@ -29,8 +29,10 @@ The DASH test can be run from the command line:
     python ./bin/neubot dash -fv -A streaming.polito.it
 
 
-Sample output
--------------
+Collected results
+-----------------
+
+Neubot DASH test results are collected on http://streaming.polito.it/neubot-dash-data.
 
 Sample output of the dash test:
 
